@@ -6,35 +6,48 @@
 
 Adding shields would also be amazing -->
 
-# Title of Repo
-One sentence linking to the tutorial and what this repo is for.
+# Dolby.io Real-time Streaming UIKit for iOS
 
 # Overview
-Two or three sentences describing the overall output.
+The Dolby.io Real-time Streaming UIKit for iOS is design to help iOS developers reduce the complexity of building a Dolby.io Real-time Streaming monitoring applications for iOS.
 
-# Requirements 
-List any hardware, software, or library dependencies the users would have to install to follow the tutorial or use the sample project. 
+The package consists of three components:  
+* `DolbyIORTSUIKit`: The high-level UI kit component can be used to develop a real-time streaming monitoring app for iOS with Dolby.io
+* `DolbyIORTSCore`: The logic between `DolbyIORTSUIKit` and Dolby.io Real-time Streaming iOS SDK.
+* `DolbyUIUIKIt`: The basic and pure UI components used by `DolbyIORTSUIKit`
 
-# Getting Started 
-A good area to mention they should sign up for Dolby.io to use the APIs, the free 50GBs, or anything they should have to follow along
+# Requirements
 
-# Report a Bug 
-In the case any bugs occur, report it using Github issues, and we will see to it. 
+This setup guide is validated on both Intel/M1-based MacBook Pro running macOS 13.4.
 
-# Forking
-We welcome your interest in trying to experiment with our repos.
+## Apple
+- Xcode Version 14.3.1 (14E300c)
+- iPhone device or simulator running iOS 16.0
 
-# Feedback 
-If there are any suggestions or if you would like to deliver any positive notes, feel free to open an issue and let us know!
+# Getting Started
+- A [Dolby.io](https://dashboard.dolby.io/signup/) account
+- Start a video streaming broadcasting, see [here](https://docs.dolby.io/streaming-apis/docs/how-to-broadcast-in-dashboard) 
+- The Stream name and Account ID pair from the video streaming above
 
-# Learn More
-For a deeper dive, we welcome you to review the following:
-  *bulleted list of blogs or docs pages that might be useful* 
+### How to get a Dolby.io account
 
+To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.  
+
+## Installation
+
+This UIKit package uses Swift Packages. You can add this package site URL as dependencies to your app. Detail can be find [here](https://developer.apple.com/documentation/xcode/swift-packages)
+
+> **_Info:_** The main branch is constantly under development. Get a tagged branch for a stable release.
+
+## License
+
+The Dolby.io Communications UIKit for React and its repository are licensed under the MIT License. Before using the package `@dolbyio/comms-uikit-react`, please review and accept the [Dolby Software License Agreement](LICENSE).
 
 # About Dolby.io
 
 Using decades of Dolby's research in sight and sound technology, Dolby.io provides APIs to integrate real-time streaming, voice & video communications, and file-based media processing into your applications. [Sign up for a free account](https://dashboard.dolby.io/signup/) to get started building the next generation of immersive, interactive, and social apps.
+
+&copy; Dolby, 2023
 
 <div align="center">
   <a href="https://dolby.io/" target="_blank"><img src="https://img.shields.io/badge/Dolby.io-0A0A0A?style=for-the-badge&logo=dolby&logoColor=white"/></a>
@@ -52,3 +65,5 @@ Using decades of Dolby's research in sight and sound technology, Dolby.io provid
 &nbsp; &nbsp; &nbsp;
   <a href="https://www.linkedin.com/company/dolbyio/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white" alt="Dolby.io on LinkedIn"/></a>
 </div>
+
+
