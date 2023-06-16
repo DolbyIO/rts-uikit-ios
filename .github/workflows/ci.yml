@@ -21,4 +21,4 @@ jobs:
       run: xcodebuild -scheme DolbyIORTSUIKit -destination "generic/platform=iOS Simulator"
 
     - name: Run tests
-      run: xcodebuild test -scheme DolbyIORTSUIKit-Package -destination "platform=iOS Simulator,OS=15.0,name=iPhone 13 Pro"
+      run: xcodebuild test -scheme DolbyIORTSUIKit-Package -destination "platform=iOS Simulator,OS=16.2,name=iPhone 13 Pro"
