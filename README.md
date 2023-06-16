@@ -12,24 +12,93 @@ Adding shields would also be amazing -->
 The Dolby.io Real-time Streaming UIKit for iOS is design to help iOS developers reduce the complexity of building a Dolby.io Real-time Streaming monitoring applications for iOS.
 
 The package consists of three components:  
-* `DolbyIORTSUIKit`: The high-level UI kit component can be used to develop a real-time streaming monitoring app for iOS with Dolby.io
-* `DolbyIORTSCore`: The logic between `DolbyIORTSUIKit` and Dolby.io Real-time Streaming iOS SDK.
-* `DolbyUIUIKIt`: The basic and pure UI components used by `DolbyIORTSUIKit`
+* `DolbyIORTSUIKit`: The high-level UI components can be used to develop a real-time streaming monitoring app for iOS with Dolby.io.  
+* `DolbyIORTSCore`: The logic between `DolbyIORTSUIKit` and Dolby.io Real-time Streaming iOS SDK.   
+* `DolbyUIUIKIt`: The basic UI components used by `DolbyIORTSUIKit`.  
+
+> **_Info:_** There are two parties in a real-time streaming. A publisher who broadcasts a streaming. A monitor(viewer) who consumes a streaming. This UIKit is targeting to a monitor who consumes a streaming.
 
 # Requirements
 
 This setup guide is validated on both Intel/M1-based MacBook Pro running macOS 13.4.
 
-## Apple
 - Xcode Version 14.3.1 (14E300c)
-- iPhone device or simulator running iOS 16.0
+- iPhone device or simulator running iOS 15.0
 
 # Getting Started
+
+This guide demostrates how to use the Real-time Streaming UI components to quickly build a Real-time Steaming monitoring app on an iOS device.
+
+## Build a Sample App
+
+Get started by a working sample app, see below.
+
+* Create a new Xcode project
+* Choose the iOS App as template
+* Fill in the Product Name
+* Select "SwiftUI" as Interface
+* Select "Swift" as Language
+* Create the project in a folder
+* Add this UIKit as dependencies to the newly created project.  
+	* Go to File > Add Packages...
+	* Put the URL of this repo in the pop-up window's top-right corner text field
+	* Use `Up to Next Major Version` in the Dependency Rule
+	* Click the `Add Package` button
+	* Choose and add this packages `DolbyIORTSCore`,  `DolbyIORTSUIKit`, and `DolbyIOUIKIt` to the target
+	* Click the `Add Package` button
+* Copy and replace the code to ContentView.swift
+* Compile and Run on an iOS target
+
+
+```swift 
+import SwiftUI
+
+// 1. Include Dolby.io UIKit and related packages
+import DolbyIORTSCore
+import DolbyIORTSUIKit
+
+struct ContentView: View {
+	// 2. State to show the real-time streaming or not
+    @State private var showStream = false
+
+    var body: some View {
+        NavigationView {
+            ZStack {
+            
+            	// 3. Navigation link to the streaming screen if `showStream` is true
+                NavigationLink(destination: StreamingScreen(isShowingStreamView: $showStream), isActive: $showStream) { EmptyView() }
+                Button ("Start Stream") {
+                
+                	// 4. Asynchronize task connects the publisher with the given stream name and account ID. The stream name and 
+                	// account ID pair here is from a demo stream. It can be replaced by a pair being given by a publisher who has 
+                	// signed-up up the Dolby.io service. 
+                    Task {
+                        let success = await StreamCoordinator.shared.connect(streamName: "multiview", accountID: "k9Mwad")
+                        
+                        // 5. Show the real-time streaming if connect successfully
+                        await MainActor.run { showStream = success }
+                    }
+                }
+            }.preferredColorScheme(.dark)
+        }
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+```
+
+
+## Get a Dolby.io account
+
+To publish a real-time stream, a Dolby.io account is necessary
+
 - A [Dolby.io](https://dashboard.dolby.io/signup/) account
 - Start a video streaming broadcasting, see [here](https://docs.dolby.io/streaming-apis/docs/how-to-broadcast-in-dashboard) 
 - The Stream name and Account ID pair from the video streaming above
-
-### How to get a Dolby.io account
 
 To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.  
 
@@ -41,7 +110,7 @@ This UIKit package uses Swift Packages. You can add this package site URL as dep
 
 ## License
 
-The Dolby.io Communications UIKit for React and its repository are licensed under the MIT License. Before using the package `@dolbyio/comms-uikit-react`, please review and accept the [Dolby Software License Agreement](LICENSE).
+The Dolby.io Real-time UIKit for iOS and its repository are licensed under the MIT License. Before using this, please review and accept the [Dolby Software License Agreement](LICENSE).
 
 # About Dolby.io
 
