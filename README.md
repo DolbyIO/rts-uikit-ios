@@ -58,7 +58,7 @@ import DolbyIORTSCore
 import DolbyIORTSUIKit
 
 struct ContentView: View {
-	// 2. State to show the real-time streaming or not
+    // 2. State to show the real-time streaming or not
     @State private var showStream = false
 
     var body: some View {
