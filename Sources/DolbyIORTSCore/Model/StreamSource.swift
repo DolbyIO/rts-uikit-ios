@@ -98,6 +98,8 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
             }
         }
     }
+    
+    public var audioTracksCount: Int { audioTracks.count }
 
     public let id: UUID
     public let streamId: String
