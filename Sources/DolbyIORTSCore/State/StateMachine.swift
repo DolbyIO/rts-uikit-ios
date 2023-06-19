@@ -175,7 +175,15 @@ final actor StateMachine {
         switch currentState {
         case var .subscribed(state):
             state.remove(streamId: streamId, sourceId: sourceId)
-            currentState = .subscribed(state)
+            
+            // FIXME: Currently SDK does not have a callback for Publisher stopping the publishing
+            // What we get instead is `onInactive` callbacks for all the video sources - ie, `onInactive` is called `n` times if we have `n` sources
+            // This workaround checks for active `source` count to decide the expected `state` transition
+            if state.sources.isEmpty {
+                currentState = .stopped
+            } else {
+                currentState = .subscribed(state)
+            }
         default:
             Self.rtsCore.error("Unexpected state on onInactive \(self.currentState.description)")
         }
