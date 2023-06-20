@@ -7,9 +7,9 @@ import MillicastSDK
 
 enum State: CustomStringConvertible {
     case disconnected
-    case connecting(ConnectingState)
-    case connected(ConnectedState)
-    case subscribing(SubscribingState)
+    case connecting
+    case connected
+    case subscribing
     case subscribed(SubscribedState)
     case stopped
     case error(ErrorState)
@@ -34,29 +34,15 @@ enum State: CustomStringConvertible {
     }
 }
 
-struct ConnectingState {
-    let streamDetail: StreamDetail
-}
-
-struct ConnectedState {
-    let streamDetail: StreamDetail
-}
-
-struct SubscribingState {
-    let streamDetail: StreamDetail
-}
-
 struct SubscribedState {
 
     private(set) var streamSourceBuilders: [StreamSourceBuilder]
     private(set) var numberOfStreamViewers: Int
     private(set) var streamingStats: StreamingStatistics?
-    let streamDetail: StreamDetail
 
-    init(streamDetail: StreamDetail) {
+    init() {
         streamSourceBuilders = []
         numberOfStreamViewers = 0
-        self.streamDetail = streamDetail
     }
 
     mutating func add(streamId: String, sourceId: String?, tracks: [String]) {
@@ -141,5 +127,4 @@ struct SubscribedState {
 
 struct ErrorState: Equatable {
     let error: StreamError
-    let streamDetail: StreamDetail
 }

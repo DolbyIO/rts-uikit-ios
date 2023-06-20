@@ -213,7 +213,7 @@ final class StreamViewModel: ObservableObject {
     // swiftlint:enable function_body_length
 
     func endStream() async {
-        _ = await streamCoordinator.stopSubscribe()
+        _ = await streamCoordinator.stopConnection()
         settingsManager.setActiveSettings(for: .global)
     }
 
@@ -238,6 +238,13 @@ final class StreamViewModel: ObservableObject {
                 switch state {
                 case let .subscribed(sources: sources, numberOfStreamViewers: _):
                     self.updateState(from: sources, settings: settings)
+                case .connecting, .subscribing, .connected:
+                    self.internalState = .loading
+                case .error, .stopped:
+                    self.internalState = .error(
+                        title: "stream.offline.title.label",
+                        subtitle: "stream.offline.subtitle.label"
+                    )
                 default:
                     // TODO: Handle other scenarios (including errors)
                     break

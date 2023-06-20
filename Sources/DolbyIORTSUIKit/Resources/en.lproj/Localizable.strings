@@ -54,3 +54,8 @@ Follow video: Switch audio source when a video is selected. If the selected vide
 /** Video View */
 
 "video-view.main.label" = "Main";
+
+/** Stream Error View */
+
+"stream.offline.title.label" = "Stream is offline";
+"stream.offline.subtitle.label" = "Please wait for livestream to begin.";
