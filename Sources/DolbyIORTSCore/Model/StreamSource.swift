@@ -66,7 +66,7 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
         }
     }
 
-    public enum VideoQuality: Equatable, Hashable {
+    public enum VideoQuality: Equatable, Hashable, CustomStringConvertible {
         case auto
         case high(layer: MCLayerData)
         case medium(layer: MCLayerData)
@@ -95,6 +95,19 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
                 lhsLayerData.encodingId == rhsLayerData.encodingId
             default:
                 return false
+            }
+        }
+        
+        public var description: String {
+            switch self {
+            case .auto:
+                return "Auto"
+            case .high:
+                return "High"
+            case .medium:
+                return "Medium"
+            case .low:
+                return "Low"
             }
         }
     }

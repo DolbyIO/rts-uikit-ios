@@ -8,7 +8,7 @@ import MillicastSDK
 import os
 
 final actor StateMachine {
-    static let rtsCore = Logger(subsystem: "io.dolby.rtscore", category: String(describing: StateMachine.self))
+    private static let logger = Logger(subsystem: "io.dolby.rtscore", category: String(describing: StateMachine.self))
 
     private(set) var currentState: State {
         didSet {
@@ -28,7 +28,7 @@ final actor StateMachine {
         case .disconnected, .error, .stopped:
             currentState = .connecting
         default:
-            Self.rtsCore.error("🛑 Unexpected state on startConnection - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on startConnection - \(self.currentState.description)")
         }
     }
 
@@ -37,7 +37,7 @@ final actor StateMachine {
         case .connected:
             currentState = .subscribing
         default:
-            Self.rtsCore.error("🛑 Unexpected state on startSubscribe - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on startSubscribe - \(self.currentState.description)")
         }
     }
 
@@ -46,7 +46,7 @@ final actor StateMachine {
         case .subscribed, .connected:
             currentState = .disconnected
         default:
-            Self.rtsCore.error("🛑 Unexpected state on stopSubscribe - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on stopSubscribe - \(self.currentState.description)")
         }
     }
 
@@ -56,7 +56,7 @@ final actor StateMachine {
             state.updatePreferredVideoQuality(quality, for: source.sourceId.value)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("🛑 Unexpected state on selectVideoQuality - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on selectVideoQuality - \(self.currentState.description)")
         }
     }
 
@@ -66,7 +66,7 @@ final actor StateMachine {
             state.setPlayingAudio(enable, for: source.sourceId.value)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("🛑 Unexpected state on setPlayingAudio - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on setPlayingAudio - \(self.currentState.description)")
         }
     }
 
@@ -76,7 +76,7 @@ final actor StateMachine {
             state.setPlayingVideo(enable, for: source.sourceId.value)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("🛑 Unexpected state on setPlayingVideo - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on setPlayingVideo - \(self.currentState.description)")
         }
     }
 
@@ -85,7 +85,7 @@ final actor StateMachine {
         case .connecting:
             currentState = .connected
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onConnected - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onConnected - \(self.currentState.description)")
         }
     }
 
@@ -95,7 +95,7 @@ final actor StateMachine {
             currentState = .error(.init(error: .connectFailed(reason: reason)))
 
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onConnectionError - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onConnectionError - \(self.currentState.description)")
         }
     }
 
@@ -104,7 +104,7 @@ final actor StateMachine {
         case .subscribing:
             currentState = .subscribed(.init())
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onSubscribed - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onSubscribed - \(self.currentState.description)")
         }
     }
 
@@ -114,7 +114,7 @@ final actor StateMachine {
             currentState = .error(.init(error: .subscribeFailed(reason: reason)))
 
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onSubscribedError - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onSubscribedError - \(self.currentState.description)")
         }
     }
 
@@ -124,7 +124,7 @@ final actor StateMachine {
             currentState = .error(.init(error: .signalingError(reason: message)))
 
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onSignalingError - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onSignalingError - \(self.currentState.description)")
         }
     }
 
@@ -134,7 +134,7 @@ final actor StateMachine {
             state.add(streamId: streamId, sourceId: sourceId, tracks: tracks)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onActive - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onActive - \(self.currentState.description)")
         }
     }
 
@@ -152,7 +152,7 @@ final actor StateMachine {
                 currentState = .subscribed(state)
             }
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onInactive - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onInactive - \(self.currentState.description)")
         }
     }
 
@@ -163,7 +163,7 @@ final actor StateMachine {
             currentState = .subscribed(state)
 
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onVideoTrack - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onVideoTrack - \(self.currentState.description)")
         }
     }
 
@@ -173,7 +173,7 @@ final actor StateMachine {
             state.addAudioTrack(track, mid: mid)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onAudioTrack - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onAudioTrack - \(self.currentState.description)")
         }
     }
 
@@ -207,7 +207,7 @@ final actor StateMachine {
             state.setAvailableStreamTypes(streamTypes, for: mid)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onLayers - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onLayers - \(self.currentState.description)")
         }
     }
 
@@ -217,7 +217,7 @@ final actor StateMachine {
             state.updateStreamingStatistics(streamingStats)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onStatsReport - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onStatsReport - \(self.currentState.description)")
         }
     }
 
@@ -227,7 +227,7 @@ final actor StateMachine {
             state.updateViewerCount(Int(count))
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onViewerCount - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onViewerCount - \(self.currentState.description)")
         }
     }
 
@@ -236,7 +236,7 @@ final actor StateMachine {
         case .subscribed, .connected:
             currentState = .stopped
         default:
-            Self.rtsCore.error("🛑 Unexpected state on onStopped - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onStopped - \(self.currentState.description)")
         }
     }
 }

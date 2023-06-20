@@ -28,7 +28,7 @@ open class StreamCoordinator {
     public private(set) var activeStreamDetail: StreamDetail?
 
     private typealias CoordinatorTask = Task<Void, Never>
-    private var coordinatorTasksContinuation: AsyncStream<CoordinatorTask>.Continuation?
+    private var taskStreamContinuation: AsyncStream<CoordinatorTask>.Continuation?
 
     private convenience init() {
         self.init(
@@ -52,62 +52,6 @@ open class StreamCoordinator {
         startStateObservation()
         startStateMachineTasksSerialExecutor()
     }
-
-    private func startStateObservation() {
-        Task {
-            await stateMachine.statePublisher
-                .sink { [weak self] state in
-                    guard let self = self else { return }
-                    
-                    switch state {
-                    case let .error(state):
-                        switch state.error {
-                        case .connectFailed:
-                            self.scheduleReconnection()
-                        default:
-                            //No-op
-                            break
-                        }
-                    case .stopped:
-                        self.scheduleReconnection()
-                    default:
-                        // No-op
-                        break
-                    }
-
-                    // Populate updates public facing states
-                    self.stateSubject.send(StreamState(state: state))
-                }
-            .store(in: &subscriptions)
-        }
-    }
-    
-    private func scheduleReconnection() {
-        taskScheduler.scheduleTask(timeInterval: Defaults.retryConnectionTimeInterval) { [weak self] in
-            guard let self = self, let streamDetail = self.activeStreamDetail else { return }
-            Task {
-                self.taskScheduler.invalidate()
-                _ = await self.connect(
-                    streamName: streamDetail.streamName,
-                    accountID: streamDetail.accountID
-                )
-            }
-        }
-    }
-    
-    private func startStateMachineTasksSerialExecutor() {
-        Task {
-            let tasksStreams = AsyncStream<CoordinatorTask> { continuation in
-                self.coordinatorTasksContinuation = continuation
-            }
-            
-            for await task in tasksStreams {
-                await task.value
-            }
-        }
-    }
-
-    // MARK: Subscribe API methods
 
     public func connect(streamName: String, accountID: String) async -> Bool {
         async let startConnectionStateUpdate: Void = stateMachine.startConnection(streamName: streamName, accountID: accountID)
@@ -142,7 +86,9 @@ open class StreamCoordinator {
             else {
                 return
             }
-            await withTaskGroup(of: Void.self) { group in
+            await withTaskGroup(of: Void.self) { [weak self] group in
+                guard let self = self else { return }
+
                 for source in sources {
                     guard source.isPlayingAudio else {
                         continue
@@ -231,6 +177,61 @@ open class StreamCoordinator {
 // MARK: Private helper methods
 
 private extension StreamCoordinator {
+    func startStateObservation() {
+        Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.statePublisher
+                .sink { state in
+                    switch state {
+                    case let .error(errorState):
+                        switch errorState.error {
+                        case .connectFailed:
+                            self.scheduleReconnection()
+                        default:
+                            //No-op
+                            break
+                        }
+                    case .stopped:
+                        self.scheduleReconnection()
+                    default:
+                        // No-op
+                        break
+                    }
+
+                    // Populate updates public facing states
+                    self.stateSubject.send(StreamState(state: state))
+                }
+            .store(in: &subscriptions)
+        }
+    }
+    
+    func scheduleReconnection() {
+        taskScheduler.scheduleTask(timeInterval: Defaults.retryConnectionTimeInterval) { [weak self] in
+            guard let self = self, let streamDetail = self.activeStreamDetail else { return }
+            Task {
+                self.taskScheduler.invalidate()
+                _ = await self.connect(
+                    streamName: streamDetail.streamName,
+                    accountID: streamDetail.accountID
+                )
+            }
+        }
+    }
+    
+    func startStateMachineTasksSerialExecutor() {
+        Task { [weak self] in
+            guard let self = self else { return }
+            
+            let taskStream = AsyncStream<CoordinatorTask> { continuation in
+                self.taskStreamContinuation = continuation
+            }
+            
+            for await task in taskStream {
+                await task.value
+            }
+        }
+    }
+
     func startSubscribe() async -> Bool {
         async let startSubscribeStateUpdate: Void = stateMachine.startSubscribe()
         async let startSubscribe = subscriptionManager.startSubscribe()
@@ -243,93 +244,102 @@ private extension StreamCoordinator {
 
 extension StreamCoordinator: SubscriptionManagerDelegate {
     public func onSubscribedError(_ reason: String) {
-        let task = Task {
-            await stateMachine.onSubscribedError(reason)
+        let task = Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.onSubscribedError(reason)
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onSignalingError(_ message: String) {
-        let task = Task {
-            await stateMachine.onSignalingError(message)
+        let task = Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.onSignalingError(message)
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onConnectionError(_ status: Int32, withReason reason: String) {
-        let task = Task {
-            await stateMachine.onConnectionError(status, withReason: reason)
+        let task = Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.onConnectionError(status, withReason: reason)
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onStopped() {
-        let task = Task {
-            await stateMachine.onStopped()
+        let task = Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.onStopped()
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onConnected() {
-        let task = Task {
-            await stateMachine.onConnected()
-            _ = await startSubscribe()
+        let task = Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.onConnected()
+            _ = await self.startSubscribe()
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onSubscribed() {
-        let task = Task {
-            await stateMachine.onSubscribed()
+        let task = Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.onSubscribed()
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onVideoTrack(_ track: MCVideoTrack, withMid mid: String) {
         let task = Task { [weak self] in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             await self.stateMachine.onVideoTrack(track, withMid: mid)
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onAudioTrack(_ track: MCAudioTrack, withMid mid: String) {
-        let task = Task {
+        let task = Task { [weak self] in
+            guard let self = self else { return }
             await stateMachine.onAudioTrack(track, withMid: mid)
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onStatsReport(_ report: MCStatsReport) {
         guard let streamingStats = StreamingStatistics(report) else {
             return
         }
-        let task = Task {
-            await stateMachine.onStatsReport(streamingStats)
+        let task = Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.onStatsReport(streamingStats)
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onViewerCount(_ count: Int32) {
-        let task = Task {
-            await stateMachine.updateNumberOfStreamViewers(count)
+        let task = Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.updateNumberOfStreamViewers(count)
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onLayers(_ mid_: String, activeLayers: [MCLayerData], inactiveLayers: [MCLayerData]) {
-        let task = Task {
-            await stateMachine.onLayers(mid_, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
+        let task = Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.onLayers(mid_, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onActive(_ streamId: String, tracks: [String], sourceId: String?) {
-        let task = Task {
-            await stateMachine.onActive(streamId, tracks: tracks, sourceId: sourceId)
-            let stateMachineState = await stateMachine.currentState
+        let task = Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.onActive(streamId, tracks: tracks, sourceId: sourceId)
+            let stateMachineState = await self.stateMachine.currentState
             switch stateMachineState {
             case let .subscribed(state):
                 guard let sourceBuilder = state.streamSourceBuilders.first(where: { $0.sourceId.value == sourceId }) else {
@@ -340,16 +350,14 @@ extension StreamCoordinator: SubscriptionManagerDelegate {
                 return
             }
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 
     public func onInactive(_ streamId: String, sourceId: String?) {
         let task = Task { [weak self] in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             await self.stateMachine.onInactive(streamId, sourceId: sourceId)
         }
-        coordinatorTasksContinuation?.yield(task)
+        taskStreamContinuation?.yield(task)
     }
 }

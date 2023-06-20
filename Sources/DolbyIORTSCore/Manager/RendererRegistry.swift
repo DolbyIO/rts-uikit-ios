@@ -16,11 +16,14 @@ protocol RendererRegistryProtocol: AnyObject {
 }
 
 final actor RendererRegistry: RendererRegistryProtocol {
+    private static let logger = Logger(subsystem: "io.dolby.rtscore", category: String(describing: RendererRegistry.self))
+
     private var rendererDictionary: [String: NSHashTable<StreamSourceViewRenderer>] = [:]
 
     func registerRenderer(_ renderer: StreamSourceViewRenderer, for track: MCVideoTrack) {
         guard let trackID = track.getId() else {
-            fatalError("Expect to have dictionary entry for the track before querying for renderer")
+            Self.logger.error("📺 Register renderer \(renderer.id) called with an invalid VideoTrack")
+            return
         }
 
         if let renderers = rendererDictionary[trackID] {
@@ -37,7 +40,8 @@ final actor RendererRegistry: RendererRegistryProtocol {
 
     func deregisterRenderer(_ renderer: StreamSourceViewRenderer, for track: MCVideoTrack) {
         guard let trackID = track.getId() else {
-            fatalError("Expect to have dictionary entry for the track before querying for renderer")
+            Self.logger.error("📺 Deregister renderer \(renderer.id) called with an invalid VideoTrack")
+            return
         }
 
         if let renderers = rendererDictionary[trackID] {

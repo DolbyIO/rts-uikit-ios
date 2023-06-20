@@ -42,7 +42,6 @@ protocol SubscriptionManagerProtocol: AnyObject {
     func startSubscribe() async -> Bool
     func stopSubscribe() async -> Bool
     func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource)
-    func getMid(for trackId: String) -> String?
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder)
     func projectVideo(for source: StreamSource, withQuality quality: StreamSource.VideoQuality)
     func unprojectVideo(for source: StreamSource)
@@ -51,7 +50,10 @@ protocol SubscriptionManagerProtocol: AnyObject {
 }
 
 final class SubscriptionManager: SubscriptionManagerProtocol {
-    static let rtsCore = Logger(subsystem: "io.dolby.rtscore", category: String(describing: SubscriptionManager.self))
+    private enum Defaults {
+        static let subscribeURL = "https://director.millicast.com/api/director/subscribe"
+    }
+    private static let logger = Logger(subsystem: "io.dolby.rtscore", category: String(describing: SubscriptionManager.self))
 
     private var subscriber: MCSubscriber!
 
@@ -65,12 +67,12 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         let subscriber = makeSubscriber()
         subscriber.setListener(self)
 
-        Self.rtsCore.debug("Start connect with credentials")
+        Self.logger.debug("💼 Connect with streamName & accountID")
 
         self.subscriber = subscriber
 
         guard streamName.count > 0, accountID.count > 0 else {
-            Self.rtsCore.warning("Invalid credentials")
+            Self.logger.warning("💼 Invalid credentials passed to connect")
             return false
         }
 
@@ -80,7 +82,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             }
 
             guard !self.isSubscribed, !self.isConnected else {
-                Self.rtsCore.warning("Already connected or subscribed")
+                Self.logger.warning("💼 Subscriber has already connected or subscribed")
                 return false
             }
 
@@ -89,7 +91,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             self.subscriber.setCredentials(credentials)
 
             guard self.subscriber.connect() else {
-                Self.rtsCore.warning("Failed to establish a connection")
+                Self.logger.warning("💼 Subscriber has failed to connect")
                 return false
             }
 
@@ -101,24 +103,24 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
     func startSubscribe() async -> Bool {
         let task = Task { [weak self] () -> Bool in
-            Self.rtsCore.debug("Start subscribe")
+            Self.logger.debug("💼 Start subscribe")
 
             guard let self = self else {
                 return false
             }
 
             guard self.isConnected else {
-                Self.rtsCore.warning("No connection present")
+                Self.logger.warning("💼 Subscriber hasn't completed connect to start subscribe")
                 return false
             }
 
             guard !self.isSubscribed else {
-                Self.rtsCore.warning("Already subscribed")
+                Self.logger.warning("💼 Subscriber has already subscribed")
                 return false
             }
 
             guard self.subscriber.subscribe() else {
-                Self.rtsCore.warning("Failed to subscribe")
+                Self.logger.warning("💼 Subscribe call has failed")
                 return false
             }
 
@@ -131,7 +133,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
     func stopSubscribe() async -> Bool {
         let task = Task { [weak self] () -> Bool in
-            Self.rtsCore.debug("Stop subscribe")
+            Self.logger.debug("💼 Stop subscribe")
 
             guard let self = self, let subscriber = subscriber else {
                 return false
@@ -139,12 +141,12 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             subscriber.enableStats(false)
 
             guard subscriber.unsubscribe() else {
-                Self.rtsCore.warning("Failed to unsubscribe")
+                Self.logger.warning("💼 Failed to unsubscribe")
                 return false
             }
 
             guard subscriber.disconnect() else {
-                Self.rtsCore.warning("Failed to disconnect")
+                Self.logger.warning("💼 Failed to disconnect")
                 return false
             }
 
@@ -156,19 +158,17 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource) {
+        Self.logger.warning("💼 Select Video Quality \(quality.description) \(source.sourceId.value ?? "MAIN")")
         projectVideo(for: source, withQuality: quality)
     }
 
-    func getMid(for trackId: String) -> String? {
-        subscriber.getMid(trackId)
-    }
-
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder) {
+        Self.logger.warning("💼 Add remote track for source - \(sourceBuilder.sourceId.value ?? "MAIN")")
         sourceBuilder.supportedTrackItems.forEach { subscriber.addRemoteTrack($0.trackType.rawValue) }
     }
 
     func projectVideo(for source: StreamSource, withQuality quality: StreamSource.VideoQuality) {
-        Self.rtsCore.debug("Project video for source \(source.sourceId.value ?? "N/A")")
+        Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A")")
         guard let videoTrack = source.videoTrack else {
             return
         }
@@ -183,7 +183,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func unprojectVideo(for source: StreamSource) {
-        Self.rtsCore.debug("Project video for source \(source.sourceId.value ?? "N/A")")
+        Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A")")
         guard let videoTrack = source.videoTrack else {
             return
         }
@@ -192,7 +192,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func projectAudio(for source: StreamSource) {
-        Self.rtsCore.debug("Project audio for source \(source.sourceId.value ?? "N/A")")
+        Self.logger.debug("💼 Project audio for source \(source.sourceId.value ?? "N/A")")
         guard let audioTrack = source.audioTracks.first else {
             return
         }
@@ -230,7 +230,7 @@ private extension SubscriptionManager {
         credentials.accountId = accountID
         credentials.streamName = streamName
         credentials.token = ""
-        credentials.apiUrl = "https://director.millicast.com/api/director/subscribe"
+        credentials.apiUrl = Defaults.subscribeURL
 
         return credentials
     }
@@ -241,71 +241,71 @@ private extension SubscriptionManager {
 extension SubscriptionManager: MCSubscriberListener {
 
     func onSubscribed() {
-        Self.rtsCore.debug("Callback -> onSubscribed")
+        Self.logger.debug("💼 Delegate - onSubscribed")
         delegate?.onSubscribed()
     }
 
     func onSubscribedError(_ reason: String!) {
-        Self.rtsCore.error("Callback -> onSubscribedError \(reason)")
+        Self.logger.error("💼 Delegate - onSubscribedError \(reason)")
         delegate?.onSubscribedError(reason)
     }
 
     func onVideoTrack(_ track: MCVideoTrack!, withMid mid: String!) {
-        Self.rtsCore.debug("Callback -> onVideoTrack with mid \(mid)")
+        Self.logger.debug("💼 Delegate - onVideoTrack with mid \(mid)")
         delegate?.onVideoTrack(track, withMid: mid)
     }
 
     func onAudioTrack(_ track: MCAudioTrack!, withMid mid: String!) {
-        Self.rtsCore.debug("Callback -> onAudioTrack with mid \(mid)")
+        Self.logger.debug("💼 Delegate - onAudioTrack with mid \(mid)")
         delegate?.onAudioTrack(track, withMid: mid)
     }
 
     func onActive(_ streamId: String!, tracks: [String]!, sourceId: String!) {
-        Self.rtsCore.debug("Callback -> onActive with sourceId \(sourceId ?? "NULL")")
+        Self.logger.debug("Callback -> onActive with sourceId \(sourceId ?? "NULL")")
         delegate?.onActive(streamId, tracks: tracks, sourceId: sourceId)
     }
 
     func onInactive(_ streamId: String!, sourceId: String!) {
-        Self.rtsCore.debug("Callback -> onInactive with sourceId \(sourceId ?? "NULL")")
+        Self.logger.debug("💼 Delegate - onInactive with sourceId \(sourceId ?? "NULL")")
         delegate?.onInactive(streamId, sourceId: sourceId)
     }
 
     func onStopped() {
-        Self.rtsCore.debug("Callback -> onStopped")
+        Self.logger.debug("💼 Delegate - onStopped")
         delegate?.onStopped()
     }
 
     func onVad(_ mid: String!, sourceId: String!) {
-        Self.rtsCore.debug("Callback -> onVad with mid \(mid), sourceId \(sourceId)")
+        Self.logger.debug("💼 Delegate - onVad with mid \(mid), sourceId \(sourceId)")
     }
 
     func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) {
-        Self.rtsCore.debug("Callback -> onLayers with activeLayers \(activeLayers), inactiveLayers \(inactiveLayers)")
+        Self.logger.debug("💼 Delegate - onLayers for mid - \(mid) with activeLayers \(activeLayers), inactiveLayers \(inactiveLayers)")
         delegate?.onLayers(mid, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
     }
 
     func onConnected() {
-        Self.rtsCore.debug("Callback -> onConnected")
+        Self.logger.debug("💼 Delegate - onConnected")
         delegate?.onConnected()
     }
 
     func onConnectionError(_ status: Int32, withReason reason: String!) {
-        Self.rtsCore.error("Callback -> onConnectionError")
+        Self.logger.error("💼 Delegate - onConnectionError")
         delegate?.onConnectionError(status, withReason: reason)
     }
 
     func onSignalingError(_ message: String!) {
-        Self.rtsCore.error("Callback -> onSignalingError")
+        Self.logger.error("💼 Delegate - onSignalingError")
         delegate?.onSignalingError(message)
     }
 
     func onStatsReport(_ report: MCStatsReport!) {
-        Self.rtsCore.debug("Callback -> onStatsReport")
+        Self.logger.debug("💼 Delegate - onStatsReport")
         delegate?.onStatsReport(report)
     }
 
     func onViewerCount(_ count: Int32) {
-        Self.rtsCore.debug("Callback -> onViewerCount")
+        Self.logger.debug("💼 Delegate - onViewerCount")
         delegate?.onViewerCount(count)
     }
 }
