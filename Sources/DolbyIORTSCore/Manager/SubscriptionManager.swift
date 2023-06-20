@@ -58,6 +58,10 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     weak var delegate: SubscriptionManagerDelegate?
 
     func connect(streamName: String, accountID: String) async -> Bool {
+        if subscriber != nil {
+            _ = await stopSubscribe()
+        }
+        
         let subscriber = makeSubscriber()
         subscriber.setListener(self)
 

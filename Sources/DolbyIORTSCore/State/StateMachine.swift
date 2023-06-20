@@ -25,19 +25,19 @@ final actor StateMachine {
 
     func startConnection(streamName: String, accountID: String) {
         switch currentState {
-        case .disconnected, .error:
-            currentState = .connecting(ConnectingState(streamDetail: .init(streamName: streamName, accountID: accountID)))
+        case .disconnected, .error, .stopped:
+            currentState = .connecting
         default:
-            Self.rtsCore.error("Unexpected state on startConnection \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on startConnection - \(self.currentState.description)")
         }
     }
 
     func startSubscribe() {
         switch currentState {
-        case let .connected(state):
-            currentState = .subscribing(SubscribingState(streamDetail: state.streamDetail))
+        case .connected:
+            currentState = .subscribing
         default:
-            Self.rtsCore.error("Unexpected state on startSubscribe \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on startSubscribe - \(self.currentState.description)")
         }
     }
 
@@ -46,7 +46,7 @@ final actor StateMachine {
         case .subscribed, .connected:
             currentState = .disconnected
         default:
-            Self.rtsCore.error("Unexpected state on stopSubscribe \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on stopSubscribe - \(self.currentState.description)")
         }
     }
 
@@ -56,7 +56,7 @@ final actor StateMachine {
             state.updatePreferredVideoQuality(quality, for: source.sourceId.value)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("Unexpected state on selectVideoQuality \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on selectVideoQuality - \(self.currentState.description)")
         }
     }
 
@@ -66,7 +66,7 @@ final actor StateMachine {
             state.setPlayingAudio(enable, for: source.sourceId.value)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("Unexpected state on setPlayingAudio \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on setPlayingAudio - \(self.currentState.description)")
         }
     }
 
@@ -76,88 +76,55 @@ final actor StateMachine {
             state.setPlayingVideo(enable, for: source.sourceId.value)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("Unexpected state on setPlayingVideo \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on setPlayingVideo - \(self.currentState.description)")
         }
     }
 
     func onConnected() {
         switch currentState {
-        case let .connecting(state):
-            currentState = .connected(ConnectedState(streamDetail: state.streamDetail))
+        case .connecting:
+            currentState = .connected
         default:
-            Self.rtsCore.error("Unexpected state on onConnected \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onConnected - \(self.currentState.description)")
         }
     }
 
     func onConnectionError(_ status: Int32, withReason reason: String) {
         switch currentState {
-        case let .connected(state):
-            currentState = .error(.init(error: .connectFailed(reason: reason), streamDetail: state.streamDetail))
-
-        case let .subscribed(state):
-            currentState = .error(.init(error: .connectFailed(reason: reason), streamDetail: state.streamDetail))
-
-        case let .connecting(state):
-            currentState = .error(.init(error: .connectFailed(reason: reason), streamDetail: state.streamDetail))
-
-        case let .subscribing(state):
-            currentState = .error(.init(error: .connectFailed(reason: reason), streamDetail: state.streamDetail))
-
-        case let .error(state):
-            currentState = .error(.init(error: .connectFailed(reason: reason), streamDetail: state.streamDetail))
+        case .connected, .subscribed, .connecting, .subscribing, .error, .stopped:
+            currentState = .error(.init(error: .connectFailed(reason: reason)))
 
         default:
-            Self.rtsCore.error("Unexpected state on onConnectionError \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onConnectionError - \(self.currentState.description)")
         }
     }
 
     func onSubscribed() {
         switch currentState {
-        case let .subscribing(state):
-            currentState = .subscribed(.init(streamDetail: state.streamDetail))
+        case .subscribing:
+            currentState = .subscribed(.init())
         default:
-            Self.rtsCore.error("Unexpected state on onSubscribed \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onSubscribed - \(self.currentState.description)")
         }
     }
 
     func onSubscribedError(_ reason: String) {
         switch currentState {
-        case let .connected(state):
-            currentState = .error(.init(error: .subscribeFailed(reason: reason), streamDetail: state.streamDetail))
-
-        case let .connecting(state):
-            currentState = .error(.init(error: .subscribeFailed(reason: reason), streamDetail: state.streamDetail))
-
-        case let .subscribed(state):
-            currentState = .error(.init(error: .subscribeFailed(reason: reason), streamDetail: state.streamDetail))
-
-        case let .subscribing(state):
-            currentState = .error(.init(error: .subscribeFailed(reason: reason), streamDetail: state.streamDetail))
-
-        case let .error(state):
-            currentState = .error(.init(error: .connectFailed(reason: reason), streamDetail: state.streamDetail))
+        case .connected, .connecting, .subscribed, .subscribing, .error:
+            currentState = .error(.init(error: .subscribeFailed(reason: reason)))
 
         default:
-            Self.rtsCore.error("Unexpected state on onSubscribedError \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onSubscribedError - \(self.currentState.description)")
         }
     }
 
     func onSignalingError(_ message: String) {
         switch currentState {
-        case let .connected(state):
-            currentState = .error(.init(error: .signalingError(reason: message), streamDetail: state.streamDetail))
-
-        case let .connecting(state):
-            currentState = .error(.init(error: .signalingError(reason: message), streamDetail: state.streamDetail))
-
-        case let .subscribed(state):
-            currentState = .error(.init(error: .signalingError(reason: message), streamDetail: state.streamDetail))
-
-        case let .subscribing(state):
-            currentState = .error(.init(error: .signalingError(reason: message), streamDetail: state.streamDetail))
+        case .connected, .connecting, .subscribed, .subscribing:
+            currentState = .error(.init(error: .signalingError(reason: message)))
 
         default:
-            Self.rtsCore.error("Unexpected state on onSignalingError \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onSignalingError - \(self.currentState.description)")
         }
     }
 
@@ -167,7 +134,7 @@ final actor StateMachine {
             state.add(streamId: streamId, sourceId: sourceId, tracks: tracks)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("Unexpected state on onActive \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onActive - \(self.currentState.description)")
         }
     }
 
@@ -185,7 +152,7 @@ final actor StateMachine {
                 currentState = .subscribed(state)
             }
         default:
-            Self.rtsCore.error("Unexpected state on onInactive \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onInactive - \(self.currentState.description)")
         }
     }
 
@@ -196,7 +163,7 @@ final actor StateMachine {
             currentState = .subscribed(state)
 
         default:
-            Self.rtsCore.error("Unexpected state on onVideoTrack \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onVideoTrack - \(self.currentState.description)")
         }
     }
 
@@ -206,7 +173,7 @@ final actor StateMachine {
             state.addAudioTrack(track, mid: mid)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("Unexpected state on onAudioTrack \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onAudioTrack - \(self.currentState.description)")
         }
     }
 
@@ -240,7 +207,7 @@ final actor StateMachine {
             state.setAvailableStreamTypes(streamTypes, for: mid)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("Unexpected state on onLayers \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onLayers - \(self.currentState.description)")
         }
     }
 
@@ -250,7 +217,7 @@ final actor StateMachine {
             state.updateStreamingStatistics(streamingStats)
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("Unexpected state on onStatsReport \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onStatsReport - \(self.currentState.description)")
         }
     }
 
@@ -260,7 +227,7 @@ final actor StateMachine {
             state.updateViewerCount(Int(count))
             currentState = .subscribed(state)
         default:
-            Self.rtsCore.error("Unexpected state on onViewerCount \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onViewerCount - \(self.currentState.description)")
         }
     }
 
@@ -269,7 +236,7 @@ final actor StateMachine {
         case .subscribed, .connected:
             currentState = .stopped
         default:
-            Self.rtsCore.error("Unexpected state on onStopped \(self.currentState.description)")
+            Self.rtsCore.error("🛑 Unexpected state on onStopped - \(self.currentState.description)")
         }
     }
 }

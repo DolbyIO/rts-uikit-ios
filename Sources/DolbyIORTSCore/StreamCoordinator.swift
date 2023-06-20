@@ -7,13 +7,11 @@ import Foundation
 import MillicastSDK
 import os
 
-public struct StreamCoordinatorConfiguration {
-    let retryOnConnectionError = true
-    let retryTimeInterval: TimeInterval = 5
-    let subscribeOnSuccessfulConnection = true
-}
-
 open class StreamCoordinator {
+    
+    private enum Defaults {
+        static let retryConnectionTimeInterval = 5.0
+    }
 
     public static let shared: StreamCoordinator = StreamCoordinator()
 
@@ -21,8 +19,6 @@ open class StreamCoordinator {
     private let subscriptionManager: SubscriptionManagerProtocol
     private let rendererRegistry: RendererRegistryProtocol
     private let taskScheduler: TaskSchedulerProtocol
-
-    private static var configuration: StreamCoordinatorConfiguration = .init()
 
     private var subscriptions: Set<AnyCancellable> = []
     private lazy var stateSubject: CurrentValueSubject<StreamState, Never> = CurrentValueSubject(.disconnected)
@@ -62,11 +58,40 @@ open class StreamCoordinator {
             await stateMachine.statePublisher
                 .sink { [weak self] state in
                     guard let self = self else { return }
+                    
+                    switch state {
+                    case let .error(state):
+                        switch state.error {
+                        case .connectFailed:
+                            self.scheduleReconnection()
+                        default:
+                            //No-op
+                            break
+                        }
+                    case .stopped:
+                        self.scheduleReconnection()
+                    default:
+                        // No-op
+                        break
+                    }
 
                     // Populate updates public facing states
                     self.stateSubject.send(StreamState(state: state))
                 }
             .store(in: &subscriptions)
+        }
+    }
+    
+    private func scheduleReconnection() {
+        taskScheduler.scheduleTask(timeInterval: Defaults.retryConnectionTimeInterval) { [weak self] in
+            guard let self = self, let streamDetail = self.activeStreamDetail else { return }
+            Task {
+                self.taskScheduler.invalidate()
+                _ = await self.connect(
+                    streamName: streamDetail.streamName,
+                    accountID: streamDetail.accountID
+                )
+            }
         }
     }
     
@@ -82,10 +107,6 @@ open class StreamCoordinator {
         }
     }
 
-    static func setStreamCoordinatorConfiguration(_ configuration: StreamCoordinatorConfiguration) {
-        Self.configuration = configuration
-    }
-
     // MARK: Subscribe API methods
 
     public func connect(streamName: String, accountID: String) async -> Bool {
@@ -99,14 +120,7 @@ open class StreamCoordinator {
         return connectionResult
     }
 
-    public func startSubscribe() async -> Bool {
-        async let startSubscribeStateUpdate: Void = stateMachine.startSubscribe()
-        async let startSubscribe = subscriptionManager.startSubscribe()
-        let (_, success) = await (startSubscribeStateUpdate, startSubscribe)
-        return success
-    }
-
-    public func stopSubscribe() async -> Bool {
+    public func stopConnection() async -> Bool {
         activeStreamDetail = nil
         async let stopSubscribeOnStateMachine: Void = stateMachine.stopSubscribe()
         async let resetRegistry: Void = rendererRegistry.reset()
@@ -214,6 +228,17 @@ open class StreamCoordinator {
     }
 }
 
+// MARK: Private helper methods
+
+private extension StreamCoordinator {
+    func startSubscribe() async -> Bool {
+        async let startSubscribeStateUpdate: Void = stateMachine.startSubscribe()
+        async let startSubscribe = subscriptionManager.startSubscribe()
+        let (_, success) = await (startSubscribeStateUpdate, startSubscribe)
+        return success
+    }
+}
+
 // MARK: SubscriptionManagerDelegate implementation
 
 extension StreamCoordinator: SubscriptionManagerDelegate {
@@ -234,25 +259,6 @@ extension StreamCoordinator: SubscriptionManagerDelegate {
     public func onConnectionError(_ status: Int32, withReason reason: String) {
         let task = Task {
             await stateMachine.onConnectionError(status, withReason: reason)
-            if Self.configuration.retryOnConnectionError {
-                taskScheduler.scheduleTask(timeInterval: Self.configuration.retryTimeInterval) { [weak self] in
-                    guard let self = self else { return }
-                    Task {
-                        switch await self.stateMachine.currentState {
-                        case let .error(state):
-                            switch state.error {
-                            case .connectFailed:
-                                self.taskScheduler.invalidate()
-                                _ = await self.connect(streamName: state.streamDetail.streamName, accountID: state.streamDetail.accountID)
-                            default:
-                                break
-                            }
-                        default:
-                            break
-                        }
-                    }
-                }
-            }
         }
         coordinatorTasksContinuation?.yield(task)
     }
@@ -267,9 +273,7 @@ extension StreamCoordinator: SubscriptionManagerDelegate {
     public func onConnected() {
         let task = Task {
             await stateMachine.onConnected()
-            if Self.configuration.subscribeOnSuccessfulConnection {
-                _ = await startSubscribe()
-            }
+            _ = await startSubscribe()
         }
         coordinatorTasksContinuation?.yield(task)
     }
