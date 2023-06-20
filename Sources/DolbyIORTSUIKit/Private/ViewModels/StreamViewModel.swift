@@ -350,10 +350,8 @@ final class StreamViewModel: ObservableObject {
     }
 
     private func updateStreamSettings(from sources: [StreamSource], settings: StreamSettings) {
-        // Only update the settings when the sources change
-        let sourceIds = sources.compactMap { source in
-            source.sourceId.value
-        }
+        // Only update the settings when the sources change, only sources with at least one audio track
+        let sourceIds = sources.filter { $0.audioTracksCount > 0 }.compactMap { $0.sourceId.value }
         if sourceIds != settingsManager.settings.audioSources {
             settingsManager.settings.audioSources = sourceIds
 
