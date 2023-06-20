@@ -372,17 +372,22 @@ final class StreamViewModel: ObservableObject {
     }
 
     private func audioSelection(from sources: [StreamSource], settings: StreamSettings, selectedVideoSource: StreamSource) -> StreamSource {
+        // Get the sources with at least one audio track if none, uses the original sources list
+        var sourcesWithAudio = sources.filter { $0.audioTracksCount > 0 }
+        if sourcesWithAudio.isEmpty {
+            sourcesWithAudio = sources
+        }
         let selectedAudioSource: StreamSource
         switch settings.audioSelection {
         case .firstSource:
-            selectedAudioSource = sources[0]
+            selectedAudioSource = sourcesWithAudio[0]
         case .mainSource:
             // If no main source available, use first source as main
-            selectedAudioSource = sources.first(where: { $0.sourceId == StreamSource.SourceId.main }) ?? sources[0]
+            selectedAudioSource = sourcesWithAudio.first(where: { $0.sourceId == StreamSource.SourceId.main }) ?? sourcesWithAudio[0]
         case .followVideo:
-            selectedAudioSource = selectedVideoSource
+            selectedAudioSource = selectedVideoSource.audioTracksCount > 0 ? selectedVideoSource : sourcesWithAudio[0]
         case let .source(sourceId: sourceId):
-            selectedAudioSource = sources.first(where: { $0.sourceId.value == sourceId }) ?? sources[0]
+            selectedAudioSource = sourcesWithAudio.first(where: { $0.sourceId.value == sourceId }) ?? sourcesWithAudio[0]
         }
         return selectedAudioSource
     }
