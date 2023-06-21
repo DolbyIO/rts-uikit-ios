@@ -16,7 +16,7 @@ protocol RendererRegistryProtocol: AnyObject {
 }
 
 final actor RendererRegistry: RendererRegistryProtocol {
-    private static let logger = Logger(subsystem: "io.dolby.rtscore", category: String(describing: RendererRegistry.self))
+    private static let logger = Logger.make(category: String(describing: RendererRegistry.self))
 
     private var rendererDictionary: [String: NSHashTable<StreamSourceViewRenderer>] = [:]
 
@@ -26,12 +26,16 @@ final actor RendererRegistry: RendererRegistryProtocol {
             return
         }
 
+        Self.logger.error("📺 Register renderer \(renderer.id)")
         if let renderers = rendererDictionary[trackID] {
+            Self.logger.error("📺 Renderer dictionary has an entry for trackID - \(trackID)")
             guard !renderers.contains(renderer) else {
+                Self.logger.error("📺 Renderer is already registered")
                 return
             }
             renderers.add(renderer)
         } else {
+            Self.logger.error("📺 Create a new renderer list for trackID - \(trackID)")
             let renderers = NSHashTable<StreamSourceViewRenderer>(options: .weakMemory)
             renderers.add(renderer)
             rendererDictionary[trackID] = renderers
@@ -44,6 +48,7 @@ final actor RendererRegistry: RendererRegistryProtocol {
             return
         }
 
+        Self.logger.error("📺 Deregister renderer \(renderer.id)")
         if let renderers = rendererDictionary[trackID] {
             renderers.remove(renderer)
         }
@@ -61,6 +66,7 @@ final actor RendererRegistry: RendererRegistryProtocol {
     }
 
     func reset() {
+        Self.logger.error("📺 Reset renderer registry")
         rendererDictionary.removeAll()
     }
 }

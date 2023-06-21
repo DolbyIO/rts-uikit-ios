@@ -53,7 +53,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     private enum Defaults {
         static let subscribeURL = "https://director.millicast.com/api/director/subscribe"
     }
-    private static let logger = Logger(subsystem: "io.dolby.rtscore", category: String(describing: SubscriptionManager.self))
+    private static let logger = Logger.make(category: String(describing: SubscriptionManager.self))
 
     private var subscriber: MCSubscriber!
 
