@@ -40,7 +40,7 @@ final class StreamViewModel: ObservableObject {
             displayMode: DisplayMode,
             sources: [StreamSource],
             selectedVideoSource: StreamSource,
-            selectedAudioSource: StreamSource,
+            selectedAudioSource: StreamSource?,
             sourceAndViewRenderers: StreamSourceAndViewRenderers,
             detailSourceAndViewRenderers: StreamSourceAndViewRenderers,
             settings: StreamSettings
@@ -163,18 +163,18 @@ final class StreamViewModel: ObservableObject {
                         streamSource: matchingSource,
                         viewRenderer: sourceAndViewRenderers.primaryRenderer(for: matchingSource),
                         isSelectedVideoSource: true,
-                        isSelectedAudioSource: matchingSource.id == selectedAudioSource.id,
+                        isSelectedAudioSource: matchingSource.id == selectedAudioSource?.id,
                         showSourceLabel: showSourceLabels,
-                        showAudioIndicator: matchingSource.id == selectedAudioSource.id
+                        showAudioIndicator: matchingSource.id == selectedAudioSource?.id
                     ),
                     secondaryVideoViewModels: secondaryVideoSources.map {
                         VideoRendererViewModel(
                             streamSource: $0,
                             viewRenderer: sourceAndViewRenderers.secondaryRenderer(for: $0),
                             isSelectedVideoSource: false,
-                            isSelectedAudioSource: $0.id == selectedAudioSource.id,
+                            isSelectedAudioSource: $0.id == selectedAudioSource?.id,
                             showSourceLabel: showSourceLabels,
-                            showAudioIndicator: $0.id == selectedAudioSource.id
+                            showAudioIndicator: $0.id == selectedAudioSource?.id
                         )
                     }
                 )
@@ -187,7 +187,7 @@ final class StreamViewModel: ObservableObject {
                             streamSource: $0,
                             viewRenderer: sourceAndViewRenderers.primaryRenderer(for: $0),
                             isSelectedVideoSource: $0.id == matchingSource.id,
-                            isSelectedAudioSource: $0.id == selectedAudioSource.id,
+                            isSelectedAudioSource: $0.id == selectedAudioSource?.id,
                             showSourceLabel: false,
                             showAudioIndicator: false
                         )
@@ -308,18 +308,18 @@ final class StreamViewModel: ObservableObject {
                     streamSource: selectedVideoSource,
                     viewRenderer: sourceAndViewRenderers.primaryRenderer(for: selectedVideoSource),
                     isSelectedVideoSource: true,
-                    isSelectedAudioSource: selectedVideoSource.id == selectedAudioSource.id,
+                    isSelectedAudioSource: selectedVideoSource.id == selectedAudioSource?.id,
                     showSourceLabel: showSourceLabels,
-                    showAudioIndicator: selectedVideoSource.id == selectedAudioSource.id
+                    showAudioIndicator: selectedVideoSource.id == selectedAudioSource?.id
                 ),
                 secondaryVideoViewModels: secondaryVideoSources.map {
                     VideoRendererViewModel(
                         streamSource: $0,
                         viewRenderer: sourceAndViewRenderers.secondaryRenderer(for: $0),
                         isSelectedVideoSource: false,
-                        isSelectedAudioSource: $0.id == selectedAudioSource.id,
+                        isSelectedAudioSource: $0.id == selectedAudioSource?.id,
                         showSourceLabel: showSourceLabels,
-                        showAudioIndicator: $0.id == selectedAudioSource.id
+                        showAudioIndicator: $0.id == selectedAudioSource?.id
                     )
                 }
             )
@@ -332,7 +332,7 @@ final class StreamViewModel: ObservableObject {
                         streamSource: $0,
                         viewRenderer: sourceAndViewRenderers.primaryRenderer(for: $0),
                         isSelectedVideoSource: $0.id == selectedVideoSource.id,
-                        isSelectedAudioSource: $0.id == selectedAudioSource.id,
+                        isSelectedAudioSource: $0.id == selectedAudioSource?.id,
                         showSourceLabel: false,
                         showAudioIndicator: false
                     )
@@ -371,13 +371,13 @@ final class StreamViewModel: ObservableObject {
         }
     }
 
-    private func audioSelection(from sources: [StreamSource], settings: StreamSettings, selectedVideoSource: StreamSource) -> StreamSource {
+    private func audioSelection(from sources: [StreamSource], settings: StreamSettings, selectedVideoSource: StreamSource) -> StreamSource? {
         // Get the sources with at least one audio track if none, uses the original sources list
-        var sourcesWithAudio = sources.filter { $0.audioTracksCount > 0 }
+        let sourcesWithAudio = sources.filter { $0.audioTracksCount > 0 }
         if sourcesWithAudio.isEmpty {
-            sourcesWithAudio = sources
+            return nil
         }
-        let selectedAudioSource: StreamSource
+        let selectedAudioSource: StreamSource?
         switch settings.audioSelection {
         case .firstSource:
             selectedAudioSource = sourcesWithAudio[0]
@@ -386,11 +386,7 @@ final class StreamViewModel: ObservableObject {
             selectedAudioSource = sourcesWithAudio.first(where: { $0.sourceId == StreamSource.SourceId.main }) ?? sourcesWithAudio[0]
         case .followVideo:
             // Use audio from the video source, if no audio track uses the last one used or just the 1st one
-            if selectedVideoSource.audioTracksCount > 0 {
-                selectedAudioSource = selectedVideoSource
-            } else {
-                selectedAudioSource = internalState.selectedAudioSource ?? sourcesWithAudio[0]
-            }
+            selectedAudioSource = selectedVideoSource.audioTracksCount > 0 ? selectedVideoSource : internalState.selectedAudioSource
         case let .source(sourceId: sourceId):
             selectedAudioSource = sourcesWithAudio.first(where: { $0.sourceId.value == sourceId }) ?? sourcesWithAudio[0]
         }
