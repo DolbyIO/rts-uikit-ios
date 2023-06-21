@@ -37,8 +37,8 @@ public struct IconButton: View {
             HStack(spacing: Layout.spacing2x) {
                 if let text = text {
                     Text(
-                        text: text,
-                        font: .custom("AvenirNext-DemiBold", size: FontSize.caption1, relativeTo: .title),
+                        text,
+                        font: .custom("AvenirNext-DemiBold", size: FontSize.caption1, relativeTo: .caption),
                         textColor: isFocused ? _focusedTintColor : _tintColor
                     )
                 }

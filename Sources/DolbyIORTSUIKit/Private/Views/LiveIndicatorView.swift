@@ -16,8 +16,9 @@ struct LiveIndicatorView: View {
     }
 
     var body: some View {
-        Text(text: viewModel.isStreamActive ? "stream.live.label" : "stream.offline.label",
-             font: .custom("AvenirNext-Bold", size: FontSize.caption2, relativeTo: .caption2)
+        Text(
+            viewModel.isStreamActive ? "stream.live.label" : "stream.offline.label",
+            font: .custom("AvenirNext-Bold", size: FontSize.caption2, relativeTo: .caption2)
         )
         .padding(.horizontal, Layout.spacing2x)
         .padding(.vertical, Layout.spacing1x)

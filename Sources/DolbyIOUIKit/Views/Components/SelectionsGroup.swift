@@ -51,7 +51,7 @@ public struct SelectionsGroup: View {
                     }) {
                         HStack {
                             Text(
-                                text: settings[index].key,
+                                settings[index].key,
                                 bundle: settings[index].bundle,
                                 style: .titleMedium,
                                 font: .custom("AvenirNext-Bold", size: CGFloat(14.0), relativeTo: .body)
@@ -67,10 +67,11 @@ public struct SelectionsGroup: View {
                 }
             } footer: {
                 if let footer = footer {
-                    Text(text: footer,
-                         bundle: bundle,
-                         style: .titleSmall,
-                         font: .custom("AvenirNext-Regular", size: FontSize.caption1, relativeTo: .caption)
+                    Text(
+                        footer,
+                        bundle: bundle,
+                        style: .titleSmall,
+                        font: .custom("AvenirNext-Regular", size: FontSize.caption1, relativeTo: .caption)
                     )
                 }
             }

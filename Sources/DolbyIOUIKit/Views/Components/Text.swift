@@ -6,22 +6,41 @@ import SwiftUI
 
 public struct Text: View {
 
-    private let text: LocalizedStringKey
+    private let content: LocalizedContent
     private let bundle: Bundle?
     private let style: TextStyles
     private let font: Font
     private let textColor: Color?
+    
+    private enum LocalizedContent {
+        case key(LocalizedStringKey)
+        case verbatim(String)
+    }
 
     @ObservedObject private var themeManager = ThemeManager.shared
 
     public init(
-        text: LocalizedStringKey,
+        _ key: LocalizedStringKey,
         bundle: Bundle? = nil,
         style: TextStyles = .labelMedium,
         font: Font,
         textColor: Color? = nil
     ) {
-        self.text = text
+        self.content = .key(key)
+        self.bundle = bundle
+        self.style = style
+        self.font = font
+        self.textColor = textColor
+    }
+    
+    public init(
+        verbatim: String,
+        bundle: Bundle? = nil,
+        style: TextStyles = .labelMedium,
+        font: Font,
+        textColor: Color? = nil
+    ) {
+        self.content = .verbatim(verbatim)
         self.bundle = bundle
         self.style = style
         self.font = font
@@ -31,9 +50,18 @@ public struct Text: View {
     private var attribute: TextAttribute {
         themeManager.theme.textAttribute(for: style)
     }
+    
+    private var _text: SwiftUI.Text {
+        switch content {
+        case let .key(localizedStringKey):
+            return SwiftUI.Text(localizedStringKey)
+        case let .verbatim(text):
+            return SwiftUI.Text(verbatim: text)
+        }
+    }
 
     public var body: some View {
-        SwiftUI.Text(text, bundle: bundle)
+        _text
             .foregroundColor(_textColor)
             .font(font)
     }
@@ -57,26 +85,26 @@ struct Text_Previews: PreviewProvider {
         Group {
             VStack {
                 Text(
-                    text: "testA.localized.key",
+                    "testA.localized.key",
                     bundle: .module,
                     style: .titleMedium,
                     font: .custom("AvenirNext-Regular", size: FontSize.title1, relativeTo: .title)
                 )
 
                 Text(
-                    text: "This is a regular text",
+                    verbatim: "This is a regular text",
                     style: .titleMedium,
                     font: .custom("AvenirNext-Regular", size: FontSize.title1, relativeTo: .title)
                 )
 
                 Text(
-                    text: "This is a regular text",
+                    verbatim: "This is a regular text",
                     style: .titleMedium,
                     font: .custom("AvenirNext-Regular", size: FontSize.title2, relativeTo: .title2)
                 )
 
                 Text(
-                    text: "This is a regular text",
+                    verbatim: "This is a regular text",
                     style: .titleMedium,
                     font: .custom("AvenirNext-Regular", size: FontSize.title3, relativeTo: .title3)
                 )
@@ -84,19 +112,19 @@ struct Text_Previews: PreviewProvider {
 
             VStack {
                 Text(
-                    text: "This is a bold text",
+                    verbatim: "This is a bold text",
                     style: .titleMedium,
                     font: .custom("AvenirNext-Bold", size: FontSize.title1, relativeTo: .title)
                 )
 
                 Text(
-                    text: "This is a bold text",
+                    verbatim: "This is a bold text",
                     style: .titleMedium,
                     font: .custom("AvenirNext-Bold", size: FontSize.title2, relativeTo: .title2)
                 )
 
                 Text(
-                    text: "This is a bold text",
+                    verbatim: "This is a bold text",
                     style: .titleMedium,
                     font: .custom("AvenirNext-Bold", size: FontSize.title1, relativeTo: .title3)
                 )

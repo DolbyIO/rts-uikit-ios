@@ -96,10 +96,6 @@ struct ListView: View {
                 }
             }
         }
-        .overlay(alignment: .topLeading) {
-            LiveIndicatorView()
-                .padding(5)
-        }
         .onRotate { newOrientation in
             if !newOrientation.isFlat && newOrientation.isValidInterfaceOrientation {
                 deviceOrientation = newOrientation

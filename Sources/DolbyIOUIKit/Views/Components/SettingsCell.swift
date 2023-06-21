@@ -38,7 +38,7 @@ public struct SettingsCell: View {
 
                 if let text = text {
                     Text(
-                        text: text,
+                        text,
                         bundle: bundle,
                         font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body),
                         textColor: textColor
@@ -49,7 +49,7 @@ public struct SettingsCell: View {
 
                 if let value = value {
                     Text(
-                        text: value,
+                        value,
                         bundle: bundle,
                         font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body),
                         textColor: valueColor
