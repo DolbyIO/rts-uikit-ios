@@ -75,8 +75,7 @@ public struct StreamingScreen: View {
                     )
                 }
             case .loading:
-                // TODO: Handle loading state
-                EmptyView()
+                ProgressView()
             case .error:
                 // TODO: Handle error state
                 EmptyView()

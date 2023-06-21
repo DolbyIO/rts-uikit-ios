@@ -8,7 +8,7 @@ import MillicastSDK
 import os
 
 final actor StateMachine {
-    private static let logger = Logger(subsystem: "io.dolby.rtscore", category: String(describing: StateMachine.self))
+    private static let logger = Logger.make(category: String(describing: StateMachine.self))
 
     private(set) var currentState: State {
         didSet {

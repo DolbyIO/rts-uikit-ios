@@ -8,7 +8,8 @@ import MillicastSDK
 import os
 
 open class StreamCoordinator {
-    
+    private static let logger = Logger.make(category: String(describing: StreamCoordinator.self))
+
     private enum Defaults {
         static let retryConnectionTimeInterval = 5.0
     }
@@ -54,6 +55,8 @@ open class StreamCoordinator {
     }
 
     public func connect(streamName: String, accountID: String) async -> Bool {
+        Self.logger.error("👮‍♂️ Start subscribe")
+
         async let startConnectionStateUpdate: Void = stateMachine.startConnection(streamName: streamName, accountID: accountID)
         async let startConnection = subscriptionManager.connect(streamName: streamName, accountID: accountID)
         
@@ -65,6 +68,7 @@ open class StreamCoordinator {
     }
 
     public func stopConnection() async -> Bool {
+        Self.logger.error("👮‍♂️ Stop subscribe")
         activeStreamDetail = nil
         async let stopSubscribeOnStateMachine: Void = stateMachine.stopSubscribe()
         async let resetRegistry: Void = rendererRegistry.reset()
@@ -74,10 +78,12 @@ open class StreamCoordinator {
     }
 
     public func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource) {
+        Self.logger.error("👮‍♂️ Select video quality \(quality.description) for source - \(source.sourceId.value ?? "Main")")
         subscriptionManager.selectVideoQuality(quality, for: source)
     }
 
     public func playAudio(for source: StreamSource) async {
+        Self.logger.error("👮‍♂️ Play Audio for source - \(source.sourceId.value ?? "Main")")
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
             guard
@@ -111,6 +117,8 @@ open class StreamCoordinator {
     }
 
     public func stopAudio(for source: StreamSource) async {
+        Self.logger.error("👮‍♂️ Stop Audio for source - \(source.sourceId.value ?? "Main")")
+
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
             guard
@@ -128,6 +136,8 @@ open class StreamCoordinator {
     }
 
     public func playVideo(for source: StreamSource, on renderer: StreamSourceViewRenderer, quality: StreamSource.VideoQuality) async {
+        Self.logger.error("👮‍♂️ Play Video for source - \(source.sourceId.value ?? "Main") on renderer - \(renderer.id)")
+
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
             guard
@@ -152,6 +162,8 @@ open class StreamCoordinator {
     }
 
     public func stopVideo(for source: StreamSource, on renderer: StreamSourceViewRenderer) async {
+        Self.logger.error("👮‍♂️ Stop Video for source - \(source.sourceId.value ?? "Main") on renderer - \(renderer.id)")
+
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
             guard
@@ -206,6 +218,7 @@ private extension StreamCoordinator {
     }
     
     func scheduleReconnection() {
+        Self.logger.error("👮‍♂️ Scheduling a reconnect")
         taskScheduler.scheduleTask(timeInterval: Defaults.retryConnectionTimeInterval) { [weak self] in
             guard let self = self, let streamDetail = self.activeStreamDetail else { return }
             Task {
@@ -219,6 +232,7 @@ private extension StreamCoordinator {
     }
     
     func startStateMachineTasksSerialExecutor() {
+        Self.logger.error("👮‍♂️ Start serial task executor")
         Task { [weak self] in
             guard let self = self else { return }
             
