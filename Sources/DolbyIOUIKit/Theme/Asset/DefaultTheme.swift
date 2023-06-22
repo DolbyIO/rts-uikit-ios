@@ -9,21 +9,22 @@ import UIKit
 // swiftlint:disable cyclomatic_complexity
 public class DefaultTheme: Theme {
 
-    private lazy var _primaryButtonAttribute: ButtonAttribute = initPrimaryButtonAttribute()
-    private lazy var _primaryDangerButtonAttribute: ButtonAttribute = initPrimaryButtonAttribute()
-    private lazy var _secondaryButtonAttribute: ButtonAttribute = initPrimaryButtonAttribute()
-    private lazy var _secondaryDangerButtonAttribute: ButtonAttribute = initPrimaryButtonAttribute()
-    private lazy var _tertiaryButtonAttribute: ButtonAttribute = initPrimaryButtonAttribute()
+    private lazy var _primaryButtonAttribute: ButtonAttribute = primaryButtonAttribute()
+    private lazy var _primaryDangerButtonAttribute: ButtonAttribute = primaryButtonDangerAttribute()
+    private lazy var _secondaryButtonAttribute: ButtonAttribute = secondaryButtonAttribute()
+    private lazy var _secondaryDangerButtonAttribute: ButtonAttribute = secondaryButtonDangerAttribute()
+    private lazy var _tertiaryButtonAttribute: ButtonAttribute = tertiaryButtonAttribute()
 
-    private lazy var _textFieldAttribute: TextFieldAttribute = initTextFieldAttribute()
-    private lazy var _primaryTextAttribute: TextAttribute = initPrimaryTextAttribute()
-    private lazy var _secondaryTextAttribute: TextAttribute = initSecondaryTextAttribute()
-    private lazy var _tertiaryTextAttribute: TextAttribute = initTertiaryTextAttribute()
+    private lazy var _textFieldAttribute: TextFieldAttribute = textFieldAttributeValue()
+    private lazy var _primaryTextAttribute: TextAttribute = primaryTextAttribute()
+    private lazy var _secondaryTextAttribute: TextAttribute = secondaryTextAttribute()
+    private lazy var _tertiaryTextAttribute: TextAttribute = tertiaryTextAttribute()
 
-    private lazy var _toggleAttribute: ToggleAttribute = initToggeleAttribute()
+    private lazy var _toggleAttribute: ToggleAttribute = toggleAttributeValue()
 
-    private lazy var _iconAttribute: IconAttribute = initIconAttribute()
+    private lazy var _iconAttribute: IconAttribute = iconAttributeValue()
 
+    // TODO: map to the right color of theme and use it for component attributes so that component attributes will not be required to be exposed in the theme.
     public let primary = UIColor.neonPurple400
     public let primaryContainer = UIColor.neonPurple400
     public let onPrimary = UIColor.white
@@ -163,7 +164,7 @@ extension DefaultTheme {
         }
     }
 
-    private func initPrimaryButtonAttribute() -> ButtonAttribute {
+    private func primaryButtonAttribute() -> ButtonAttribute {
         return ButtonAttribute(
             textColor: Color(uiColor: UIColor(light: onPrimary, dark: onPrimary)),
             disabledTextColor: Color(uiColor: UIColor(light: neutral600, dark: neutral600)),
@@ -179,7 +180,7 @@ extension DefaultTheme {
             focusedBorderColor: Color(uiColor: UIColor(light: primary, dark: primary)))
     }
 
-    private func initPrimaryButtonDangerAttribute() -> ButtonAttribute {
+    private func primaryButtonDangerAttribute() -> ButtonAttribute {
         return ButtonAttribute(
             textColor: Color(uiColor: UIColor(light: onPrimary, dark: onPrimary)),
             disabledTextColor: Color(uiColor: UIColor(light: neutral600, dark: neutral600)),
@@ -195,7 +196,7 @@ extension DefaultTheme {
             focusedBorderColor: Color(uiColor: UIColor(light: primary, dark: primary)))
     }
 
-    private func initSecondaryButtonAttribute() -> ButtonAttribute {
+    private func secondaryButtonAttribute() -> ButtonAttribute {
         return ButtonAttribute(
             textColor: Color(uiColor: UIColor(light: primary25, dark: primary25)),
             disabledTextColor: Color(uiColor: UIColor(light: primary25, dark: primary25)),
@@ -211,7 +212,7 @@ extension DefaultTheme {
             focusedBorderColor: Color(uiColor: UIColor(light: primary25, dark: primary25)))
     }
 
-    private func initSecondaryButtonDangerAttribute() -> ButtonAttribute {
+    private func secondaryButtonDangerAttribute() -> ButtonAttribute {
         return ButtonAttribute(
             textColor: Color(uiColor: UIColor(light: primary25, dark: primary25)),
             disabledTextColor: Color(uiColor: UIColor(light: primary25, dark: primary25)),
@@ -227,7 +228,7 @@ extension DefaultTheme {
             focusedBorderColor: Color(uiColor: UIColor(light: primary25, dark: primary25)))
     }
 
-    private func initTertiaryButtonAttribute() -> ButtonAttribute {
+    private func tertiaryButtonAttribute() -> ButtonAttribute {
         return ButtonAttribute(
             textColor: Color(uiColor: UIColor(light: onPrimary, dark: onPrimary)),
             disabledTextColor: Color(uiColor: UIColor(light: neutral600, dark: neutral600)),
@@ -250,7 +251,7 @@ extension DefaultTheme {
         return _iconAttribute
     }
 
-    private func initIconAttribute() -> IconAttribute {
+    private func iconAttributeValue() -> IconAttribute {
         return IconAttribute(tintColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)),
                                    focusedTintColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)))
     }
@@ -263,7 +264,7 @@ extension DefaultTheme {
         return _toggleAttribute
     }
 
-    private func initToggeleAttribute() -> ToggleAttribute {
+    private func toggleAttributeValue() -> ToggleAttribute {
         return ToggleAttribute(textColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)),
                                tintColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)),
                                focusedBackgroundColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)), outlineColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)))
@@ -307,15 +308,15 @@ extension DefaultTheme {
         }
     }
 
-    private func initPrimaryTextAttribute() -> TextAttribute {
+    private func primaryTextAttribute() -> TextAttribute {
         return TextAttribute(textColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)))
     }
 
-    private func initSecondaryTextAttribute() -> TextAttribute {
+    private func secondaryTextAttribute() -> TextAttribute {
         return TextAttribute(textColor: Color(uiColor: UIColor(light: onSurface, dark: onSurface)))
     }
 
-    private func initTertiaryTextAttribute() -> TextAttribute {
+    private func tertiaryTextAttribute() -> TextAttribute {
         return TextAttribute(textColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)))
     }
 }
@@ -327,7 +328,7 @@ extension DefaultTheme {
         return _textFieldAttribute
     }
 
-    private func initTextFieldAttribute() -> TextFieldAttribute {
+    private func textFieldAttributeValue() -> TextFieldAttribute {
         return TextFieldAttribute(textColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)), placeHolderTextColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)), tintColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)), outlineColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)), activeOutlineColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)), errorOutlineColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)), disabledBackgroundColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)), errorMessageColor: Color(uiColor: UIColor(light: onBackground, dark: onBackground)))
     }
 }
