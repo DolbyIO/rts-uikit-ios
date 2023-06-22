@@ -98,7 +98,7 @@ A Dolby.io account is necessary to publish your own RTS stream. To setup your Do
 
 ## Installation
 
-This UIKit package uses Swift Packages. You can add this package site URL as dependencies to your app. Detail can be find [here](https://developer.apple.com/documentation/xcode/swift-packages)
+This UIKit package uses Swift Packages. You can add this package site URL as a dependency in your app. Details can be found [here](https://developer.apple.com/documentation/xcode/swift-packages)
 
 > **_Info:_** The main branch is constantly under active development. Get a tagged branch for a stable release.
 
