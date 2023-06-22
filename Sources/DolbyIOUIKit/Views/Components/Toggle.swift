@@ -10,7 +10,7 @@ public struct Toggle: View {
     @Binding public var isOn: Bool
 
     @FocusState private var isFocused: Bool
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     public init(text: LocalizedStringKey, isOn: Binding<Bool>) {
         self.text = text
@@ -55,7 +55,7 @@ private extension Toggle {
 }
 
 struct CheckboxToggleStyle: ToggleStyle {
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     private var attribute: ToggleAttribute {
         themeManager.theme.toggleAttribute()

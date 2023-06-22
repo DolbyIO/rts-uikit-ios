@@ -21,7 +21,7 @@ public struct TextField: View {
     @FocusState private var isFocused: Bool
     @State private var validationResult: ValidationResult?
     @Environment(\.colorScheme) private var colorScheme
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     @State var placeHolderTextSize: CGSize = .zero
 
@@ -151,7 +151,7 @@ private extension TextField {
 private struct InputTextFieldStyle: TextFieldStyle {
     let isFocused: Bool
     let hasError: Bool
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     private var attribute: TextFieldAttribute {
         themeManager.theme.textFieldAttribute()

@@ -7,7 +7,7 @@ import Foundation
 import SwiftUI
 
 public class ThemeManager: ObservableObject {
-    static public let instance: ThemeManager = ThemeManager(theme: DefaultTheme())
+    static public let shared: ThemeManager = ThemeManager(theme: DefaultTheme())
 
     /// A current theme of an app.
     @Published public var theme: Theme

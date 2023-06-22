@@ -12,7 +12,7 @@ public struct IconButton: View {
     private let action: () -> Void
 
     @FocusState private var isFocused: Bool
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     private var attribute: IconAttribute {
         themeManager.theme.iconAttribute()

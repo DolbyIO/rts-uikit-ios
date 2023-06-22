@@ -9,7 +9,7 @@ struct SourceLabel: View {
 
     let sourceId: String
 
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     var body: some View {
         SwiftUI.Text(sourceId)

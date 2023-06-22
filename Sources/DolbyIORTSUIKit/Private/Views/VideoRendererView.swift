@@ -13,7 +13,7 @@ struct VideoRendererView: View {
     private let contentMode: VideoRendererContentMode
     private let action: ((StreamSource) -> Void)?
 
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     init(
         viewModel: VideoRendererViewModel,

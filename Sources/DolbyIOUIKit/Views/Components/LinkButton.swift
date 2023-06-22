@@ -12,7 +12,7 @@ public struct LinkButton: View {
     public let padding: CGFloat?
 
     @FocusState private var isFocused: Bool
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     public init(
         action: @escaping () -> Void,

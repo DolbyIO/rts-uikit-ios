@@ -24,7 +24,7 @@ struct SingleStreamView: View {
     @State private var isShowingSettingsScreen: Bool = false
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
 
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     init(
         viewModel: SingleStreamViewModel,

@@ -12,7 +12,7 @@ public struct Text: View {
     private let font: Font
     private let textColor: Color?
 
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     public init(
         text: LocalizedStringKey,

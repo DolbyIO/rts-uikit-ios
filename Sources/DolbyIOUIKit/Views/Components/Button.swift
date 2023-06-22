@@ -18,7 +18,7 @@ public struct Button: View {
     public var rightIcon: IconAsset?
     public var style: ButtonStyles
 
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
     @Binding public var buttonState: ButtonState
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.colorScheme) private var colorScheme

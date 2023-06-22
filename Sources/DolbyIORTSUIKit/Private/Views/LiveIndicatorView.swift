@@ -9,7 +9,7 @@ struct LiveIndicatorView: View {
 
     @StateObject private var viewModel: LiveIndicatorViewModel = .init()
 
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     private var theme: Theme {
         themeManager.theme
