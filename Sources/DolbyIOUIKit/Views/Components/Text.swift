@@ -12,7 +12,6 @@ public struct Text: View {
     private let font: Font
     private let textColor: Color?
 
-    @Environment(\.colorScheme) private var colorScheme
     @ObservedObject private var themeManager = ThemeManager.instance
 
     public init(
