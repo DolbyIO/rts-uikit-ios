@@ -4,7 +4,7 @@
 
 import Foundation
 
-public enum ImageAsset: String, ImageAssetable {
+public enum IconAsset: String {
 
     // MARK: Arrows and Chevrons
 

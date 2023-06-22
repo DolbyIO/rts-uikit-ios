@@ -21,9 +21,13 @@ public struct TextField: View {
     @FocusState private var isFocused: Bool
     @State private var validationResult: ValidationResult?
     @Environment(\.colorScheme) private var colorScheme
-    private var theme: Theme = ThemeManager.shared.theme
+    @ObservedObject private var themeManager = ThemeManager.instance
 
     @State var placeHolderTextSize: CGSize = .zero
+
+    private var attribute: TextFieldAttribute {
+        themeManager.theme.textFieldAttribute()
+    }
 
     private var hasError: Bool {
         validationResult?.success ?? false
@@ -69,7 +73,7 @@ public struct TextField: View {
                     .frame(minHeight: 48)
 
                     IconButton(
-                        name: .close,
+                        iconAsset: .close,
                         tintColor: tintColor,
                         action: { text = "" }
                     )
@@ -80,10 +84,7 @@ public struct TextField: View {
                         if let placeholderText = placeholderText {
                             Text(
                                 text: placeholderText,
-                                fontAsset: .avenirNextRegular(
-                                    size: FontSize.caption1,
-                                    style: .caption
-                                )
+                                font: Font.custom("AvenirNext-regular", size: FontSize.caption1, relativeTo: .caption)
                             )
                             .lineLimit(1)
                             .foregroundColor(placeholderTextColor)
@@ -116,41 +117,45 @@ public struct TextField: View {
 @available(tvOS, unavailable)
 private extension TextField {
     var font: Font {
-        theme[.avenirNextRegular(size: FontSize.body, style: .body)]
+        .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body)
     }
 
     var errorFont: Font {
-        theme[.avenirNextRegular(size: FontSize.caption1, style: .caption)]
+        .custom("AvenirNext-Regular", size: FontSize.caption1, relativeTo: .caption)
     }
 
     var placeholderTextColor: Color? {
-        theme[ColorAsset.textField(.placeHolderTextColor)]
+        attribute.placeHolderTextColor
     }
 
     var tintColor: Color? {
-        theme[ColorAsset.textField(.tintColor)]
+        attribute.tintColor
     }
 
     var outlineColor: Color? {
         switch (hasError, isFocused) {
         case (true, _):
-            return theme[ColorAsset.textField(.errorOutlineColor)]
+            return attribute.errorOutlineColor
         case (false, true):
-            return theme[ColorAsset.textField(.activeOutlineColor)]
+            return attribute.activeOutlineColor
         case (false, false):
-            return theme[ColorAsset.textField(.outlineColor)]
+            return attribute.outlineColor
         }
     }
 
     var errorMessageColor: Color? {
-        theme[ColorAsset.textField(.errorMessageColor)]
+        attribute.errorMessageColor
     }
 }
 
 private struct InputTextFieldStyle: TextFieldStyle {
     let isFocused: Bool
     let hasError: Bool
-    private var theme: Theme = ThemeManager.shared.theme
+    @ObservedObject private var themeManager = ThemeManager.instance
+
+    private var attribute: TextFieldAttribute {
+        themeManager.theme.textFieldAttribute()
+    }
 
     init(isFocused: Bool, hasError: Bool) {
         self.isFocused = isFocused
@@ -165,7 +170,7 @@ private struct InputTextFieldStyle: TextFieldStyle {
     }
 
     var textColor: Color? {
-        theme[ColorAsset.textField(.textColor)]
+        attribute.textColor
     }
 }
 

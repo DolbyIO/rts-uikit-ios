@@ -53,17 +53,14 @@ public struct SelectionsGroup: View {
                             Text(
                                 text: settings[index].key,
                                 bundle: settings[index].bundle,
-                                mode: .primary,
-                                fontAsset: .avenirNextBold(
-                                    size: CGFloat(14.0),
-                                    style: .body
-                                )
+                                style: .titleMedium,
+                                font: .custom("AvenirNext-Bold", size: CGFloat(14.0), relativeTo: .body)
                             )
 
                             Spacer()
 
                             if settings[index].selected {
-                                IconView(name: .checkmark, tintColor: .green)
+                                IconView(iconAsset: .checkmark, tintColor: .green)
                             }
                         }
                     }
@@ -72,11 +69,8 @@ public struct SelectionsGroup: View {
                 if let footer = footer {
                     Text(text: footer,
                          bundle: bundle,
-                         mode: .primary,
-                         fontAsset: .avenirNextRegular(
-                             size: FontSize.caption1,
-                             style: .body
-                         )
+                         style: .titleSmall,
+                         font: .custom("AvenirNext-Regular", size: FontSize.caption1, relativeTo: .caption)
                     )
                 }
             }

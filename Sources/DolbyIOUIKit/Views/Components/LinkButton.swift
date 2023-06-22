@@ -12,19 +12,7 @@ public struct LinkButton: View {
     public let padding: CGFloat?
 
     @FocusState private var isFocused: Bool
-    private var theme: Theme = ThemeManager.shared.theme
-
-    public init(
-        action: @escaping () -> Void,
-        text: LocalizedStringKey,
-        fontAsset: FontAsset,
-        padding: CGFloat? = nil
-    ) {
-        self.action = action
-        self.text = text
-        self.font = theme[fontAsset]
-        self.padding = padding
-    }
+    @ObservedObject private var themeManager = ThemeManager.instance
 
     public init(
         action: @escaping () -> Void,
@@ -38,20 +26,24 @@ public struct LinkButton: View {
         self.padding = padding
     }
 
+    private var theme: Theme {
+        themeManager.theme
+    }
+
     public var body: some View {
         SwiftUI.Button(action: action) {
             SwiftUI.Text(text)
                 .font(font)
                 .foregroundColor(
                     Color(
-                        uiColor: isFocused ? UIColor.Typography.Dark.primary : UIColor.Typography.Dark.secondary
+                        uiColor: isFocused ? theme.primary25 : theme.secondary25
                     )
                 )
                 .padding(.all, padding)
                 .overlay(
                     isFocused ? Rectangle()
                         .stroke(
-                            Color(uiColor: UIColor.Neutral.neutral300),
+                            Color(uiColor: theme.neutral300),
                             lineWidth: Layout.border3x
                         ) : nil
                 )
@@ -75,7 +67,7 @@ public struct LinkButton: View {
 #if DEBUG
 struct LinkButton_Previews: PreviewProvider {
     static var previews: some View {
-        LinkButton(action: { /* No-op */ }, text: "Click me!!", fontAsset: .avenirNextBold(size: FontSize.title1, style: .title))
+        LinkButton(action: { /* No-op */ }, text: "Click me!!", font: .custom("AvenirNext-DemiBold", size: FontSize.title1, relativeTo: .title))
     }
 }
 #endif

@@ -36,7 +36,7 @@ public struct SelectionsScreen: View {
                             .navigationBarTitleDisplayMode(.inline)
                             .toolbar {
                                 ToolbarItem(placement: .navigationBarLeading) {
-                                    IconButton(name: .chevronLeft, tintColor: .white, action: {
+                                    IconButton(iconAsset: .chevronLeft, tintColor: .white, action: {
                                         presentationMode.wrappedValue.dismiss()
                                     })
                                 }
