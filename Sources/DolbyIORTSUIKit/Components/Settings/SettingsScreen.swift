@@ -49,11 +49,8 @@ public struct SettingsScreen: View {
                     Text(
                         text: "settings.show-source-labels.label",
                         bundle: .module,
-                        mode: .primary,
-                        fontAsset: .avenirNextRegular(
-                            size: CGFloat(14.0),
-                            style: .body
-                        )
+                        style: .titleMedium,
+                        font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body)
                     )
                 }
 
@@ -90,7 +87,7 @@ public struct SettingsScreen: View {
                 }
 
                 ToolbarItem(placement: .navigationBarLeading) {
-                    IconButton(name: .chevronLeft, tintColor: .white, action: {
+                    IconButton(iconAsset: .chevronLeft, tintColor: .white, action: {
                         presentationMode.wrappedValue.dismiss()
                     })
                 }

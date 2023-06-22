@@ -7,14 +7,16 @@ import DolbyIOUIKit
 
 struct SourceLabel: View {
 
-    let sourceId: String
+    public let sourceId: String
+
+    @ObservedObject private var themeManager = ThemeManager.instance
 
     var body: some View {
         SwiftUI.Text(sourceId)
             .foregroundColor(.white)
-            .font(.avenirNextRegular(withStyle: .body, size: FontSize.caption1))
+            .font(.custom("AvenirNext-Regular", size: FontSize.caption1, relativeTo: .body))
             .padding(.horizontal, Layout.spacing1x)
-            .background(Color(uiColor: UIColor.Neutral.neutral400))
+            .background(Color(uiColor: themeManager.theme.neutral400))
             .cornerRadius(Layout.cornerRadius4x)
     }
 }

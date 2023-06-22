@@ -13,6 +13,8 @@ struct VideoRendererView: View {
     private let contentMode: VideoRendererContentMode
     private let action: ((StreamSource) -> Void)?
 
+    @ObservedObject private var themeManager = ThemeManager.instance
+
     init(
         viewModel: VideoRendererViewModel,
         maxWidth: CGFloat,
@@ -31,12 +33,16 @@ struct VideoRendererView: View {
         }
     }
 
+    private var theme: Theme {
+        themeManager.theme
+    }
+
     @ViewBuilder
     private var audioPlaybackIndicatorView: some View {
         if viewModel.showAudioIndicator {
             Rectangle()
                 .stroke(
-                    Color(uiColor: UIColor.Primary.neonPurple400),
+                    Color(uiColor: theme.primary400),
                     lineWidth: Layout.border2x
                 )
         } else {
