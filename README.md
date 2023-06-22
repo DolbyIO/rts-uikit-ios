@@ -16,9 +16,9 @@ This package consists of three kinds of components:
 
 * `DolbyIORTSUIKit`: The high-level UI components that can be used to develop a real-time streaming monitoring app for iOS with Dolby.io.  
 * `DolbyIORTSCore`: The logic between `DolbyIORTSUIKit` and Dolby.io Real-time Streaming iOS SDK.
-* `DolbyUIUIKIt`: The basic UI components used by `DolbyIORTSUIKit`.  
+* `DolbyIOUIKit`: The basic UI components used by `DolbyIORTSUIKit`.  
 
-> **_Info:_** There are two parties in a real-time streaming - a publisher and a viewer. A publisher is one who broadcasts the stream. A viewer(monitor) who consumes the stream. This UIKit is meant for viewer/monitor applications.
+> **_Info:_** There are two parties in RTS - a publisher and a viewer. A publisher is one who broadcasts the stream. A viewer(monitor) who consumes the stream. This UIKit is meant for viewer/monitor applications. Please refer to this [blog post](https://dolby.io/blog/real-time-streaming-with-dolby-io/) to understand the ecosystem.
 
 ## Requirements
 
@@ -29,7 +29,7 @@ This setup guide is validated on both Intel and Apple Silicon based MacBook Pro 
 
 ## Getting Started
 
-This guide demostrates how to use the Real-time Streaming UI components to quickly build a streaming monitoring app for iOS devices.
+This guide demostrates how to use the RTS UI components to quickly build a streaming monitor app for iOS devices.
 
 ### Build a Sample App
 
