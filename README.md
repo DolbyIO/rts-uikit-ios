@@ -94,7 +94,7 @@ struct ContentView_Previews: PreviewProvider {
 
 ## Sign up for a Dolby.io account
 
-To publish a real-time stream, a Dolby.io account is necessary. To setup your Dolby.io account, go to [Dolby.io dashboard](https://dashboard.dolby.io) and complete the form. After confirming your email address, you will be logged in.
+A Dolby.io account is necessary to publish your own RTS stream. To setup your Dolby.io account, go to [Dolby.io dashboard](https://dashboard.dolby.io) and complete the form. After confirming your email address, you will be logged in.
 
 ## Installation
 
