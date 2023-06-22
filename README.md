@@ -8,49 +8,50 @@ Adding shields would also be amazing -->
 
 # Dolby.io Real-time Streaming UIKit for iOS
 
-# Overview
-The Dolby.io Real-time Streaming UIKit for iOS is design to help iOS developers reduce the complexity of building a Dolby.io Real-time Streaming monitoring applications for iOS.
+## Overview
 
-The package consists of three components:  
-* `DolbyIORTSUIKit`: The high-level UI components can be used to develop a real-time streaming monitoring app for iOS with Dolby.io.  
-* `DolbyIORTSCore`: The logic between `DolbyIORTSUIKit` and Dolby.io Real-time Streaming iOS SDK.   
-* `DolbyUIUIKIt`: The basic UI components used by `DolbyIORTSUIKit`.  
+The [Dolby.io Real-time Streaming](https://dolby.io/products/real-time-streaming/) UIKit for iOS is designed to help iOS developers reduce the complexity of building a Dolby.io Real-time Streaming (RTS hereafter) monitor applications for iOS.
 
-> **_Info:_** There are two parties in a real-time streaming. A publisher who broadcasts a streaming. A monitor(viewer) who consumes a streaming. This UIKit is targeting to a monitor who consumes a streaming.
+This package consists of three kinds of components:  
 
-# Requirements
+* `DolbyIORTSUIKit`: The high-level UI components that can be used to develop a real-time streaming monitoring app for iOS with Dolby.io.  
+* `DolbyIORTSCore`: The logic between `DolbyIORTSUIKit` and Dolby.io [Real-time Streaming iOS SDK](https://docs.dolby.io/streaming-apis/docs/ios).
+* `DolbyIOUIKit`: The basic UI components used by `DolbyIORTSUIKit`.  
 
-This setup guide is validated on both Intel/M1-based MacBook Pro running macOS 13.4.
+> **_Info:_** There are two parties in RTS - a publisher and a viewer. A publisher is one who broadcasts the stream. A viewer(monitor) who consumes the stream. This UIKit is meant for viewer/monitor applications. Please refer to this [blog post](https://dolby.io/blog/real-time-streaming-with-dolby-io/) to understand the ecosystem.
 
-- Xcode Version 14.3.1 (14E300c)
-- iPhone device or simulator running iOS 15.0
+## Requirements
 
-# Getting Started
+This setup guide is validated on both Intel and Apple Silicon based MacBook Pro machines running macOS 13.4.
 
-This guide demostrates how to use the Real-time Streaming UI components to quickly build a Real-time Steaming monitoring app on an iOS device.
+* Xcode Version 14.3.1 (14E300c)
+* iPhone device or simulator running iOS 15.0
 
-## Build a Sample App
+## Getting Started
 
-Get started by a working sample app, see below.
+This guide demostrates how to use the RTS UI components to quickly build a streaming monitor app for iOS devices.
 
-* Create a new Xcode project
-* Choose the iOS App as template
-* Fill in the Product Name
-* Select "SwiftUI" as Interface
-* Select "Swift" as Language
-* Create the project in a folder
+### Build a Sample App
+
+To get started with building your own app with the RTS UI kit, see below.
+
+* Create a new Xcode project.
+* Choose the `iOS App` as template.
+* Fill in the Product Name.
+* Select "SwiftUI" as `Interface`.
+* Select "Swift" as `Language`.
+* Create the project in a folder.
 * Add this UIKit as dependencies to the newly created project.  
-	* Go to File > Add Packages...
-	* Put the URL of this repo in the pop-up window's top-right corner text field
-	* Use `Up to Next Major Version` in the Dependency Rule
-	* Click the `Add Package` button
-	* Choose and add these packages `DolbyIORTSCore`,  `DolbyIORTSUIKit`, and `DolbyIOUIKIt` to the target
-	* Click the `Add Package` button
-* Copy and replace the code to ContentView.swift
+  * Go to `File` > `Add Package`.
+  * Put the [URL of this repo](https://github.com/DolbyIO/rts-uikit-ios) in the pop-up window's top-right corner text field.
+  * Use `Up to Next Major Version` in the `Dependency Rule`.
+  * Click the `Add Package` button.
+  * Choose and add these packages `DolbyIORTSCore`,  `DolbyIORTSUIKit`, and `DolbyIOUIKit` to the target.
+  * Click the `Add Package` button.
+* Copy and replace the code in `ContentView.swift` with the code snippet below.
 * Compile and Run on an iOS target
 
-
-```swift 
+```swift
 import SwiftUI
 
 // 1. Include Dolby.io UIKit and related packages
@@ -58,20 +59,20 @@ import DolbyIORTSCore
 import DolbyIORTSUIKit
 
 struct ContentView: View {
-    // 2. State to show the real-time streaming or not
+    // 2. State to show if the stream is live or not
     @State private var showStream = false
 
     var body: some View {
         NavigationView {
             ZStack {
-            
-            	// 3. Navigation link to the streaming screen if `showStream` is true
+                
+                // 3. Navigation link to the streaming screen if `showStream` is true
                 NavigationLink(destination: StreamingScreen(isShowingStreamView: $showStream), isActive: $showStream) { EmptyView() }
                 Button ("Start Stream") {
                 
-                	// 4. Asynchronize task connects the publisher with the given stream name and account ID. The stream name and 
-                	// account ID pair here is from a demo stream. It can be replaced by a pair being given by a publisher who has 
-                	// signed-up up the Dolby.io service. 
+                    // 4. Async task connects the viewer with the given stream name and account ID. The stream name and 
+                    // account ID pair here is from a demo stream. It can be replaced by a pair being given by a publisher who has 
+                    // signed-up up to the Dolby.io service. See the next section below to set up your own streams.
                     Task {
                         let success = await StreamCoordinator.shared.connect(streamName: "multiview", accountID: "k9Mwad")
                         
@@ -91,22 +92,19 @@ struct ContentView_Previews: PreviewProvider {
 }
 ```
 
+## Sign up for a Dolby.io account
 
-## Get a Dolby.io account
-
-To publish a real-time stream, a Dolby.io account is necessary
-
-- A [Dolby.io](https://dashboard.dolby.io/signup/) account
-- Start a video streaming broadcasting, see [here](https://docs.dolby.io/streaming-apis/docs/how-to-broadcast-in-dashboard) 
-- The Stream name and Account ID pair from the video streaming above
-
-To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.  
+A Dolby.io account is necessary to publish your own RTS stream. To setup your Dolby.io account, go to [Dolby.io dashboard](https://dashboard.dolby.io) and complete the form. After confirming your email address, you will be logged in.
 
 ## Installation
 
-This UIKit package uses Swift Packages. You can add this package site URL as dependencies to your app. Detail can be find [here](https://developer.apple.com/documentation/xcode/swift-packages)
+This UIKit package uses Swift Packages. You can add this package site URL as a dependency in your app. Details can be found [here](https://developer.apple.com/documentation/xcode/swift-packages)
 
-> **_Info:_** The main branch is constantly under development. Get a tagged branch for a stable release.
+> **_Info:_** The main branch is constantly under active development. Get a tagged branch for a stable release.
+
+## Starting your own stream
+
+To start your own video stream broadcast using the Dolby.io dashboard, see [this guide](https://docs.dolby.io/streaming-apis/docs/how-to-broadcast-in-dashboard). To setup your own stream that can be consumed in this app, follow [this guide](https://docs.dolby.io/streaming-apis/docs/managing-your-tokens#creating-a-publishing-token) and copy over the stream name and stream ID into the app.
 
 ## License
 
