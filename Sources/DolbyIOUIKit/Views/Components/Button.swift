@@ -11,19 +11,14 @@ public struct Button: View {
         case success
     }
 
-    public enum Mode {
-        case primary
-        case secondary
-    }
-
     public var action: () -> Void
     public var text: LocalizedStringKey
-    public var leftIcon: ImageAsset?
-    public var rightIcon: ImageAsset?
-    public var mode: Mode
-    public var danger: Bool
-    private var theme: Theme = ThemeManager.shared.theme
 
+    public var leftIcon: IconAsset?
+    public var rightIcon: IconAsset?
+    public var style: ButtonStyles
+
+    @ObservedObject private var themeManager = ThemeManager.shared
     @Binding public var buttonState: ButtonState
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.colorScheme) private var colorScheme
@@ -33,19 +28,21 @@ public struct Button: View {
     public init(
         action: @escaping () -> Void,
         text: LocalizedStringKey,
-        leftIcon: ImageAsset? = nil,
-        rightIcon: ImageAsset? = nil,
-        mode: Mode = .primary,
-        danger: Bool = false,
+        leftIcon: IconAsset? = nil,
+        rightIcon: IconAsset? = nil,
+        style: ButtonStyles = .primary,
         buttonState: Binding<ButtonState> = .constant(.default)
     ) {
         self.action = action
         self.text = text
         self.leftIcon = leftIcon
         self.rightIcon = rightIcon
-        self.mode = mode
-        self.danger = danger
+        self.style = style
         self._buttonState = buttonState
+    }
+
+    private var attribute: ButtonAttribute {
+        themeManager.theme.buttonAttribute(for: style)
     }
 
     public var body: some View {
@@ -62,8 +59,7 @@ private extension Button {
                 text: text,
                 leftIcon: leftIcon,
                 rightIcon: rightIcon,
-                mode: mode,
-                danger: danger,
+                buttonAsset: attribute,
                 isFocused: isFocused,
                 buttonState: buttonState,
                 backgroundColor: backgroundColor
@@ -96,98 +92,24 @@ private extension Button {
     var borderColorAndWidth: BorderColorAndWidth? {
         switch (isEnabled, isFocused) {
         case (true, false):
-            return borderColor.map {(color: $0, width: Layout.border1x)}
+            return (color: attribute.borderColor, width: Layout.border1x)
         case (true, true):
-            return focusedBorderColor.map {(color: $0, width: Layout.border1x)}
+            return (color: attribute.focusedBorderColor, width: Layout.border1x)
         case (false, _):
-            return disabledBorderColor.map {(color: $0, width: Layout.border1x)}
-        }
-    }
-
-    var borderColor: Color? {
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.borderColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.borderColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.borderColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.borderColor)]
-        }
-    }
-
-    var disabledBorderColor: Color? {
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.disabledBorderColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.disabledBorderColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.disabledBorderColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.disabledBorderColor)]
-        }
-    }
-
-    var focusedBorderColor: Color? {
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.focusedBorderColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.focusedBorderColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.focusedBorderColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.focusedBorderColor)]
+            return (color: attribute.disabledBorderColor, width: Layout.border1x)
         }
     }
 
     var backgroundColor: Color? {
         guard isEnabled == true else {
-            return disabledBackgroundColor
+            return attribute.disabledBackgroundColor
         }
 
         if isFocused {
-            return hoverBackgroundColor
+            return attribute.hoverBackgroundColor
         }
 
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.backgroundColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.backgroundColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.backgroundColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.backgroundColor)]
-        }
-    }
-
-    var hoverBackgroundColor: Color? {
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.hoverBackgroundColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.hoverBackgroundColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.hoverBackgroundColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.hoverBackgroundColor)]
-        }
-    }
-
-    var disabledBackgroundColor: Color? {
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.disabledBackgroundColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.disabledBackgroundColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.disabledBackgroundColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.disabledBackgroundColor)]
-        }
+        return attribute.backgroundColor
     }
 
     var accessibilityLabel: String {
@@ -206,23 +128,20 @@ private extension Button {
 
 private struct CustomButtonView: View {
     private let text: LocalizedStringKey
-    private let leftIcon: ImageAsset?
-    private let rightIcon: ImageAsset?
-    private let mode: Button.Mode
-    private let danger: Bool
+    private let leftIcon: IconAsset?
+    private let rightIcon: IconAsset?
+    private let buttonAsset: ButtonAttribute
     private let isFocused: Bool
     private let buttonState: Button.ButtonState
     private let backgroundColor: Color?
 
     @Environment(\.isEnabled) private var isEnabled
-    private var theme: Theme = ThemeManager.shared.theme
 
     init(
         text: LocalizedStringKey,
-        leftIcon: ImageAsset?,
-        rightIcon: ImageAsset?,
-        mode: Button.Mode,
-        danger: Bool,
+        leftIcon: IconAsset?,
+        rightIcon: IconAsset?,
+        buttonAsset: ButtonAttribute,
         isFocused: Bool,
         buttonState: Button.ButtonState,
         backgroundColor: Color?
@@ -230,8 +149,7 @@ private struct CustomButtonView: View {
         self.text = text
         self.leftIcon = leftIcon
         self.rightIcon = rightIcon
-        self.mode = mode
-        self.danger = danger
+        self.buttonAsset = buttonAsset
         self.isFocused = isFocused
         self.buttonState = buttonState
         self.backgroundColor = backgroundColor
@@ -242,17 +160,19 @@ private struct CustomButtonView: View {
             HStack(spacing: Layout.spacing2x) {
                 if let leftIcon = leftIcon {
                     IconView(
-                        name: leftIcon,
+                        iconAsset: leftIcon,
                         tintColor: tintColor
                     )
                 }
+
                 SwiftUI.Text(text)
                     .font(font)
                     .textCase(.uppercase)
                     .foregroundColor(textColor)
+
                 if let rightIcon = rightIcon {
                     IconView(
-                        name: rightIcon,
+                        iconAsset: rightIcon,
                         tintColor: tintColor
                     )
                 }
@@ -265,7 +185,7 @@ private struct CustomButtonView: View {
             .opacity(buttonState == .loading ? 1.0 : 0.0)
 
             IconView(
-                name: .success,
+                iconAsset: .success,
                 tintColor: tintColor
             )
             .opacity(buttonState == .success ? 1.0 : 0.0)
@@ -280,104 +200,34 @@ private struct CustomButtonView: View {
 private extension CustomButtonView {
     var font: Font {
         #if os(tvOS)
-        theme[.avenirNextDemiBold(size: FontSize.caption2, style: .caption2)]
+        theme[.avenirNextDemiBold(size: FontSize.caption2, withStyle: .caption2)]
         #else
-        theme[.avenirNextBold(size: FontSize.subhead, style: .subheadline)]
+        .custom("AvenirNext-DemiBold", size: FontSize.subhead, relativeTo: .subheadline)
         #endif
     }
 
     var textColor: Color? {
         guard isEnabled == true else {
-            return disabledTextColor
+            return buttonAsset.disabledTextColor
         }
 
         if isFocused {
-            return focusedTextColor
+            return buttonAsset.focusedTextColor
         }
 
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.textColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.textColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.textColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.textColor)]
-        }
-    }
-
-    var disabledTextColor: Color? {
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.disabledTextColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.disabledTextColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.disabledTextColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.disabledTextColor)]
-        }
-    }
-
-    var focusedTextColor: Color? {
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.focusedTextColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.focusedTextColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.focusedTextColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.focusedTextColor)]
-        }
+        return buttonAsset.textColor
     }
 
     var tintColor: Color? {
         guard isEnabled == true else {
-            return disabledTintColor
+            return buttonAsset.disabledTintColor
         }
 
         if isFocused {
-            return focusedTintColor
+            return buttonAsset.focusedTintColor
         }
 
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.tintColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.tintColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.tintColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.tintColor)]
-        }
-    }
-
-    var disabledTintColor: Color? {
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.disabledTintColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.disabledTintColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.disabledTintColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.disabledTintColor)]
-        }
-    }
-
-    var focusedTintColor: Color? {
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.focusedTintColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.focusedTintColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.focusedTintColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.focusedTintColor)]
-        }
+        return buttonAsset.tintColor
     }
 }
 
@@ -440,7 +290,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     text: "PRIMARY DANGER BUTTON TEXT",
                     leftIcon: .arrowLeft,
                     rightIcon: .arrowRight,
-                    danger: true,
+                    style: .primaryDanger,
                     buttonState: .constant(.default)
                 )
 
@@ -451,7 +301,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     text: "PRIMARY DANGER BUTTON TEXT",
                     leftIcon: .arrowLeft,
                     rightIcon: .arrowRight,
-                    danger: true,
+                    style: .primaryDanger,
                     buttonState: .constant(.default)
                 )
                 .disabled(true)
@@ -467,7 +317,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     text: "SECONDARY BUTTON TEXT",
                     leftIcon: .arrowLeft,
                     rightIcon: .arrowRight,
-                    mode: .secondary,
+                    style: .secondary,
                     buttonState: .constant(.default)
                 )
 
@@ -478,7 +328,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     text: "SECONDARY BUTTON TEXT",
                     leftIcon: .arrowLeft,
                     rightIcon: .arrowRight,
-                    mode: .secondary,
+                    style: .secondary,
                     buttonState: .constant(.loading)
                 )
 
@@ -489,7 +339,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     text: "SECONDARY BUTTON TEXT",
                     leftIcon: .arrowLeft,
                     rightIcon: .arrowRight,
-                    mode: .secondary,
+                    style: .secondary,
                     buttonState: .constant(.success)
                 )
 
@@ -500,7 +350,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     text: "SECONDARY BUTTON TEXT",
                     leftIcon: .arrowLeft,
                     rightIcon: .arrowRight,
-                    mode: .secondary,
+                    style: .secondary,
                     buttonState: .constant(.default)
                 )
                 .disabled(true)
@@ -517,8 +367,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     text: "SECONDARY DANGER BUTTON TEXT",
                     leftIcon: .arrowLeft,
                     rightIcon: .arrowRight,
-                    mode: .secondary,
-                    danger: true,
+                    style: .secondaryDanger,
                     buttonState: .constant(.default)
                 )
 
@@ -529,8 +378,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     text: "SECONDARY DANGER BUTTON TEXT",
                     leftIcon: .arrowLeft,
                     rightIcon: .arrowRight,
-                    mode: .secondary,
-                    danger: true,
+                    style: .secondaryDanger,
                     buttonState: .constant(.default)
                 )
                 .disabled(true)

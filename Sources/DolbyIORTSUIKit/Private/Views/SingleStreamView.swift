@@ -24,6 +24,8 @@ struct SingleStreamView: View {
     @State private var isShowingSettingsScreen: Bool = false
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
 
+    @ObservedObject private var themeManager = ThemeManager.shared
+
     init(
         viewModel: SingleStreamViewModel,
         isShowingDetailPresentation: Bool,
@@ -35,6 +37,10 @@ struct SingleStreamView: View {
         self.onSelect = onSelect
         self.onClose = onClose
         _selectedVideoStreamSourceId = State(wrappedValue: viewModel.selectedVideoSource.id)
+    }
+
+    private var theme: Theme {
+        themeManager.theme
     }
 
     @ViewBuilder
@@ -68,10 +74,10 @@ struct SingleStreamView: View {
 
     @ViewBuilder
     private var closeButton: some View {
-        IconButton(name: .close) {
+        IconButton(iconAsset: .close) {
             onClose?()
         }
-        .background(Color(uiColor: UIColor.Neutral.neutral400))
+        .background(Color(uiColor: theme.neutral400))
         .clipShape(Circle().inset(by: Layout.spacing0_5x))
     }
 

@@ -13,13 +13,13 @@ public struct SettingsCell: View {
     public var value: LocalizedStringKey?
     public let valueColor: Color
     public let bundle: Bundle?
-    public let image: ImageAsset?
+    public let image: IconAsset?
 
     public init(text: LocalizedStringKey? = nil,
                 textColor: Color = .black,
                 value: LocalizedStringKey? = nil,
                 valueColor: Color = .gray,
-                image: ImageAsset? = nil,
+                image: IconAsset? = nil,
                 bundle: Bundle? = nil,
                 action: @escaping (() -> Void) = {}
     ) {
@@ -40,11 +40,7 @@ public struct SettingsCell: View {
                     Text(
                         text: text,
                         bundle: bundle,
-                        mode: .primary,
-                        fontAsset: .avenirNextRegular(
-                            size: CGFloat(14.0),
-                            style: .body
-                        ),
+                        font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body),
                         textColor: textColor
                     )
                 }
@@ -55,17 +51,13 @@ public struct SettingsCell: View {
                     Text(
                         text: value,
                         bundle: bundle,
-                        mode: .primary,
-                        fontAsset: .avenirNextRegular(
-                            size: CGFloat(14.0),
-                            style: .body
-                        ),
+                        font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body),
                         textColor: valueColor
                     )
                 }
 
                 if let imageRight = image {
-                    IconView(name: imageRight)
+                    IconView(iconAsset: imageRight)
                 }
             }
         }

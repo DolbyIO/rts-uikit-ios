@@ -6,23 +6,27 @@ import SwiftUI
 
 public struct IconButton: View {
     private let text: LocalizedStringKey?
-    private let name: ImageAsset
+    private let iconAsset: IconAsset
     private let tintColor: Color?
     private let focusedTintColor: Color?
     private let action: () -> Void
 
     @FocusState private var isFocused: Bool
-    private var theme: Theme = ThemeManager.shared.theme
+    @ObservedObject private var themeManager = ThemeManager.shared
+
+    private var attribute: IconAttribute {
+        themeManager.theme.iconAttribute()
+    }
 
     public init(
         text: LocalizedStringKey? = nil,
-        name: ImageAsset,
+        iconAsset: IconAsset,
         tintColor: Color? = nil,
         focusedTintColor: Color? = nil,
         action: @escaping () -> Void
     ) {
         self.text = text
-        self.name = name
+        self.iconAsset = iconAsset
         self.tintColor = tintColor
         self.focusedTintColor = focusedTintColor
         self.action = action
@@ -34,15 +38,12 @@ public struct IconButton: View {
                 if let text = text {
                     Text(
                         text: text,
-                        fontAsset: .avenirNextRegular(
-                            size: FontSize.caption1,
-                            style: .title
-                        ),
+                        font: .custom("AvenirNext-DemiBold", size: FontSize.caption1, relativeTo: .title),
                         textColor: isFocused ? _focusedTintColor : _tintColor
                     )
                 }
                 IconView(
-                    name: name,
+                    iconAsset: iconAsset,
                     tintColor: isFocused ? _focusedTintColor : _tintColor
                 )
             }
@@ -54,11 +55,11 @@ public struct IconButton: View {
     }
 
     private var _tintColor: Color? {
-        tintColor ?? theme[.iconButton(.tintColor)]
+        tintColor ?? attribute.tintColor
     }
 
     private var _focusedTintColor: Color? {
-        focusedTintColor ?? theme[.iconButton(.focusedTintColor)]
+        focusedTintColor ?? attribute.focusedTintColor
     }
 }
 
@@ -66,8 +67,8 @@ public struct IconButton: View {
 struct IconButton_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            IconButton(name: .close, tintColor: .red, action: {})
-            IconButton(text: "Close", name: .close, tintColor: .white, action: {})
+            IconButton(iconAsset: .close, tintColor: .red, action: {})
+            IconButton(text: "Close", iconAsset: .close, tintColor: .white, action: {})
         }
     }
 }

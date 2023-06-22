@@ -14,7 +14,7 @@ public struct LoadingView: View {
     }
 
     public var body: some View {
-        IconView(name: .loader, tintColor: tintColor)
+        IconView(iconAsset: .loader, tintColor: tintColor)
             .fixedSize()
             .rotationEffect(.degrees(spin ? 360: 0))
             .foregroundColor(tintColor)

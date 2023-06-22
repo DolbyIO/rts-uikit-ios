@@ -10,11 +10,15 @@ public struct Toggle: View {
     @Binding public var isOn: Bool
 
     @FocusState private var isFocused: Bool
-    private var theme: Theme = ThemeManager.shared.theme
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     public init(text: LocalizedStringKey, isOn: Binding<Bool>) {
         self.text = text
         self._isOn = isOn
+    }
+
+    private var attribute: ToggleAttribute {
+        themeManager.theme.toggleAttribute()
     }
 
     public var body: some View {
@@ -38,25 +42,29 @@ public struct Toggle: View {
 
 private extension Toggle {
     var font: Font {
-        theme[.avenirNextRegular(size: FontSize.body, style: .body)]
+        .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body)
     }
 
     var textColor: Color? {
-        theme[ColorAsset.toggle(.textColor)]
+        attribute.textColor
     }
 
     var focusedBackgroundColor: Color? {
-        theme[ColorAsset.toggle(.focusedBackgroundColor)]
+        attribute.focusedBackgroundColor
     }
 }
 
 struct CheckboxToggleStyle: ToggleStyle {
-    private var theme: Theme = ThemeManager.shared.theme
+    @ObservedObject private var themeManager = ThemeManager.shared
+
+    private var attribute: ToggleAttribute {
+        themeManager.theme.toggleAttribute()
+    }
 
     func makeBody(configuration: Configuration) -> some View {
         return HStack(spacing: Layout.spacing2x) {
             IconView(
-                name: .checkmark,
+                iconAsset: .checkmark,
                 tintColor: tintColor
             )
             .opacity(configuration.isOn ? 1 : 0)
@@ -76,11 +84,11 @@ struct CheckboxToggleStyle: ToggleStyle {
     }
 
     private var tintColor: Color? {
-        theme[ColorAsset.toggle(.tintColor)]
+        attribute.tintColor
     }
 
     private var outlineColor: Color? {
-        theme[ColorAsset.toggle(.outlineColor)]
+        attribute.outlineColor
     }
 }
 

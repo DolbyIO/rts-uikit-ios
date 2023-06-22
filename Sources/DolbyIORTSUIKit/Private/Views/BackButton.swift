@@ -14,7 +14,7 @@ struct BackButton: View {
 
     var body: some View {
         IconButton(
-            name: .chevronLeft
+            iconAsset: .chevronLeft
         ) {
             onBack()
         }

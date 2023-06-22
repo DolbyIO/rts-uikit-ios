@@ -16,7 +16,7 @@ struct StatsInfoButton: View {
 
     var body: some View {
         IconButton(
-            name: .info
+            iconAsset: .info
         ) {
             // TODO: Handle as part of status info screen ticket
         }

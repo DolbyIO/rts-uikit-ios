@@ -5,31 +5,35 @@
 import SwiftUI
 
 public struct IconView: View {
-    private let name: ImageAsset
+    private let iconAsset: IconAsset
     private let tintColor: Color?
-    private let theme: Theme = ThemeManager.shared.theme
+    @ObservedObject private var themeManager = ThemeManager.shared
 
-    public init(name: ImageAsset, tintColor: Color? = nil) {
-        self.name = name
+    public init(iconAsset: IconAsset, tintColor: Color? = nil) {
+        self.iconAsset = iconAsset
         self.tintColor = tintColor
     }
 
+    private var attribute: IconAttribute {
+        themeManager.theme.iconAttribute()
+    }
+
     public var body: some View {
-        theme[name]
+        Image(iconAsset.rawValue, bundle: Bundle.module)
             .renderingMode(.template)
             .foregroundColor(_tintColor)
             .fixedSize()
     }
 
     private var _tintColor: Color? {
-        tintColor ?? theme[.icon(.tintColor)]
+        tintColor ?? attribute.tintColor
     }
 }
 
 #if DEBUG
 struct IconView_Previews: PreviewProvider {
     static var previews: some View {
-        IconView(name: .success, tintColor: .red)
+        IconView(iconAsset: .success, tintColor: .red)
     }
 }
 #endif

@@ -6,48 +6,31 @@ import SwiftUI
 
 public struct Text: View {
 
-    public enum Mode {
-        case primary
-        case secondary
-        case tertiary
-    }
-
     private let text: LocalizedStringKey
     private let bundle: Bundle?
-    private let mode: Mode
+    private let style: TextStyles
     private let font: Font
     private let textColor: Color?
+
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     public init(
         text: LocalizedStringKey,
         bundle: Bundle? = nil,
-        mode: Mode = .primary,
+        style: TextStyles = .labelMedium,
         font: Font,
         textColor: Color? = nil
     ) {
         self.text = text
         self.bundle = bundle
-        self.mode = mode
+        self.style = style
         self.font = font
         self.textColor = textColor
     }
 
-    public init(
-        text: LocalizedStringKey,
-        bundle: Bundle? = nil,
-        mode: Mode = .primary,
-        fontAsset: FontAsset,
-        textColor: Color? = nil
-    ) {
-        self.text = text
-        self.bundle = bundle
-        self.mode = mode
-        self.font = theme[fontAsset]
-        self.textColor = textColor
+    private var attribute: TextAttribute {
+        themeManager.theme.textAttribute(for: style)
     }
-
-    @Environment(\.colorScheme) private var colorScheme
-    private var theme: Theme = ThemeManager.shared.theme
 
     public var body: some View {
         SwiftUI.Text(text, bundle: bundle)
@@ -64,14 +47,7 @@ private extension Text {
             return textColor
         }
 
-        switch mode {
-        case .primary:
-            return theme[.text(.primaryColor)]
-        case .secondary:
-            return theme[.text(.secondaryColor)]
-        case .tertiary:
-            return theme[.text(.tertiaryColor)]
-        }
+        return attribute.textColor
     }
 }
 
@@ -80,72 +56,49 @@ struct Text_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             VStack {
-
                 Text(
                     text: "testA.localized.key",
                     bundle: .module,
-                    mode: .primary,
-                    fontAsset: .avenirNextRegular(
-                        size: FontSize.title1,
-                        style: .title
-                    )
+                    style: .titleMedium,
+                    font: .custom("AvenirNext-Regular", size: FontSize.title1, relativeTo: .title)
                 )
 
                 Text(
                     text: "This is a regular text",
-                    mode: .primary,
-                    fontAsset: .avenirNextRegular(
-                        size: FontSize.title1,
-                        style: .title
-                    )
+                    style: .titleMedium,
+                    font: .custom("AvenirNext-Regular", size: FontSize.title1, relativeTo: .title)
                 )
 
                 Text(
                     text: "This is a regular text",
-                    mode: .primary,
-                    fontAsset: .avenirNextRegular(
-                        size: FontSize.title2,
-                        style: .title2
-                    )
+                    style: .titleMedium,
+                    font: .custom("AvenirNext-Regular", size: FontSize.title2, relativeTo: .title2)
                 )
 
                 Text(
                     text: "This is a regular text",
-                    mode: .primary,
-                    fontAsset: .avenirNextRegular(
-                        size: FontSize.title3,
-                        style: .title3
-                    )
+                    style: .titleMedium,
+                    font: .custom("AvenirNext-Regular", size: FontSize.title3, relativeTo: .title3)
                 )
             }
 
             VStack {
-
                 Text(
                     text: "This is a bold text",
-                    mode: .primary,
-                    fontAsset: .avenirNextBold(
-                        size: FontSize.title1,
-                        style: .title
-                    )
+                    style: .titleMedium,
+                    font: .custom("AvenirNext-Bold", size: FontSize.title1, relativeTo: .title)
                 )
 
                 Text(
                     text: "This is a bold text",
-                    mode: .primary,
-                    fontAsset: .avenirNextBold(
-                        size: FontSize.title2,
-                        style: .title2
-                    )
+                    style: .titleMedium,
+                    font: .custom("AvenirNext-Bold", size: FontSize.title2, relativeTo: .title2)
                 )
 
                 Text(
                     text: "This is a bold text",
-                    mode: .primary,
-                    fontAsset: .avenirNextBold(
-                        size: FontSize.title3,
-                        style: .title3
-                    )
+                    style: .titleMedium,
+                    font: .custom("AvenirNext-Bold", size: FontSize.title1, relativeTo: .title3)
                 )
             }
         }
