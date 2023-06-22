@@ -46,7 +46,7 @@ To get started with building your own app with the RTS UI kit, see below.
   * Put the [URL of this repo](https://github.com/DolbyIO/rts-uikit-ios) in the pop-up window's top-right corner text field.
   * Use `Up to Next Major Version` in the `Dependency Rule`.
   * Click the `Add Package` button.
-  * Choose and add these packages `DolbyIORTSCore`,  `DolbyIORTSUIKit`, and `DolbyIOUIKIt` to the target.
+  * Choose and add these packages `DolbyIORTSCore`,  `DolbyIORTSUIKit`, and `DolbyIOUIKit` to the target.
   * Click the `Add Package` button.
 * Copy and replace the code to ContentView.swift with the code snippet below.
 * Compile and Run on an iOS target
