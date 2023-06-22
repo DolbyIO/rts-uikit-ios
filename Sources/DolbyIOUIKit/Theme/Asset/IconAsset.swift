@@ -1,5 +1,5 @@
 //
-//  ImageAsset.swift
+//  IconAsset.swift
 //  
 
 import Foundation

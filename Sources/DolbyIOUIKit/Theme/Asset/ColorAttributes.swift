@@ -1,5 +1,5 @@
 //
-//  Colors.swift
+//  ColorAttributes.swift
 // 
 
 import SwiftUI
@@ -49,7 +49,7 @@ public struct ToggleAttribute {
     let outlineColor: Color
 }
 
-// MARK: IconButton Colors
+// MARK: IconAttribute Colors
 
 public struct IconAttribute {
     let tintColor: Color
