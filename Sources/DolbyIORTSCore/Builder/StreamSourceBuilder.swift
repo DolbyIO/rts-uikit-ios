@@ -13,23 +13,22 @@ final class StreamSourceBuilder {
     }
 
     struct TrackItem {
-        let trackType: StreamSource.TrackType
+        let trackID: String
         let mediaType: StreamSource.MediaType
 
         /// Initialises the Track Item, if possible from the passed-in String
-        /// - Parameter track: A string value passed in by the SDK and is expected to be of format `{mediaType}/{trackType}`
+        /// - Parameter track: A string value passed in by the SDK and is expected to be of format `{mediaType}/{trackID}`
         init?(track: String) {
             let trackInfoList = track.split(separator: "/")
 
             guard
                 trackInfoList.count == 2,
-                let mediaType = StreamSource.MediaType(rawValue: String(trackInfoList[0])),
-                let trackType = StreamSource.TrackType(rawValue: String(trackInfoList[1]))
+                let mediaType = StreamSource.MediaType(rawValue: String(trackInfoList[0].lowercased()))
             else {
                 return nil
             }
             self.mediaType = mediaType
-            self.trackType = trackType
+            self.trackID = String(trackInfoList[1])
         }
     }
 
@@ -65,9 +64,10 @@ final class StreamSourceBuilder {
         audioTracks.append(
             StreamSource.AudioTrackInfo(
                 mid: mid,
-                trackType: trackItem.trackType,
+                trackID: trackItem.trackID,
                 mediaType: trackItem.mediaType,
-                track: track)
+                track: track
+            )
         )
     }
 
@@ -78,7 +78,7 @@ final class StreamSourceBuilder {
 
         videoTrack = StreamSource.VideoTrackInfo(
             mid: mid,
-            trackType: trackItem.trackType,
+            trackID: trackItem.trackID,
             mediaType: trackItem.mediaType,
             track: track
         )
@@ -110,7 +110,7 @@ final class StreamSourceBuilder {
             throw BuildError.missingAudioTrack
         }
 
-        guard !hasMissingVideoTrack else {
+        guard !hasMissingVideoTrack, let videoTrack = videoTrack else {
             throw BuildError.missingVideoTrack
         }
 

@@ -30,17 +30,13 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
         }
     }
 
-    enum TrackType: String, Equatable {
-        case audio, video
-    }
-
     enum MediaType: String, Equatable {
         case audio, video
     }
 
     struct TrackInfo: Equatable, Hashable {
         public let mid: String
-        public let trackType: TrackType
+        public let trackID: String
         public let mediaType: MediaType
     }
 
@@ -49,8 +45,8 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
         public let track: MCAudioTrack
         public var trackId: String { track.getId() }
 
-        init(mid: String, trackType: TrackType, mediaType: MediaType, track: MCAudioTrack) {
-            self.trackInfo = TrackInfo(mid: mid, trackType: trackType, mediaType: mediaType)
+        init(mid: String, trackID: String, mediaType: MediaType, track: MCAudioTrack) {
+            self.trackInfo = TrackInfo(mid: mid, trackID: trackID, mediaType: mediaType)
             self.track = track
         }
     }
@@ -60,8 +56,8 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
         public let track: MCVideoTrack
         public var trackId: String { track.getId() }
 
-        init(mid: String, trackType: TrackType, mediaType: MediaType, track: MCVideoTrack) {
-            self.trackInfo = TrackInfo(mid: mid, trackType: trackType, mediaType: mediaType)
+        init(mid: String, trackID: String, mediaType: MediaType, track: MCVideoTrack) {
+            self.trackInfo = TrackInfo(mid: mid, trackID: trackID, mediaType: mediaType)
             self.track = track
         }
     }
@@ -122,7 +118,7 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
     let isPlayingAudio: Bool
     let isPlayingVideo: Bool
     let audioTracks: [AudioTrackInfo]
-    let videoTrack: VideoTrackInfo?
+    let videoTrack: VideoTrackInfo
 }
 
 extension StreamSource: Comparable {
