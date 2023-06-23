@@ -164,19 +164,16 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder) {
         Self.logger.warning("💼 Add remote track for source - \(sourceBuilder.sourceId.value ?? "MAIN")")
-        sourceBuilder.supportedTrackItems.forEach { subscriber.addRemoteTrack($0.trackType.rawValue) }
+        sourceBuilder.supportedTrackItems.forEach { subscriber.addRemoteTrack($0.mediaType.rawValue) }
     }
 
     func projectVideo(for source: StreamSource, withQuality quality: StreamSource.VideoQuality) {
         Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A")")
-        guard let videoTrack = source.videoTrack else {
-            return
-        }
-
+        let videoTrack = source.videoTrack
         let projectionData = MCProjectionData()
         projectionData.media = videoTrack.trackInfo.mediaType.rawValue
         projectionData.mid = videoTrack.trackInfo.mid
-        projectionData.trackId = videoTrack.trackInfo.trackType.rawValue
+        projectionData.trackId = videoTrack.trackInfo.trackID
         projectionData.layer = quality.layerData
 
         subscriber.project(source.sourceId.value, withData: [projectionData])
@@ -184,10 +181,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
     func unprojectVideo(for source: StreamSource) {
         Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A")")
-        guard let videoTrack = source.videoTrack else {
-            return
-        }
-
+        let videoTrack = source.videoTrack
         subscriber.unproject([videoTrack.trackInfo.mid])
     }
 
@@ -203,7 +197,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         audioTrack.track.setVolume(1)
         projectionData.media = audioTrack.trackInfo.mediaType.rawValue
         projectionData.mid = audioTrack.trackInfo.mid
-        projectionData.trackId = audioTrack.trackInfo.trackType.rawValue
+        projectionData.trackId = audioTrack.trackInfo.trackID
 
         subscriber.project(source.sourceId.value, withData: [projectionData])
     }
@@ -261,7 +255,7 @@ extension SubscriptionManager: MCSubscriberListener {
     }
 
     func onActive(_ streamId: String!, tracks: [String]!, sourceId: String!) {
-        Self.logger.debug("Callback -> onActive with sourceId \(sourceId ?? "NULL")")
+        Self.logger.debug("Callback -> onActive with sourceId \(sourceId ?? "NULL"), tracks - \(tracks)")
         delegate?.onActive(streamId, tracks: tracks, sourceId: sourceId)
     }
 

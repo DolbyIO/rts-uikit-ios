@@ -18,12 +18,10 @@ public class StreamSourceViewRenderer: Identifiable {
 
     public let id = UUID()
 
-    public init(_ source: StreamSource) {
-        guard let videoTrack = source.videoTrack?.track else {
-            fatalError("Cannot request renderer for a source that do not have video track")
-        }
+    public init(_ streamSource: StreamSource) {
+        let videoTrack = streamSource.videoTrack.track
         self.renderer = MCIosVideoRenderer()
-        self.source = source
+        self.source = streamSource
         self.videoTrack = videoTrack
 
         Task {
