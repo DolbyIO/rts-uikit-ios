@@ -141,11 +141,11 @@ open class StreamCoordinator {
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
             guard
-                let matchingSource = sources.first(where: { $0.id == source.id }),
-                let videoTrack = source.videoTrack?.track
+                let matchingSource = sources.first(where: { $0.id == source.id })
             else {
                 return
             }
+            let videoTrack = source.videoTrack.track
             await rendererRegistry.registerRenderer(renderer, for: videoTrack)
 
             if !matchingSource.isPlayingVideo {
@@ -168,11 +168,11 @@ open class StreamCoordinator {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
             guard
                 let matchingSource = sources.first(where: { $0.id == source.id }),
-                matchingSource.isPlayingVideo,
-                let videoTrack = source.videoTrack?.track
+                matchingSource.isPlayingVideo
             else {
                 return
             }
+            let videoTrack = source.videoTrack.track
             await rendererRegistry.deregisterRenderer(renderer, for: videoTrack)
 
             let hasActiveRenderer = await rendererRegistry.hasActiveRenderer(for: videoTrack)
