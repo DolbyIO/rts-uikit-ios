@@ -10,7 +10,7 @@ Adding shields would also be amazing -->
 
 ## Overview
 
-The [Dolby.io Real-time Streaming](https://dolby.io/products/real-time-streaming/) UIKit for iOS is designed to help iOS developers reduce the complexity of building a Dolby.io Real-time Streaming (RTS hereafter) monitor applications for iOS.
+The [Dolby.io Real-time Streaming](https://dolby.io/products/real-time-streaming/) UIKit for iOS is designed to help iOS developers reduce the complexity of building a Dolby.io Real-time Streaming (RTS) monitor applications for iOS.
 
 This package consists of three kinds of components:  
 
@@ -18,7 +18,7 @@ This package consists of three kinds of components:
 * `DolbyIORTSCore`: The logic between `DolbyIORTSUIKit` and Dolby.io [Real-time Streaming iOS SDK](https://docs.dolby.io/streaming-apis/docs/ios).
 * `DolbyIOUIKit`: The basic UI components used by `DolbyIORTSUIKit`.  
 
-> **_Info:_** There are two parties in RTS - a publisher and a viewer. A publisher is one who broadcasts the stream. A viewer(monitor) who consumes the stream. This UIKit is meant for viewer/monitor applications. Please refer to this [blog post](https://dolby.io/blog/real-time-streaming-with-dolby-io/) to understand the ecosystem.
+> **_Note:_** There are two parties in RTS - a publisher and a viewer. A publisher is one who broadcasts the stream. A viewer is one who consumes the stream. This UIKit is meant for viewer/monitor applications. Please refer to this [blog post](https://dolby.io/blog/real-time-streaming-with-dolby-io/) to understand the ecosystem.
 
 ## Requirements
 
@@ -49,7 +49,7 @@ To get started with building your own app with the RTS UI kit, see below.
   * Choose and add these packages `DolbyIORTSCore`,  `DolbyIORTSUIKit`, and `DolbyIOUIKit` to the target.
   * Click the `Add Package` button.
 * Copy and replace the code in `ContentView.swift` with the code snippet below.
-* Compile and Run on an iOS target
+* Compile and Run on an iOS target.
 
 ```swift
 import SwiftUI
