@@ -248,7 +248,7 @@ private extension StreamOrchestrator {
         Task { [weak self] in
             guard let self = self else { return }
             
-            let taskStream = AsyncStream<CoordinatorTask> { continuation in
+            let taskStream = AsyncStream<OrchestratorTask> { continuation in
                 self.taskStreamContinuation = continuation
             }
             
