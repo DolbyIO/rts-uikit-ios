@@ -54,7 +54,7 @@ public struct Text: View {
     private var _text: SwiftUI.Text {
         switch content {
         case let .key(localizedStringKey):
-            return SwiftUI.Text(localizedStringKey)
+            return SwiftUI.Text(localizedStringKey, bundle: bundle)
         case let .verbatim(text):
             return SwiftUI.Text(verbatim: text)
         }
