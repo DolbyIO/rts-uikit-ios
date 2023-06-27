@@ -11,7 +11,7 @@ enum VideoRendererContentMode {
 
 final class VideoRendererViewModel {
 
-    private let streamCoordinator: StreamCoordinator
+    private let streamOrchestrator: StreamOrchestrator
     let isSelectedVideoSource: Bool
     let isSelectedAudioSource: Bool
     let streamSource: StreamSource
@@ -26,7 +26,7 @@ final class VideoRendererViewModel {
         isSelectedAudioSource: Bool,
         showSourceLabel: Bool,
         showAudioIndicator: Bool,
-        streamCoordinator: StreamCoordinator = .shared
+        streamOrchestrator: StreamOrchestrator = .shared
     ) {
         self.streamSource = streamSource
         self.viewRenderer = viewRenderer
@@ -34,18 +34,18 @@ final class VideoRendererViewModel {
         self.isSelectedAudioSource = isSelectedAudioSource
         self.showSourceLabel = showSourceLabel
         self.showAudioIndicator = showAudioIndicator
-        self.streamCoordinator = streamCoordinator
+        self.streamOrchestrator = streamOrchestrator
     }
 
     func playVideo(for source: StreamSource) {
         Task {
-            await self.streamCoordinator.playVideo(for: source, on: viewRenderer, quality: .auto)
+            await self.streamOrchestrator.playVideo(for: source, on: viewRenderer, quality: .auto)
         }
     }
 
     func stopVideo(for source: StreamSource) {
         Task {
-            await self.streamCoordinator.stopVideo(for: source, on: viewRenderer)
+            await self.streamOrchestrator.stopVideo(for: source, on: viewRenderer)
         }
     }
 }

@@ -74,7 +74,7 @@ struct ContentView: View {
                     // account ID pair here is from a demo stream. It can be replaced by a pair being given by a publisher who has 
                     // signed-up up to the Dolby.io service. See the next section below to set up your own streams.
                     Task {
-                        let success = await StreamCoordinator.shared.connect(streamName: "multiview", accountID: "k9Mwad")
+                        let success = await StreamOrchestrator.shared.connect(streamName: "multiview", accountID: "k9Mwad")
                         
                         // 5. Show the real-time streaming if connect successfully
                         await MainActor.run { showStream = success }
