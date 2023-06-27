@@ -83,7 +83,7 @@ public struct TextField: View {
                     ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
                         if let placeholderText = placeholderText {
                             Text(
-                                text: placeholderText,
+                                placeholderText,
                                 font: Font.custom("AvenirNext-regular", size: FontSize.caption1, relativeTo: .caption)
                             )
                             .lineLimit(1)
@@ -107,7 +107,7 @@ public struct TextField: View {
                 }
             }
             if let errorMessage = errorMessage {
-                Text(text: errorMessage, font: errorFont)
+                Text(errorMessage, font: errorFont)
                     .foregroundColor(errorMessageColor)
             }
         }

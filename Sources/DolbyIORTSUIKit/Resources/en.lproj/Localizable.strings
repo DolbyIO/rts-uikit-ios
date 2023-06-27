@@ -57,5 +57,9 @@ Follow video: Switch audio source when a video is selected. If the selected vide
 
 /** Stream Error View */
 
-"stream.offline.title.label" = "Stream is offline";
-"stream.offline.subtitle.label" = "Please wait for livestream to begin.";
+"stream-offline.title.label" = "Stream is offline";
+"stream-offline.subtitle.label" = "Please wait for livestream to begin";
+
+"network.disconnected.title.label" = "Disconnected from the network";
+
+"technical-error.title.label" = "We are currently facing some technical difficulties. Please try again later.";

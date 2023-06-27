@@ -8,6 +8,10 @@ import MillicastSDK
 import os
 
 open class StreamCoordinator {
+    public struct Configuration {
+        let retryOnConnectionError = true
+    }
+    
     private static let logger = Logger.make(category: String(describing: StreamCoordinator.self))
 
     private enum Defaults {
@@ -30,6 +34,7 @@ open class StreamCoordinator {
 
     private typealias CoordinatorTask = Task<Void, Never>
     private var taskStreamContinuation: AsyncStream<CoordinatorTask>.Continuation?
+    private static var configuration: StreamCoordinator.Configuration = .init()
 
     private convenience init() {
         self.init(
@@ -39,6 +44,10 @@ open class StreamCoordinator {
         )
     }
 
+    static func setStreamCoordinatorConfiguration(_ configuration: StreamCoordinator.Configuration) {
+        Self.configuration = configuration
+    }
+    
     init(
         subscriptionManager: SubscriptionManagerProtocol,
         taskScheduler: TaskSchedulerProtocol,
@@ -218,6 +227,9 @@ private extension StreamCoordinator {
     }
     
     func scheduleReconnection() {
+        guard Self.configuration.retryOnConnectionError else {
+            return
+        }
         Self.logger.error("👮‍♂️ Scheduling a reconnect")
         taskScheduler.scheduleTask(timeInterval: Defaults.retryConnectionTimeInterval) { [weak self] in
             guard let self = self, let streamDetail = self.activeStreamDetail else { return }
@@ -317,7 +329,7 @@ extension StreamCoordinator: SubscriptionManagerDelegate {
     public func onAudioTrack(_ track: MCAudioTrack, withMid mid: String) {
         let task = Task { [weak self] in
             guard let self = self else { return }
-            await stateMachine.onAudioTrack(track, withMid: mid)
+            await self.stateMachine.onAudioTrack(track, withMid: mid)
         }
         taskStreamContinuation?.yield(task)
     }
@@ -359,7 +371,7 @@ extension StreamCoordinator: SubscriptionManagerDelegate {
                 guard let sourceBuilder = state.streamSourceBuilders.first(where: { $0.sourceId.value == sourceId }) else {
                     return
                 }
-                subscriptionManager.addRemoteTrack(sourceBuilder)
+                self.subscriptionManager.addRemoteTrack(sourceBuilder)
             default:
                 return
             }

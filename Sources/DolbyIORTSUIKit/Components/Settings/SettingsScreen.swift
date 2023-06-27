@@ -47,7 +47,7 @@ public struct SettingsScreen: View {
                     set: { viewModel.setShowSourceLabels($0) })
                 ) {
                     Text(
-                        text: "settings.show-source-labels.label",
+                        "settings.show-source-labels.label",
                         bundle: .module,
                         style: .titleMedium,
                         font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body)

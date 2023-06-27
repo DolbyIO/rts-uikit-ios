@@ -12,7 +12,7 @@ final class StreamViewModel: ObservableObject {
     enum State {
         case loading
         case success(displayMode: DisplayMode)
-        case error(title: String, subtitle: String)
+        case error(ErrorViewModel)
 
         fileprivate init(_ state: InternalState) {
             switch state {
@@ -28,8 +28,8 @@ final class StreamViewModel: ObservableObject {
                 settings: _
             ):
                 self = .success(displayMode: displayMode)
-            case let .error(title: title, subtitle: subtitle):
-                self = .error(title: title, subtitle: subtitle)
+            case let .error(errorViewModel):
+                self = .error(errorViewModel)
             }
         }
     }
@@ -45,7 +45,7 @@ final class StreamViewModel: ObservableObject {
             detailSourceAndViewRenderers: StreamSourceAndViewRenderers,
             settings: StreamSettings
         )
-        case error(title: String, subtitle: String)
+        case error(ErrorViewModel)
     }
 
     enum DisplayMode {
@@ -240,14 +240,13 @@ final class StreamViewModel: ObservableObject {
                     self.updateState(from: sources, settings: settings)
                 case .connecting, .subscribing, .connected:
                     self.internalState = .loading
-                case .error, .stopped:
-                    self.internalState = .error(
-                        title: "stream.offline.title.label",
-                        subtitle: "stream.offline.subtitle.label"
-                    )
+                case let .error(streamError):
+                    self.internalState = .error(ErrorViewModel(error: streamError))
+                case .stopped:
+                    self.internalState = .error(.streamOffline)
                 default:
-                    // TODO: Handle other scenarios (including errors)
-                    break
+                    // Handle's scenario where there is no sources
+                    self.internalState = .error(.genericError)
                 }
             }
             .store(in: &subscriptions)
@@ -256,11 +255,9 @@ final class StreamViewModel: ObservableObject {
     // swiftlint:disable cyclomatic_complexity function_body_length
     private func updateState(from sources: [StreamSource], settings: StreamSettings) {
         guard !sources.isEmpty else {
-            // TODO: Set proper error messages
-            internalState = .error(title: "", subtitle: "")
             return
         }
-
+        
         updateStreamSettings(from: sources, settings: settings)
 
         let sortedSources: [StreamSource]

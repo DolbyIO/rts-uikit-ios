@@ -11,13 +11,16 @@ public struct StreamingScreen: View {
     @Binding private var isShowingStreamView: Bool
     @State private var isShowingSingleViewScreen: Bool = false
     @State private var isShowingSettingsScreen: Bool = false
-
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
+    private var theme: Theme { themeManager.theme }
+    
     public init(isShowingStreamView: Binding<Bool>) {
         _isShowingStreamView = isShowingStreamView
     }
 
     @ViewBuilder
-    private var singleStreamView: some View {
+    private var singleStreamDetailView: some View {
         if let detailSingleStreamViewModel = viewModel.detailSingleStreamViewModel {
             SingleStreamView(
                 viewModel: detailSingleStreamViewModel,
@@ -33,12 +36,109 @@ public struct StreamingScreen: View {
             EmptyView()
         }
     }
+    
+    @ViewBuilder
+    private func streamView(for displayMode: StreamViewModel.DisplayMode) -> some View {
+        HStack {
+            switch displayMode {
+            case let .list(listViewModel):
+                ListView(
+                    viewModel: listViewModel,
+                    onPrimaryVideoSelection: { _ in
+                        isShowingSingleViewScreen = true
+                    },
+                    onSecondaryVideoSelection: {
+                        viewModel.selectVideoSource($0)
+                    }
+                )
+            case let .single(singleStreamViewModel):
+                SingleStreamView(
+                    viewModel: singleStreamViewModel,
+                    isShowingDetailPresentation: false,
+                    onSelect: {
+                        viewModel.selectVideoSource($0)
+                    }
+                )
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                BackButton {
+                    endStream()
+                }
+            }
+            ToolbarItem(placement: .principal) {
+                if let streamName = viewModel.streamDetail?.streamName {
+                    Text(
+                        verbatim: streamName,
+                        font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
+                    )
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                SettingsButton { isShowingSettingsScreen = true }
+            }
+        }
+        .overlay(alignment: .topLeading) {
+            liveIndicatorView
+        }
+    }
+    
+    @ViewBuilder
+    private func errorView(for viewModel: ErrorViewModel) -> some View {
+        ErrorView(viewModel: viewModel)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .navigationBarBackButtonHidden(true)
+            .overlay(alignment: .topTrailing) {
+                closeButton
+            }
+            .overlay(alignment: .topLeading) {
+                liveIndicatorView
+            }
+    }
+    
+    @ViewBuilder
+    private var closeButton: some View {
+        IconButton(iconAsset: .close) {
+            endStream()
+        }
+        .background(Color(uiColor: theme.neutral400))
+        .clipShape(Circle().inset(by: Layout.spacing0_5x))
+    }
+    
+    @ViewBuilder
+    private var progressView: some View {
+        ProgressView()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .navigationBarBackButtonHidden(true)
+    }
+    
+    @ViewBuilder
+    private var liveIndicatorView: some View {
+        let shouldShowLiveIndicatorView: Bool = {
+            switch viewModel.state {
+            case let .success(displayMode: displayMode):
+                switch displayMode {
+                case .list: return true
+                case .single: return false
+                }
+            default: return true
+            }
+        }()
+        if shouldShowLiveIndicatorView {
+            LiveIndicatorView()
+                .padding(Layout.spacing0_5x)
+        } else {
+            EmptyView()
+        }
+    }
 
     public var body: some View {
         ZStack {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
-                    singleStreamView
+                    singleStreamDetailView
                 ),
                 isActive: $isShowingSingleViewScreen
             ) {
@@ -54,48 +154,11 @@ public struct StreamingScreen: View {
 
             switch viewModel.state {
             case let .success(displayMode: displayMode):
-                switch displayMode {
-                case let .list(listViewModel):
-                    ListView(
-                        viewModel: listViewModel,
-                        onPrimaryVideoSelection: { _ in
-                            isShowingSingleViewScreen = true
-                        },
-                        onSecondaryVideoSelection: {
-                            viewModel.selectVideoSource($0)
-                        }
-                    )
-                case let .single(singleStreamViewModel):
-                    SingleStreamView(
-                        viewModel: singleStreamViewModel,
-                        isShowingDetailPresentation: false,
-                        onSelect: {
-                            viewModel.selectVideoSource($0)
-                        }
-                    )
-                }
+                streamView(for: displayMode)
             case .loading:
-                ProgressView()
-            case .error:
-                // TODO: Handle error state
-                EmptyView()
-            }
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                BackButton {
-                    endStream()
-                }
-            }
-            ToolbarItem(placement: .principal) {
-                if let streamName = viewModel.streamDetail?.streamName {
-                    SwiftUI.Text(streamName)
-                        .font(.avenirNextRegular(withStyle: .title, size: FontSize.subhead))
-                }
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                SettingsButton { isShowingSettingsScreen = true }
+                progressView
+            case let .error(errorViewModel):
+                errorView(for: errorViewModel)
             }
         }
     }
@@ -106,8 +169,8 @@ public struct StreamingScreen: View {
 extension StreamingScreen {
     func endStream() {
         Task {
-            await viewModel.endStream()
             _isShowingStreamView.wrappedValue = false
+            await viewModel.endStream()
         }
     }
 }
