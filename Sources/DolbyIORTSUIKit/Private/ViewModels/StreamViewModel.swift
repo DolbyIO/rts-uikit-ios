@@ -54,7 +54,7 @@ final class StreamViewModel: ObservableObject {
     }
 
     private let settingsManager: SettingsManager
-    private let streamCoordinator: StreamCoordinator
+    private let streamOrchestrator: StreamOrchestrator
     private var subscriptions: [AnyCancellable] = []
 
     let streamDetail: StreamDetail?
@@ -91,13 +91,13 @@ final class StreamViewModel: ObservableObject {
     }
 
     init(
-        streamCoordinator: StreamCoordinator = .shared,
+        streamOrchestrator: StreamOrchestrator = .shared,
         settingsManager: SettingsManager = .shared
     ) {
-        self.streamCoordinator = streamCoordinator
+        self.streamOrchestrator = streamOrchestrator
         self.settingsManager = settingsManager
-        self.streamDetail = streamCoordinator.activeStreamDetail
-        if let streamId = streamCoordinator.activeStreamDetail?.streamId {
+        self.streamDetail = streamOrchestrator.activeStreamDetail
+        if let streamId = streamOrchestrator.activeStreamDetail?.streamId {
             settingsManager.setActiveSettings(for: .stream(streamID: streamId))
         }
 
@@ -213,24 +213,24 @@ final class StreamViewModel: ObservableObject {
     // swiftlint:enable function_body_length
 
     func endStream() async {
-        _ = await streamCoordinator.stopConnection()
+        _ = await streamOrchestrator.stopConnection()
         settingsManager.setActiveSettings(for: .global)
     }
 
     func playAudio(for source: StreamSource) {
         Task {
-            await self.streamCoordinator.playAudio(for: source)
+            await self.streamOrchestrator.playAudio(for: source)
         }
     }
 
     func stopAudio(for source: StreamSource) {
         Task {
-            await self.streamCoordinator.stopAudio(for: source)
+            await self.streamOrchestrator.stopAudio(for: source)
         }
     }
 
     private func startObservers() {
-        streamCoordinator.statePublisher
+        streamOrchestrator.statePublisher
             .combineLatest(settingsManager.settingsPublisher)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state, settings in

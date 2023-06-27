@@ -1,5 +1,5 @@
 //
-//  StreamCoordinator.swift
+//  StreamOrchestrator.swift
 //
 
 import Combine
@@ -7,18 +7,18 @@ import Foundation
 import MillicastSDK
 import os
 
-open class StreamCoordinator {
+open class StreamOrchestrator {
     public struct Configuration {
         let retryOnConnectionError = true
     }
     
-    private static let logger = Logger.make(category: String(describing: StreamCoordinator.self))
+    private static let logger = Logger.make(category: String(describing: StreamOrchestrator.self))
 
     private enum Defaults {
         static let retryConnectionTimeInterval = 5.0
     }
 
-    public static let shared: StreamCoordinator = StreamCoordinator()
+    public static let shared: StreamOrchestrator = StreamOrchestrator()
 
     private let stateMachine: StateMachine = StateMachine(initialState: .disconnected)
     private let subscriptionManager: SubscriptionManagerProtocol
@@ -32,9 +32,9 @@ open class StreamCoordinator {
         .eraseToAnyPublisher()
     public private(set) var activeStreamDetail: StreamDetail?
 
-    private typealias CoordinatorTask = Task<Void, Never>
-    private var taskStreamContinuation: AsyncStream<CoordinatorTask>.Continuation?
-    private static var configuration: StreamCoordinator.Configuration = .init()
+    private typealias OrchestratorTask = Task<Void, Never>
+    private var taskStreamContinuation: AsyncStream<OrchestratorTask>.Continuation?
+    private static var configuration: StreamOrchestrator.Configuration = .init()
 
     private convenience init() {
         self.init(
@@ -44,7 +44,7 @@ open class StreamCoordinator {
         )
     }
 
-    static func setStreamCoordinatorConfiguration(_ configuration: StreamCoordinator.Configuration) {
+    static func setStreamOrchestratorConfiguration(_ configuration: StreamOrchestrator.Configuration) {
         Self.configuration = configuration
     }
     
@@ -197,7 +197,7 @@ open class StreamCoordinator {
 
 // MARK: Private helper methods
 
-private extension StreamCoordinator {
+private extension StreamOrchestrator {
     func startStateObservation() {
         Task { [weak self] in
             guard let self = self else { return }
@@ -248,7 +248,7 @@ private extension StreamCoordinator {
         Task { [weak self] in
             guard let self = self else { return }
             
-            let taskStream = AsyncStream<CoordinatorTask> { continuation in
+            let taskStream = AsyncStream<OrchestratorTask> { continuation in
                 self.taskStreamContinuation = continuation
             }
             
@@ -268,7 +268,7 @@ private extension StreamCoordinator {
 
 // MARK: SubscriptionManagerDelegate implementation
 
-extension StreamCoordinator: SubscriptionManagerDelegate {
+extension StreamOrchestrator: SubscriptionManagerDelegate {
     public func onSubscribedError(_ reason: String) {
         let task = Task { [weak self] in
             guard let self = self else { return }

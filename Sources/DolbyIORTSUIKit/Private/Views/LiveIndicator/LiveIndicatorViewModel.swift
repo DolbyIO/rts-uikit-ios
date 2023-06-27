@@ -8,17 +8,17 @@ import Foundation
 
 final class LiveIndicatorViewModel: ObservableObject {
     @Published private(set) var isStreamActive: Bool = false
-    private let streamCoordinator: StreamCoordinator
+    private let streamOrchestrator: StreamOrchestrator
     private var subscriptions: [AnyCancellable] = []
 
-    init(streamCoordinator: StreamCoordinator = .shared) {
-        self.streamCoordinator = streamCoordinator
+    init(streamOrchestrator: StreamOrchestrator = .shared) {
+        self.streamOrchestrator = streamOrchestrator
 
         setupStateObservers()
     }
 
     private func setupStateObservers() {
-        streamCoordinator.statePublisher
+        streamOrchestrator.statePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 guard let self = self else { return }
