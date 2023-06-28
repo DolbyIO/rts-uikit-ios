@@ -26,7 +26,7 @@ This setup guide is validated on both Intel and Apple Silicon based MacBook Pro 
 
 * Xcode Version 14.3.1 (14E300c)
 * iPhone device or simulator running iOS 15.0
-* Knowledges on iOS, Swift and SwiftUI programming
+* Familiarity with iOS development using Swift and Swift UI
 
 ## Getting Started
 
