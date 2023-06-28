@@ -10,7 +10,7 @@ Adding shields would also be amazing -->
 
 ## Overview
 
-The [Dolby.io Real-time Streaming](https://dolby.io/products/real-time-streaming/) UIKit for iOS is designed to help iOS developers reduce the complexity of building a Dolby.io Real-time Streaming (RTS hereafter) monitor applications for iOS.
+The [Dolby.io Real-time Streaming](https://dolby.io/products/real-time-streaming/) UIKit for iOS is designed to help iOS developers reduce the complexity of building a Dolby.io Real-time Streaming (RTS) monitor applications for iOS.
 
 This package consists of three kinds of components:  
 
@@ -18,7 +18,7 @@ This package consists of three kinds of components:
 * `DolbyIORTSCore`: The logic between `DolbyIORTSUIKit` and Dolby.io [Real-time Streaming iOS SDK](https://docs.dolby.io/streaming-apis/docs/ios).
 * `DolbyIOUIKit`: The basic UI components used by `DolbyIORTSUIKit`.  
 
-> **_Info:_** There are two parties in RTS - a publisher and a viewer. A publisher is one who broadcasts the stream. A viewer(monitor) who consumes the stream. This UIKit is meant for viewer/monitor applications. Please refer to this [blog post](https://dolby.io/blog/real-time-streaming-with-dolby-io/) to understand the ecosystem.
+> **_Note:_** There are two parties in RTS - a publisher and a viewer. A publisher is one who broadcasts the stream. A viewer is one who consumes the stream. This UIKit is meant for viewer/monitor applications. Please refer to this [blog post](https://dolby.io/blog/real-time-streaming-with-dolby-io/) to understand the ecosystem.
 
 ## Requirements
 
@@ -26,6 +26,7 @@ This setup guide is validated on both Intel and Apple Silicon based MacBook Pro 
 
 * Xcode Version 14.3.1 (14E300c)
 * iPhone device or simulator running iOS 15.0
+* Knowledges on iOS, Swift and SwiftUI programming
 
 ## Getting Started
 
@@ -49,7 +50,7 @@ To get started with building your own app with the RTS UI kit, see below.
   * Choose and add these packages `DolbyIORTSCore`,  `DolbyIORTSUIKit`, and `DolbyIOUIKit` to the target.
   * Click the `Add Package` button.
 * Copy and replace the code in `ContentView.swift` with the code snippet below.
-* Compile and Run on an iOS target
+* Compile and Run on an iOS target.
 
 ```swift
 import SwiftUI
@@ -74,7 +75,7 @@ struct ContentView: View {
                     // account ID pair here is from a demo stream. It can be replaced by a pair being given by a publisher who has 
                     // signed-up up to the Dolby.io service. See the next section below to set up your own streams.
                     Task {
-                        let success = await StreamOrchestrator.shared.connect(streamName: "multiview", accountID: "k9Mwad")
+                        let success = await StreamOrchestrator.shared.connect(streamName: "simulcastmultiview", accountID: "k9Mwad")
                         
                         // 5. Show the real-time streaming if connect successfully
                         await MainActor.run { showStream = success }
@@ -91,6 +92,8 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 ```
+
+This app has a `Start Stream` button which starts monitoring a demo stream in a streaming screen. This streaming screen provided by this kit is self contained. It has the necessary  components for monitoring a streaming. It has a settings menu, in which it provides different video views, audio selections, and streaming sorting orders.
 
 ## Sign up for a Dolby.io account
 
