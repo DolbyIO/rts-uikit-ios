@@ -103,7 +103,7 @@ public struct StreamingScreen: View {
         IconButton(iconAsset: .close) {
             endStream()
         }
-        .background(Color(uiColor: theme.neutral400))
+        .background(theme.background)
         .clipShape(Circle().inset(by: Layout.spacing0_5x))
     }
     

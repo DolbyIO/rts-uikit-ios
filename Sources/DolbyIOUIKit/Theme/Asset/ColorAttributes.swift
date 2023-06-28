@@ -4,23 +4,6 @@
 
 import SwiftUI
 
-// MARK: Button Colors
-
-public struct ButtonAttribute {
-    let textColor: Color
-    let disabledTextColor: Color
-    let focusedTextColor: Color
-    let tintColor: Color
-    let disabledTintColor: Color
-    let focusedTintColor: Color
-    let backgroundColor: Color
-    let hoverBackgroundColor: Color
-    let disabledBackgroundColor: Color
-    let borderColor: Color
-    let disabledBorderColor: Color
-    let focusedBorderColor: Color
-}
-
 // MARK: Text Colors
 
 public struct TextAttribute {

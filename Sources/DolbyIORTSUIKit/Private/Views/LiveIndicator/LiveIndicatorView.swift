@@ -25,8 +25,8 @@ struct LiveIndicatorView: View {
         .padding(.vertical, Layout.spacing1x)
         .background(
             viewModel.isStreamActive ?
-            Color(uiColor: theme.error500) :
-                Color(uiColor: theme.neutral400)
+            theme.errorContainer :
+                theme.surface
         )
         .cornerRadius(Layout.cornerRadius6x)
     }

@@ -77,7 +77,7 @@ struct SingleStreamView: View {
         IconButton(iconAsset: .close) {
             onClose?()
         }
-        .background(Color(uiColor: theme.neutral400))
+        .background(theme.background)
         .clipShape(Circle().inset(by: Layout.spacing0_5x))
     }
 

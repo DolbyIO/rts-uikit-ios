@@ -25,6 +25,58 @@ public struct Button: View {
     @State private var hover = false
     @FocusState private var isFocused: Bool
 
+    private var theme: Theme {
+        themeManager.theme
+    }
+
+    private var containerColor: Color? {
+        guard isEnabled == true else {
+            return theme.onSurface
+        }
+
+        if isFocused {
+            return theme.onPrimary
+        }
+
+        return theme.primary
+    }
+    
+    private var containerShadowColor: Color? {
+        return nil
+    }
+    
+    private var labelTextColor: Color? {
+        guard isEnabled == true else {
+            return theme.onSurface
+        }
+
+        if isFocused {
+            return theme.onPrimary
+        }
+
+        return theme.onPrimary
+    }
+    
+    private var iconColor: Color? {
+        guard isEnabled == true else {
+            return theme.onSurface
+        }
+
+        if isFocused {
+            return theme.onPrimary
+        }
+
+        return theme.onPrimary
+    }
+    
+    var font: Font {
+        #if os(tvOS)
+        theme[.avenirNextDemiBold(size: FontSize.caption2, withStyle: .caption2)]
+        #else
+        .custom("AvenirNext-DemiBold", size: FontSize.subhead, relativeTo: .subheadline)
+        #endif
+    }
+    
     public init(
         action: @escaping () -> Void,
         text: LocalizedStringKey,
@@ -40,11 +92,7 @@ public struct Button: View {
         self.style = style
         self._buttonState = buttonState
     }
-
-    private var attribute: ButtonAttribute {
-        themeManager.theme.buttonAttribute(for: style)
-    }
-
+    
     public var body: some View {
         buttonView
     }
@@ -55,15 +103,7 @@ public struct Button: View {
 private extension Button {
     var buttonView: some View {
         SwiftUI.Button(action: action) {
-            CustomButtonView(
-                text: text,
-                leftIcon: leftIcon,
-                rightIcon: rightIcon,
-                buttonAsset: attribute,
-                isFocused: isFocused,
-                buttonState: buttonState,
-                backgroundColor: backgroundColor
-            )
+            content()
         }
         .focused($isFocused)
         .accessibilityLabel(accessibilityLabel)
@@ -79,37 +119,10 @@ private extension Button {
 #endif
         .frame(maxWidth: .infinity)
         .overlay(
-            borderColorAndWidth.map {
-                RoundedRectangle(cornerRadius: Layout.cornerRadius6x)
-                    .stroke($0.color, lineWidth: $0.width)
-            }
+            RoundedRectangle(cornerRadius: Layout.cornerRadius6x)
         )
-        .background(backgroundColor)
+        .background(containerColor)
         .mask(RoundedRectangle(cornerRadius: Layout.cornerRadius6x))
-    }
-
-    typealias BorderColorAndWidth = (color: Color, width: CGFloat)
-    var borderColorAndWidth: BorderColorAndWidth? {
-        switch (isEnabled, isFocused) {
-        case (true, false):
-            return (color: attribute.borderColor, width: Layout.border1x)
-        case (true, true):
-            return (color: attribute.focusedBorderColor, width: Layout.border1x)
-        case (false, _):
-            return (color: attribute.disabledBorderColor, width: Layout.border1x)
-        }
-    }
-
-    var backgroundColor: Color? {
-        guard isEnabled == true else {
-            return attribute.disabledBackgroundColor
-        }
-
-        if isFocused {
-            return attribute.hoverBackgroundColor
-        }
-
-        return attribute.backgroundColor
     }
 
     var accessibilityLabel: String {
@@ -122,112 +135,47 @@ private extension Button {
             return "Success"
         }
     }
-}
-
-// MARK: Defines the `View` for the Button's content
-
-private struct CustomButtonView: View {
-    private let text: LocalizedStringKey
-    private let leftIcon: IconAsset?
-    private let rightIcon: IconAsset?
-    private let buttonAsset: ButtonAttribute
-    private let isFocused: Bool
-    private let buttonState: Button.ButtonState
-    private let backgroundColor: Color?
-
-    @Environment(\.isEnabled) private var isEnabled
-
-    init(
-        text: LocalizedStringKey,
-        leftIcon: IconAsset?,
-        rightIcon: IconAsset?,
-        buttonAsset: ButtonAttribute,
-        isFocused: Bool,
-        buttonState: Button.ButtonState,
-        backgroundColor: Color?
-    ) {
-        self.text = text
-        self.leftIcon = leftIcon
-        self.rightIcon = rightIcon
-        self.buttonAsset = buttonAsset
-        self.isFocused = isFocused
-        self.buttonState = buttonState
-        self.backgroundColor = backgroundColor
-    }
-
-    var body: some View {
+    
+    @ViewBuilder
+    private func content() -> some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .center)) {
             HStack(spacing: Layout.spacing2x) {
                 if let leftIcon = leftIcon {
                     IconView(
                         iconAsset: leftIcon,
-                        tintColor: tintColor
+                        tintColor: iconColor
                     )
                 }
 
                 SwiftUI.Text(text)
                     .font(font)
                     .textCase(.uppercase)
-                    .foregroundColor(textColor)
+                    .foregroundColor(labelTextColor)
 
                 if let rightIcon = rightIcon {
                     IconView(
                         iconAsset: rightIcon,
-                        tintColor: tintColor
+                        tintColor: iconColor
                     )
                 }
             }
             .opacity(buttonState == .default ? 1.0 : 0.0)
 
             LoadingView(
-                tintColor: tintColor
+                tintColor: iconColor
             )
             .opacity(buttonState == .loading ? 1.0 : 0.0)
 
             IconView(
                 iconAsset: .success,
-                tintColor: tintColor
+                tintColor: iconColor
             )
             .opacity(buttonState == .success ? 1.0 : 0.0)
         }
         .padding(.vertical, Layout.spacing1x)
         .padding(.horizontal, Layout.spacing4x)
         .frame(maxWidth: .infinity, minHeight: 44)
-        .background(backgroundColor)
-    }
-}
-
-private extension CustomButtonView {
-    var font: Font {
-        #if os(tvOS)
-        theme[.avenirNextDemiBold(size: FontSize.caption2, withStyle: .caption2)]
-        #else
-        .custom("AvenirNext-DemiBold", size: FontSize.subhead, relativeTo: .subheadline)
-        #endif
-    }
-
-    var textColor: Color? {
-        guard isEnabled == true else {
-            return buttonAsset.disabledTextColor
-        }
-
-        if isFocused {
-            return buttonAsset.focusedTextColor
-        }
-
-        return buttonAsset.textColor
-    }
-
-    var tintColor: Color? {
-        guard isEnabled == true else {
-            return buttonAsset.disabledTintColor
-        }
-
-        if isFocused {
-            return buttonAsset.focusedTintColor
-        }
-
-        return buttonAsset.tintColor
+        .background(containerColor)
     }
 }
 

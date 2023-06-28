@@ -42,7 +42,7 @@ struct VideoRendererView: View {
         if viewModel.showAudioIndicator {
             Rectangle()
                 .stroke(
-                    Color(uiColor: theme.primary400),
+                    theme.primary,
                     lineWidth: Layout.border2x
                 )
         } else {

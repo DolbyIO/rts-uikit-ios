@@ -34,16 +34,12 @@ public struct LinkButton: View {
         SwiftUI.Button(action: action) {
             SwiftUI.Text(text)
                 .font(font)
-                .foregroundColor(
-                    Color(
-                        uiColor: isFocused ? theme.primary25 : theme.secondary25
-                    )
-                )
+                .foregroundColor(theme.primary)
                 .padding(.all, padding)
                 .overlay(
                     isFocused ? Rectangle()
                         .stroke(
-                            Color(uiColor: theme.neutral300),
+                            theme.surfaceContainer,
                             lineWidth: Layout.border3x
                         ) : nil
                 )

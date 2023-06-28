@@ -16,7 +16,7 @@ struct SourceLabel: View {
             .foregroundColor(.white)
             .font(.custom("AvenirNext-Regular", size: FontSize.caption1, relativeTo: .caption))
             .padding(.horizontal, Layout.spacing1x)
-            .background(Color(uiColor: themeManager.theme.neutral400))
+            .background(themeManager.theme.background)
             .cornerRadius(Layout.cornerRadius4x)
     }
 }
