@@ -93,11 +93,11 @@ struct ContentView_Previews: PreviewProvider {
 }
 ```
 
-This app has a `Start Stream` button which starts monitoring a demo stream in a streaming screen. This streaming screen provided by this kit is self contained. It has the necessary  components for monitoring a streaming. It has a settings menu, in which it provides different video views, audio selections, and streaming sorting orders.
+This app has a `Start stream` button which starts playing a demo stream in the app. The streaming screen contains all the components you need to build your experience - including a settings menu where you can select different video layouts, audio source selection, and stream sort order.
 
 ## Sign up for a Dolby.io account
 
-A Dolby.io account is necessary to publish your own RTS stream. To setup your Dolby.io account, go to [Dolby.io dashboard](https://dashboard.dolby.io) and complete the form. After confirming your email address, you will be logged in.
+A Dolby.io account is necessary to publish your own RTS stream. To set up your Dolby.io account, go to [Dolby.io dashboard](https://dashboard.dolby.io) and complete the form. After confirming your email address, you will be logged in.
 
 ## Installation
 
@@ -107,7 +107,7 @@ This UIKit package uses Swift Packages. You can add this package site URL as a d
 
 ## Starting your own stream
 
-To start your own video stream broadcast using the Dolby.io dashboard, see [this guide](https://docs.dolby.io/streaming-apis/docs/how-to-broadcast-in-dashboard). To setup your own stream that can be consumed in this app, follow [this guide](https://docs.dolby.io/streaming-apis/docs/managing-your-tokens#creating-a-publishing-token) and copy over the stream name and stream ID into the app.
+To start your own video stream broadcast using the Dolby.io dashboard, see [this guide](https://docs.dolby.io/streaming-apis/docs/how-to-broadcast-in-dashboard). To set up your own stream that can be consumed in this app, follow [this guide](https://docs.dolby.io/streaming-apis/docs/managing-your-tokens#creating-a-publishing-token) and copy over the stream name and stream ID into the app.
 
 ## License
 
@@ -115,7 +115,7 @@ The Dolby.io Real-time UIKit for iOS and its repository are licensed under the M
 
 # About Dolby.io
 
-Using decades of Dolby's research in sight and sound technology, Dolby.io provides APIs to integrate real-time streaming, voice & video communications, and file-based media processing into your applications. [Sign up for a free account](https://dashboard.dolby.io/signup/) to get started building the next generation of immersive, interactive, and social apps.
+Using decades of Dolby's research in sight and sound technology, Dolby.io provides APIs to integrate real-time streaming, voice & video communications, and file-based media processing into your applications. [Sign up for a free account](https://dashboard.dolby.io/signup/) to start building the next generation of immersive, interactive, and social apps.
 
 &copy; Dolby, 2023
 
