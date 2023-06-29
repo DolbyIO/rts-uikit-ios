@@ -111,7 +111,12 @@ struct SubscribedState {
     }
 
     mutating func updateStreamingStatistics(_ stats: StreamingStatistics?) {
-        streamingStats = stats
+        guard let statistics = stats else {
+            return
+        }
+        streamSourceBuilders.forEach {
+            $0.setStreamStatistics(statistics)
+        }
     }
 
     var sources: [StreamSource] {

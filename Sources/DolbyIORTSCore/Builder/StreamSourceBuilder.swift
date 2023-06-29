@@ -42,6 +42,7 @@ final class StreamSourceBuilder {
     private(set) var preferredVideoQuality: StreamSource.VideoQuality = .auto
     private(set) var isPlayingAudio = false
     private(set) var isPlayingVideo = false
+    private(set) var streamingStats: StreamingStatistics?
 
     init(streamId: String, sourceId: String?, tracks: [String]) {
         identifier = UUID()
@@ -104,6 +105,10 @@ final class StreamSourceBuilder {
     func setPlayingVideo(_ enable: Bool) {
         isPlayingVideo = enable
     }
+    
+    func setStreamStatistics(_ stats: StreamingStatistics) {
+        streamingStats = stats
+    }
 
     func build() throws -> StreamSource {
         guard !hasMissingAudioTrack else {
@@ -123,7 +128,8 @@ final class StreamSourceBuilder {
             isPlayingAudio: isPlayingAudio,
             isPlayingVideo: isPlayingVideo,
             audioTracks: audioTracks,
-            videoTrack: videoTrack
+            videoTrack: videoTrack,
+            streamingStats: streamingStats
         )
     }
 }

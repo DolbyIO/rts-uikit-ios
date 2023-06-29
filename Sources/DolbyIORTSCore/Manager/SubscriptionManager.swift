@@ -233,6 +233,14 @@ private extension SubscriptionManager {
 // MARK: MCSubscriberListener implementation
 
 extension SubscriptionManager: MCSubscriberListener {
+    func onFrameMetadata(_ data: UnsafePointer<UInt8>!, withLength length: Int32, withSsrc ssrc: Int32, withTimestamp timestamp: Int32) {
+        
+    }
+    
+    func onDisconnected() {
+        
+    }
+    
 
     func onSubscribed() {
         Self.logger.debug("💼 Delegate - onSubscribed")

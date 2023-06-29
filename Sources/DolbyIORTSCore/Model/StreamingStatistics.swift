@@ -5,12 +5,12 @@
 import Foundation
 import MillicastSDK
 
-public struct StreamingStatistics {
+public struct StreamingStatistics: Equatable, Hashable {
     public let roundTripTime: Double?
     public let audioStatsInboundRtp: StatsInboundRtp?
     public let videoStatsInboundRtp: StatsInboundRtp?
 
-    public struct StatsInboundRtp {
+    public struct StatsInboundRtp: Equatable, Hashable {
         public let sid: String
         public let kind: String
         public let decoder: String?
