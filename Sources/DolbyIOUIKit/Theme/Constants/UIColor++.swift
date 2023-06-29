@@ -6,6 +6,7 @@ import UIKit
 
 public extension UIColor {
     struct Dolby{
+        //TODO: Can be renamed to primary, secondary etc.
         static let neonPurple25 = UIColor(hex: 0xFDFAFF)
         static let neonPurple50 = UIColor(hex: 0xF4E5FF)
         static let neonPurple100 = UIColor(hex: 0xEACCFF)
