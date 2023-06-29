@@ -21,7 +21,7 @@ public class DefaultTheme: Theme {
     // TODO: map to the right color of theme and use it for component attributes so that component attributes will not be required to be exposed in the theme.
     public let primary = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
     public let primaryContainer = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
-    public let onPrimary = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
+    public let onPrimary = Color(uiColor: UIColor(light: UIColor.Dolby.white, dark: UIColor.Dolby.white))
     public let onPrimaryContainer = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
     public let inversePrimary = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
     public let secondary = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
@@ -32,7 +32,7 @@ public class DefaultTheme: Theme {
     public let tertiaryContainer = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
     public let onTertiaryContainer = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
     public let surface = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
-    public let surfaceDim = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
+    public let surfaceDim = Color(uiColor: UIColor(light: UIColor.Dolby.grey700, dark: UIColor.Dolby.grey700))
     public let surfaceBright = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
     public let surfaceContainerLowest = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))
     public let surfaceContainerLow = Color(uiColor: UIColor(light: UIColor.Dolby.neonPurple400, dark: UIColor.Dolby.neonPurple400))

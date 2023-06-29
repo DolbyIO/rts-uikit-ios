@@ -118,9 +118,6 @@ private extension Button {
         .buttonStyle(.plain)
 #endif
         .frame(maxWidth: .infinity)
-        .overlay(
-            RoundedRectangle(cornerRadius: Layout.cornerRadius6x)
-        )
         .background(containerColor)
         .mask(RoundedRectangle(cornerRadius: Layout.cornerRadius6x))
     }
