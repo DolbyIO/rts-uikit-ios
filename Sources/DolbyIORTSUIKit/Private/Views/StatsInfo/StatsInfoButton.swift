@@ -64,10 +64,10 @@ struct StatisticsView: View {
                         Text(item.key,
                              font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
                             .frame(width: 170, alignment: .leading)
-                        SwiftUI.Text(verbatim: item.value).frame(width: 170, alignment: .leading)
-//                        Text(verbatim: item.value,
-//                             font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title))
-//                            .frame(width: 170, alignment: .leading)
+                        
+                        Text(verbatim: item.value,
+                             font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title))
+                            .frame(width: 170, alignment: .leading)
                     }
                     .padding([.top], 5)
                     .padding([.leading, .trailing], 15)
