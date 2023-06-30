@@ -9,11 +9,15 @@ public struct StreamingStatistics: Equatable, Hashable {
     public let roundTripTime: Double?
     public let audioStatsInboundRtp: StatsInboundRtp?
     public let videoStatsInboundRtp: StatsInboundRtp?
-
+    
     public struct StatsInboundRtp: Equatable, Hashable {
-        public let sid: String
         public let kind: String
+        public let sid: String
+        public let decoderImplementation: String?
+        public let trackIdentifier: String
         public let decoder: String?
+        public let processingDelay: Double
+        public let decodeTime: Double
         public let frameWidth: Int
         public let frameHeight: Int
         public let fps: Int
@@ -21,6 +25,10 @@ public struct StreamingStatistics: Equatable, Hashable {
         public let totalEnergy: Double
         public let framesReceived: Int
         public let framesDecoded: Int
+        public let framesDropped: Int
+        public let jitterBufferEmittedCount: Int
+        public let jitterBufferDelay: Double
+        public let jitterBufferTargetDelay: Double
         public let nackCount: Int
         public let bytesReceived: Int
         public let totalSampleDuration: Double
@@ -30,7 +38,7 @@ public struct StreamingStatistics: Equatable, Hashable {
         public let packetsLost: Double
         public let timestamp: Double
         public var codecName: String?
-
+        
         public var videoResolution: String {
             "\(frameWidth) x \(frameHeight)"
         }
@@ -44,21 +52,21 @@ extension StreamingStatistics {
             return nil
         }
         roundTripTime = remoteInboundStreamStatsList.first.map { $0.round_trip_time }
-
+        
         let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
         guard let inboundRtpStreamStatsList = report.getStatsOf(inboundRtpStreamStatsType) as? [MCInboundRtpStreamStats] else {
-           return nil
+            return nil
         }
-
+        
         let codecType = MCCodecsStats.get_type()
         let codecStatsList = report.getStatsOf(codecType) as? [MCCodecsStats]
-
+        
         videoStatsInboundRtp = inboundRtpStreamStatsList
             .first { $0.kind == "video" }
             .map {
                 StatsInboundRtp($0, codecStatsList: codecStatsList)
             }
-
+        
         audioStatsInboundRtp = inboundRtpStreamStatsList
             .first { $0.kind == "audio" }
             .map {
@@ -69,29 +77,42 @@ extension StreamingStatistics {
 
 extension StreamingStatistics.StatsInboundRtp {
     init(_ stats: MCInboundRtpStreamStats, codecStatsList: [MCCodecsStats]?) {
-        sid = stats.sid  as String
         kind = stats.kind as String
-        decoder = stats.decoder_implementation as String?
+        sid = stats.sid  as String
+        decoderImplementation = stats.decoder_implementation as String?
+        processingDelay =  msNormalised(numerator: stats.total_processing_delay, denominator: Double(stats.frames_decoded))
+        decodeTime = msNormalised(numerator: stats.total_decode_time, denominator: Double(stats.frames_decoded))
         frameWidth = Int(stats.frame_width)
         frameHeight = Int(stats.frame_height)
         fps = Int(stats.frames_per_second)
+        bytesReceived = Int(stats.bytes_received)
+        framesReceived = Int(stats.frames_received)
+        packetsReceived = Double(stats.packets_received)
+        framesDecoded = Int(stats.frames_decoded)
+        framesDropped = Int(stats.frames_dropped)
+        jitterBufferEmittedCount = Int(stats.jitter_buffer_emitted_count)
+        jitter = stats.jitter * 1000
+        jitterBufferDelay = stats.jitter_buffer_delay
+        jitterBufferTargetDelay = msNormalised(numerator: stats.jitter_buffer_delay, denominator: Double(stats.jitter_buffer_emitted_count))
+        nackCount = Int(stats.nack_count)
+        packetsLost = Double(stats.packets_lost)
+        
+        trackIdentifier = stats.track_identifier as String
+        decoder = stats.decoder_implementation as String?
         audioLevel = Int(stats.audio_level)
         totalEnergy = stats.total_audio_energy
-        framesReceived = Int(stats.frames_received)
-        framesDecoded = Int(stats.frames_decoded)
-        nackCount = Int(stats.nack_count)
-        bytesReceived = Int(stats.bytes_received)
         totalSampleDuration = stats.total_samples_duration
         codec = stats.codec_id as String?
-        jitter = stats.jitter
-        packetsReceived = Double(stats.packets_received)
-        packetsLost = Double(stats.packets_lost)
         timestamp = Double(stats.timestamp)
-
+        
         if let codecStats = codecStatsList?.first(where: { $0.sid == stats.codec_id }) {
             codecName = codecStats.mime_type as String
         } else {
             codecName = nil
         }
     }
+}
+
+func msNormalised(numerator: Double, denominator: Double) -> Double {
+    denominator == 0 ? 0 : numerator * 1000 / denominator
 }

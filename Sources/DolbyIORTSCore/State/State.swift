@@ -114,6 +114,7 @@ struct SubscribedState {
         guard let statistics = stats else {
             return
         }
+        
         streamSourceBuilders.forEach {
             $0.setStreamStatistics(statistics)
         }

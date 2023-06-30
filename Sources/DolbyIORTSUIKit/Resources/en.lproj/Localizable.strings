@@ -7,7 +7,6 @@
 "settings.global.title.label" = "Global settings";
 "settings.stream.title.label" = "Stream settings";
 "settings.show-source-labels.label" = "Show source labels";
-"settings.low-latency.label" = "Enable low latency";
 "settings.default-multiview-layout.label" = "Default multi-view layout";
 "settings.stream-sort-order.label" = "Stream sort order";
 "settings.audio-selection.label" = "Audio selection";

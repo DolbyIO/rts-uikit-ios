@@ -118,7 +118,11 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
                 Self.logger.warning("💼 Subscriber has already subscribed")
                 return false
             }
-
+            
+            let options = MCClientOptions()
+            options.forcePlayoutDelay = true
+            self.subscriber.setOptions(options)
+            
             guard self.subscriber.subscribe() else {
                 Self.logger.warning("💼 Subscribe call has failed")
                 return false

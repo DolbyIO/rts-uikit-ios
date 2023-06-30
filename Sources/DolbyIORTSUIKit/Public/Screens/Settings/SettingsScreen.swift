@@ -43,18 +43,6 @@ public struct SettingsScreen: View {
 
             List {
                 Toggle(isOn: Binding<Bool>(
-                    get: { viewModel.lowLatencyMode },
-                    set: { viewModel.setLowLatencyMode($0) })
-                ) {
-                    Text(
-                        "settings.settings.low-latency.label",
-                        bundle: .module,
-                        style: .titleMedium,
-                        font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body)
-                    )
-                }
-                
-                Toggle(isOn: Binding<Bool>(
                     get: { viewModel.showSourceLabels },
                     set: { viewModel.setShowSourceLabels($0) })
                 ) {

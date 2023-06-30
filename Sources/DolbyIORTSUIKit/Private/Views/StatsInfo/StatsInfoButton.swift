@@ -21,6 +21,7 @@ struct StatsInfoButton: View {
         ) {
             showStats.toggle()
         }
+        .contentShape(Rectangle())
         .sheet(isPresented: $showStats) {
             StatisticsView(streamSource: viewModel.streamSource)
         }
@@ -66,7 +67,7 @@ struct StatisticsView: View {
                             .frame(width: 170, alignment: .leading)
                         
                         Text(verbatim: item.value,
-                             font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title))
+                             font: .custom("AvenirNext-DemiBold", size: FontSize.caption1, relativeTo: .caption))
                             .frame(width: 170, alignment: .leading)
                     }
                     .padding([.top], 5)
@@ -103,8 +104,14 @@ final class StatisticsViewModel {
 
         var result = [StatData]()
 
-        if let rtt = stats.roundTripTime {
-            result.append(StatData(key: "stream.stats.rtt.label", value: String(rtt)))
+        if let val = stats.videoStatsInboundRtp?.decoderImplementation {
+            result.append(StatData(key: "stream.stats.decoder-impl.label", value: String(val)))
+        }
+        if let val = stats.videoStatsInboundRtp?.processingDelay {
+            result.append(StatData(key: "stream.stats.processing-delay.label", value: String(format:"%.2f ms", val)))
+        }
+        if let val = stats.videoStatsInboundRtp?.decodeTime {
+            result.append(StatData(key: "stream.stats.decode-time.label", value: String(format:"%.2f ms", val)))
         }
         if let videoResolution = stats.videoStatsInboundRtp?.videoResolution {
             result.append(StatData(key: "stream.stats.video-resolution.label", value: videoResolution))
@@ -112,24 +119,45 @@ final class StatisticsViewModel {
         if let fps = stats.videoStatsInboundRtp?.fps {
             result.append(StatData(key: "stream.stats.fps.label", value: String(fps)))
         }
-        if let audioBytesReceived = stats.audioStatsInboundRtp?.bytesReceived {
-            result.append(StatData(key: "stream.stats.audio-total-received.label", value: formatBytes(bytes: audioBytesReceived)))
-        }
         if let videoBytesReceived = stats.videoStatsInboundRtp?.bytesReceived {
             result.append(StatData(key: "stream.stats.video-total-received.label", value: formatBytes(bytes: videoBytesReceived)))
         }
-        if let audioPacketsLost = stats.audioStatsInboundRtp?.packetsLost {
-            result.append(StatData(key: "stream.stats.audio-packet-loss.label", value: String(audioPacketsLost)))
+        if let val = stats.videoStatsInboundRtp?.packetsReceived {
+            result.append(StatData(key: "stream.stats.packets-received.label", value: String(format:"%.2f", val)))
         }
-        if let videoPacketsLost = stats.videoStatsInboundRtp?.packetsLost {
-            result.append(StatData(key: "stream.stats.video-packet-loss.label", value: String(videoPacketsLost)))
+        if let val = stats.videoStatsInboundRtp?.framesDecoded {
+            result.append(StatData(key: "stream.stats.frames-decoded.label", value: String(val)))
         }
-        if let audioJitter = stats.audioStatsInboundRtp?.jitter {
-            result.append(StatData(key: "stream.stats.audio-jitter.label", value: "\(audioJitter)"))
+        if let val = stats.videoStatsInboundRtp?.framesDropped {
+            result.append(StatData(key: "stream.stats.frames-dropped.label", value: String(val)))
+        }
+        if let val = stats.videoStatsInboundRtp?.jitterBufferEmittedCount {
+            result.append(StatData(key: "stream.stats.jitter-buffer-est-count.label", value: String(val)))
         }
         if let videoJitter = stats.videoStatsInboundRtp?.jitter {
-            result.append(StatData(key: "stream.stats.video-jitter.label", value: "\(videoJitter)"))
+            result.append(StatData(key: "stream.stats.video-jitter.label", value: "\(videoJitter) ms"))
         }
+        if let val = stats.videoStatsInboundRtp?.jitterBufferDelay {
+            result.append(StatData(key: "stream.stats.jitter-buffer-delay.label", value: String(format:"%.2f ms", val)))
+        }
+        if let val = stats.videoStatsInboundRtp?.jitterBufferTargetDelay {
+            result.append(StatData(key: "stream.stats.jitter-buffer-target-delay.label", value: String(format:"%.2f ms", val)))
+        }
+        if let videoPacketsLost = stats.videoStatsInboundRtp?.packetsLost {
+            result.append(StatData(key: "stream.stats.video-packet-loss.label", value: String(format:"%.2f", videoPacketsLost)))
+        }
+
+        
+        if let rtt = stats.roundTripTime {
+            result.append(StatData(key: "stream.stats.rtt.label", value: String(rtt)))
+        }
+
+//        if let audioPacketsLost = stats.audioStatsInboundRtp?.packetsLost {
+//            result.append(StatData(key: "stream.stats.audio-packet-loss.label", value: String(audioPacketsLost)))
+//        }
+//        if let audioJitter = stats.audioStatsInboundRtp?.jitter {
+//            result.append(StatData(key: "stream.stats.audio-jitter.label", value: "\(audioJitter)"))
+//        }
         if let timestamp = stats.audioStatsInboundRtp?.timestamp {
             result.append(StatData(key: "stream.stats.timestamp.label", value: String(timestamp))) // change to dateStr when timestamp is fixed
         }

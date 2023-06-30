@@ -15,7 +15,6 @@ final class SettingsViewModel: ObservableObject {
     private var subscriptions: [AnyCancellable] = []
 
     @Published private(set) var showSourceLabels: Bool
-    @Published private(set) var lowLatencyMode: Bool
     @Published private(set) var multiviewLayout: StreamSettings.MultiviewLayout
     @Published private(set) var streamSortOrder: StreamSettings.StreamSortOrder
     @Published private(set) var audioSelection: StreamSettings.AudioSelection
@@ -38,7 +37,6 @@ final class SettingsViewModel: ObservableObject {
         }
 
         showSourceLabels = settingsManager.settings.showSourceLabels
-        lowLatencyMode = settingsManager.settings.lowLatencyMode
         multiviewLayout = settingsManager.settings.multiviewLayout
         streamSortOrder = settingsManager.settings.streamSortOrder
         audioSelection = settingsManager.settings.audioSelection
@@ -52,10 +50,6 @@ final class SettingsViewModel: ObservableObject {
 
     func setShowSourceLabels(_ showSourceLabels: Bool) {
         settingsManager.settings.showSourceLabels = showSourceLabels
-    }
-    
-    func setLowLatencyMode(_ lowLatencyMode: Bool) {
-        settingsManager.settings.lowLatencyMode = lowLatencyMode
     }
 
     func setMultiviewLayout(_ multiviewLayout: StreamSettings.MultiviewLayout) {
@@ -114,7 +108,6 @@ extension SettingsViewModel {
 
     private func updateSettings(_ settings: StreamSettings) {
         self.showSourceLabels = settings.showSourceLabels
-        self.lowLatencyMode = settings.lowLatencyMode
         self.multiviewLayout = settings.multiviewLayout
         self.streamSortOrder = settings.streamSortOrder
         self.audioSelection = settings.audioSelection
