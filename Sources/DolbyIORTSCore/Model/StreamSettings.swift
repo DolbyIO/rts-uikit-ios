@@ -26,6 +26,7 @@ public struct StreamSettings: Codable {
     }
 
     public var showSourceLabels: Bool
+    public var lowLatencyMode: Bool
     public var multiviewLayout: MultiviewLayout
     public var streamSortOrder: StreamSortOrder
     public var audioSelection: AudioSelection
@@ -34,10 +35,12 @@ public struct StreamSettings: Codable {
     public init(showSourceLabels: Bool = true,
                 multiviewLayout: MultiviewLayout = .list,
                 streamSortOrder: StreamSortOrder = .connectionOrder,
-                audioSelection: AudioSelection = .firstSource) {
+                audioSelection: AudioSelection = .firstSource,
+                lowLatencyMode: Bool = true) {
         self.showSourceLabels = showSourceLabels
         self.multiviewLayout = multiviewLayout
         self.streamSortOrder = streamSortOrder
         self.audioSelection = audioSelection
+        self.lowLatencyMode = lowLatencyMode
     }
 }
