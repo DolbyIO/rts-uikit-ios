@@ -335,9 +335,10 @@ extension StreamOrchestrator: SubscriptionManagerDelegate {
     }
 
     public func onStatsReport(_ report: MCStatsReport) {
+        let stats = StreamingStatistics.build(report: report)
         let task = Task { [weak self] in
             guard let self = self else { return }
-            await self.stateMachine.onStatsReport(StreamingStatistics.build(report: report))
+            await self.stateMachine.onStatsReport(stats)
         }
         taskStreamContinuation?.yield(task)
     }

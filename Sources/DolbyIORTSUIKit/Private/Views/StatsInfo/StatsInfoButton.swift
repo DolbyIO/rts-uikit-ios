@@ -104,6 +104,10 @@ final class StatisticsViewModel {
 
         var result = [StatData]()
 
+        if let val = stats.mid {
+            result.append(StatData(key: "stream.stats.mid.label", value: String(val)))
+        }
+        
         if let val = stats.statsInboundRtp?.decoderImplementation {
             result.append(StatData(key: "stream.stats.decoder-impl.label", value: String(val)))
         }
