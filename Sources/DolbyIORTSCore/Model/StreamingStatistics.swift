@@ -29,6 +29,7 @@ public struct StreamingStatistics: Equatable, Hashable {
         public let jitterBufferEmittedCount: Int
         public let jitterBufferDelay: Double
         public let jitterBufferTargetDelay: Double
+        public let jitterBufferMinimumtDelay: Double
         public let nackCount: Int
         public let bytesReceived: Int
         public let totalSampleDuration: Double
@@ -98,6 +99,7 @@ extension StreamingStatistics.StatsInboundRtp {
         jitter = stats.jitter * 1000
         jitterBufferDelay = stats.jitter_buffer_delay
         jitterBufferTargetDelay = msNormalised(numerator: stats.jitter_buffer_delay, denominator: Double(stats.jitter_buffer_emitted_count))
+        jitterBufferMinimumtDelay = msNormalised(numerator: stats.jitter_buffer_minimum_delay, denominator: Double(stats.jitter_buffer_emitted_count))
         nackCount = Int(stats.nack_count)
         packetsLost = Double(stats.packets_lost)
         

@@ -143,6 +143,9 @@ final class StatisticsViewModel {
         if let val = stats.statsInboundRtp?.jitterBufferTargetDelay {
             result.append(StatData(key: "stream.stats.jitter-buffer-target-delay.label", value: String(format:"%.2f ms", val)))
         }
+        if let val = stats.statsInboundRtp?.jitterBufferMinimumtDelay {
+            result.append(StatData(key: "stream.stats.jitter-buffer-minimum-delay.label", value: String(format:"%.2f ms", val)))
+        }
         if let videoPacketsLost = stats.statsInboundRtp?.packetsLost {
             result.append(StatData(key: "stream.stats.video-packet-loss.label", value: String(format:"%.2f", videoPacketsLost)))
         }
