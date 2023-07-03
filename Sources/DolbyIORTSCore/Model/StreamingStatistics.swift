@@ -70,10 +70,28 @@ extension StreamingStatistics {
         
         return result
     }
+    
+    public static func build(report: MCStatsReport) -> [StreamingStatistics] {
+        let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
+        guard let inboundRtpStreamStatsList = report.getStatsOf(inboundRtpStreamStatsType) as? [MCInboundRtpStreamStats] else {
+            return []
+        }
+        
+        return inboundRtpStreamStatsList.map {streamStats in
+            let receivedType = MCRemoteInboundRtpStreamStats.get_type()
+            let remoteInboundStreamStatsList = report.getStatsOf(receivedType) as? [MCRemoteInboundRtpStreamStats]
+            
+            let roundTripTime = remoteInboundStreamStatsList?.first.map { $0.round_trip_time }
+            
+            let codecType = MCCodecsStats.get_type()
+            let codecStatsList = report.getStatsOf(codecType) as? [MCCodecsStats]
+            return StreamingStatistics(streamStats, roundTripTime: roundTripTime, codecStatsList: codecStatsList)
+        }
+    }
 }
 
 extension StreamingStatistics {
-    init?(_ inboundRtpStreamStats: MCInboundRtpStreamStats, roundTripTime : Double?, codecStatsList: [MCCodecsStats]?) {
+    init(_ inboundRtpStreamStats: MCInboundRtpStreamStats, roundTripTime : Double?, codecStatsList: [MCCodecsStats]?) {
         self.mid = inboundRtpStreamStats.mid as String
         self.roundTripTime = roundTripTime
         self.statsInboundRtp = StatsInboundRtp(inboundRtpStreamStats, codecStatsList: codecStatsList)
