@@ -74,7 +74,7 @@ struct StatisticsView: View {
                     .padding([.leading, .trailing], 15)
                 }
             }.padding([.bottom], 10)
-        }.frame(maxWidth: 500, maxHeight: 600, alignment: .bottom)
+        }.frame(alignment: .bottom)
             .background {
                 Rectangle().fill(Color(uiColor: themeManager.theme.background).opacity(0.7))
                     .ignoresSafeArea(.container, edges: .all)

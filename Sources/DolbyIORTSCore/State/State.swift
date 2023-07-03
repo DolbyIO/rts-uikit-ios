@@ -113,7 +113,6 @@ struct SubscribedState {
     mutating func updateStreamingStatistics(_ stats: [StreamingStatistics]) {
         streamSourceBuilders.forEach { builder in
             if let mid = builder.videoTrack?.trackInfo.mid {
-                print(">>>>>", mid)
                 stats.first { currentStat in
                     currentStat.mid == mid
                 }.map {

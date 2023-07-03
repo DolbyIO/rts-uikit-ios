@@ -97,6 +97,7 @@ MILLICAST_API @interface MCInboundRtpStreamStats : MCReceivedRtpStreamStats
 @property unsigned long header_bytes_received;
 @property double        last_packet_received_timestamp;
 @property double        jitter_buffer_delay;
+@property double        jitter_buffer_target_delay;
 @property double        jitter_buffer_minimum_delay;
 @property unsigned long jitter_buffer_emitted_count;
 @property double        estimated_playout_timestamp;
