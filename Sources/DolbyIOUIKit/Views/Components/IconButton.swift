@@ -52,6 +52,7 @@ public struct IconButton: View {
         .buttonStyle(
             ClearButtonStyle(isFocused: isFocused, focusedBackgroundColor: .clear)
         )
+        .padding(20)
     }
 
     private var _tintColor: Color? {

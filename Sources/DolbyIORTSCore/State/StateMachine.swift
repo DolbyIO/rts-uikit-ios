@@ -211,10 +211,10 @@ final actor StateMachine {
         }
     }
 
-    func onStatsReport(_ streamingStats: StreamingStatistics) {
+    func onStatsReport(_ report: MCStatsReport) {
         switch currentState {
         case var .subscribed(state):
-            state.updateStreamingStatistics(streamingStats)
+            state.updateStreamingStatistics(report)
             currentState = .subscribed(state)
         default:
             Self.logger.error("🛑 Unexpected state on onStatsReport - \(self.currentState.description)")

@@ -6,9 +6,9 @@ import Foundation
 import MillicastSDK
 
 public struct StreamingStatistics: Equatable, Hashable {
+    public let mid: String?
     public let roundTripTime: Double?
-    public let audioStatsInboundRtp: StatsInboundRtp?
-    public let videoStatsInboundRtp: StatsInboundRtp?
+    public let statsInboundRtp: StatsInboundRtp?
     
     public struct StatsInboundRtp: Equatable, Hashable {
         public let kind: String
@@ -46,32 +46,36 @@ public struct StreamingStatistics: Equatable, Hashable {
 }
 
 extension StreamingStatistics {
-    init?(_ report: MCStatsReport) {
+    public static func build(for mid: String, report: MCStatsReport) -> StreamingStatistics? {
         let receivedType = MCRemoteInboundRtpStreamStats.get_type()
         guard let remoteInboundStreamStatsList = report.getStatsOf(receivedType) as? [MCRemoteInboundRtpStreamStats] else {
             return nil
         }
-        roundTripTime = remoteInboundStreamStatsList.first.map { $0.round_trip_time }
+        let roundTripTime = remoteInboundStreamStatsList.first.map { $0.round_trip_time }
+        
+        let codecType = MCCodecsStats.get_type()
+        let codecStatsList = report.getStatsOf(codecType) as? [MCCodecsStats]
         
         let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
         guard let inboundRtpStreamStatsList = report.getStatsOf(inboundRtpStreamStatsType) as? [MCInboundRtpStreamStats] else {
             return nil
         }
         
-        let codecType = MCCodecsStats.get_type()
-        let codecStatsList = report.getStatsOf(codecType) as? [MCCodecsStats]
+        let result = inboundRtpStreamStatsList.first{
+            $0.mid as String == mid
+        }.map {streamStats in
+            StreamingStatistics(streamStats, roundTripTime: roundTripTime, codecStatsList: codecStatsList)
+        } ?? nil
         
-        videoStatsInboundRtp = inboundRtpStreamStatsList
-            .first { $0.kind == "video" }
-            .map {
-                StatsInboundRtp($0, codecStatsList: codecStatsList)
-            }
-        
-        audioStatsInboundRtp = inboundRtpStreamStatsList
-            .first { $0.kind == "audio" }
-            .map {
-                StatsInboundRtp($0, codecStatsList: codecStatsList)
-            }
+        return result
+    }
+}
+
+extension StreamingStatistics {
+    init?(_ inboundRtpStreamStats: MCInboundRtpStreamStats, roundTripTime : Double?, codecStatsList: [MCCodecsStats]?) {
+        self.mid = inboundRtpStreamStats.mid as String
+        self.roundTripTime = roundTripTime
+        self.statsInboundRtp = StatsInboundRtp(inboundRtpStreamStats, codecStatsList: codecStatsList)
     }
 }
 

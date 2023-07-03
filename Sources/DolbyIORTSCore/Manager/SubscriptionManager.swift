@@ -180,6 +180,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         projectionData.trackId = videoTrack.trackInfo.trackID
         projectionData.layer = quality.layerData
 
+        print(">>>> video mid", videoTrack.trackInfo.mid)
         subscriber.project(source.sourceId.value, withData: [projectionData])
     }
 
@@ -203,6 +204,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         projectionData.mid = audioTrack.trackInfo.mid
         projectionData.trackId = audioTrack.trackInfo.trackID
 
+        print(">>>> audio mid", audioTrack.trackInfo.mid)
         subscriber.project(source.sourceId.value, withData: [projectionData])
     }
 

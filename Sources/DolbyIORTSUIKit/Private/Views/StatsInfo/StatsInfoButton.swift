@@ -104,46 +104,46 @@ final class StatisticsViewModel {
 
         var result = [StatData]()
 
-        if let val = stats.videoStatsInboundRtp?.decoderImplementation {
+        if let val = stats.statsInboundRtp?.decoderImplementation {
             result.append(StatData(key: "stream.stats.decoder-impl.label", value: String(val)))
         }
-        if let val = stats.videoStatsInboundRtp?.processingDelay {
+        if let val = stats.statsInboundRtp?.processingDelay {
             result.append(StatData(key: "stream.stats.processing-delay.label", value: String(format:"%.2f ms", val)))
         }
-        if let val = stats.videoStatsInboundRtp?.decodeTime {
+        if let val = stats.statsInboundRtp?.decodeTime {
             result.append(StatData(key: "stream.stats.decode-time.label", value: String(format:"%.2f ms", val)))
         }
-        if let videoResolution = stats.videoStatsInboundRtp?.videoResolution {
+        if let videoResolution = stats.statsInboundRtp?.videoResolution {
             result.append(StatData(key: "stream.stats.video-resolution.label", value: videoResolution))
         }
-        if let fps = stats.videoStatsInboundRtp?.fps {
+        if let fps = stats.statsInboundRtp?.fps {
             result.append(StatData(key: "stream.stats.fps.label", value: String(fps)))
         }
-        if let videoBytesReceived = stats.videoStatsInboundRtp?.bytesReceived {
+        if let videoBytesReceived = stats.statsInboundRtp?.bytesReceived {
             result.append(StatData(key: "stream.stats.video-total-received.label", value: formatBytes(bytes: videoBytesReceived)))
         }
-        if let val = stats.videoStatsInboundRtp?.packetsReceived {
+        if let val = stats.statsInboundRtp?.packetsReceived {
             result.append(StatData(key: "stream.stats.packets-received.label", value: String(format:"%.2f", val)))
         }
-        if let val = stats.videoStatsInboundRtp?.framesDecoded {
+        if let val = stats.statsInboundRtp?.framesDecoded {
             result.append(StatData(key: "stream.stats.frames-decoded.label", value: String(val)))
         }
-        if let val = stats.videoStatsInboundRtp?.framesDropped {
+        if let val = stats.statsInboundRtp?.framesDropped {
             result.append(StatData(key: "stream.stats.frames-dropped.label", value: String(val)))
         }
-        if let val = stats.videoStatsInboundRtp?.jitterBufferEmittedCount {
+        if let val = stats.statsInboundRtp?.jitterBufferEmittedCount {
             result.append(StatData(key: "stream.stats.jitter-buffer-est-count.label", value: String(val)))
         }
-        if let videoJitter = stats.videoStatsInboundRtp?.jitter {
+        if let videoJitter = stats.statsInboundRtp?.jitter {
             result.append(StatData(key: "stream.stats.video-jitter.label", value: "\(videoJitter) ms"))
         }
-        if let val = stats.videoStatsInboundRtp?.jitterBufferDelay {
+        if let val = stats.statsInboundRtp?.jitterBufferDelay {
             result.append(StatData(key: "stream.stats.jitter-buffer-delay.label", value: String(format:"%.2f ms", val)))
         }
-        if let val = stats.videoStatsInboundRtp?.jitterBufferTargetDelay {
+        if let val = stats.statsInboundRtp?.jitterBufferTargetDelay {
             result.append(StatData(key: "stream.stats.jitter-buffer-target-delay.label", value: String(format:"%.2f ms", val)))
         }
-        if let videoPacketsLost = stats.videoStatsInboundRtp?.packetsLost {
+        if let videoPacketsLost = stats.statsInboundRtp?.packetsLost {
             result.append(StatData(key: "stream.stats.video-packet-loss.label", value: String(format:"%.2f", videoPacketsLost)))
         }
 
@@ -158,11 +158,11 @@ final class StatisticsViewModel {
 //        if let audioJitter = stats.audioStatsInboundRtp?.jitter {
 //            result.append(StatData(key: "stream.stats.audio-jitter.label", value: "\(audioJitter)"))
 //        }
-        if let timestamp = stats.audioStatsInboundRtp?.timestamp {
+        if let timestamp = stats.statsInboundRtp?.timestamp {
             result.append(StatData(key: "stream.stats.timestamp.label", value: String(timestamp))) // change to dateStr when timestamp is fixed
         }
-        let audioCodec = stats.audioStatsInboundRtp?.codecName
-        let videoCodec = stats.videoStatsInboundRtp?.codecName
+        let audioCodec = stats.statsInboundRtp?.codecName
+        let videoCodec = stats.statsInboundRtp?.codecName
         if audioCodec != nil || videoCodec != nil {
             var delimiter = ", "
             if audioCodec == nil || videoCodec == nil {
