@@ -110,7 +110,7 @@ struct SubscribedState {
         numberOfStreamViewers = count
     }
 
-    func updateStreamingStatistics(_ report: MCStatsReport) {
+    mutating func updateStreamingStatistics(_ report: MCStatsReport) {
         streamSourceBuilders.forEach {
             if let mid = $0.videoTrack?.trackInfo.mid {
                 print(">>>>>", mid)
