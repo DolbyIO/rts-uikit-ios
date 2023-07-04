@@ -77,14 +77,15 @@ extension StreamingStatistics {
             return []
         }
         
+        let receivedType = MCRemoteInboundRtpStreamStats.get_type()
+        let remoteInboundStreamStatsList = report.getStatsOf(receivedType) as? [MCRemoteInboundRtpStreamStats]
+        
+        let roundTripTime = remoteInboundStreamStatsList?.first.map { $0.round_trip_time }
+        
+        let codecType = MCCodecsStats.get_type()
+        let codecStatsList = report.getStatsOf(codecType) as? [MCCodecsStats]
+        
         return inboundRtpStreamStatsList.map {streamStats in
-            let receivedType = MCRemoteInboundRtpStreamStats.get_type()
-            let remoteInboundStreamStatsList = report.getStatsOf(receivedType) as? [MCRemoteInboundRtpStreamStats]
-            
-            let roundTripTime = remoteInboundStreamStatsList?.first.map { $0.round_trip_time }
-            
-            let codecType = MCCodecsStats.get_type()
-            let codecStatsList = report.getStatsOf(codecType) as? [MCCodecsStats]
             return StreamingStatistics(streamStats, roundTripTime: roundTripTime, codecStatsList: codecStatsList)
         }
     }
