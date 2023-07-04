@@ -14,9 +14,9 @@ class Utils {
         do {
 #if os(iOS)
             // For subscriber, we only need playback. Not recording is required.
-            try session.setCategory(.playback, mode: .videoChat, options: [.mixWithOthers])
+            try session.setCategory(.playback, mode: .videoChat, options: [.mixWithOthers, .allowBluetooth])
 #else
-            try session.setCategory(.playback, options: [.mixWithOthers])
+            try session.setCategory(.playback, options: [.mixWithOthers, .allowBluetooth])
 #endif
             try session.setActive(true)
         } catch {

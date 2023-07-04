@@ -61,6 +61,7 @@ open class StreamOrchestrator {
 
         startStateObservation()
         startStateMachineTasksSerialExecutor()
+        Utils.configureAudioSession()
     }
 
     public func connect(streamName: String, accountID: String) async -> Bool {
