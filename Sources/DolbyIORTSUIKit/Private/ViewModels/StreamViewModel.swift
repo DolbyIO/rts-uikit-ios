@@ -287,11 +287,7 @@ final class StreamViewModel: ObservableObject {
             detailSourceAndViewRenderers: existingDetailSourceAndViewRenderers,
             settings: _
         ):
-            if selectedVideoSource = sources.first { $0.id == currentlySelectedVideoSource.id } ?? sortedSources[0] {
-                selectedVideoSource = currentlySelectedVideoSource
-            } else {
-                selectedVideoSource = sortedSources[0]
-            }
+            selectedVideoSource = sources.first { $0.id == currentlySelectedVideoSource.id } ?? sortedSources[0]
             sourceAndViewRenderers = existingSourceAndViewRenderers
             detailSourceAndViewRenderers = existingDetailSourceAndViewRenderers
         }
