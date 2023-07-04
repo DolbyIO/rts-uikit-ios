@@ -47,30 +47,6 @@ public struct StreamingStatistics: Equatable, Hashable {
 }
 
 extension StreamingStatistics {
-    public static func build(for mid: String, report: MCStatsReport) -> StreamingStatistics? {
-        let receivedType = MCRemoteInboundRtpStreamStats.get_type()
-        guard let remoteInboundStreamStatsList = report.getStatsOf(receivedType) as? [MCRemoteInboundRtpStreamStats] else {
-            return nil
-        }
-        let roundTripTime = remoteInboundStreamStatsList.first.map { $0.round_trip_time }
-        
-        let codecType = MCCodecsStats.get_type()
-        let codecStatsList = report.getStatsOf(codecType) as? [MCCodecsStats]
-        
-        let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
-        guard let inboundRtpStreamStatsList = report.getStatsOf(inboundRtpStreamStatsType) as? [MCInboundRtpStreamStats] else {
-            return nil
-        }
-        
-        let result = inboundRtpStreamStatsList.first{
-            $0.mid as String == mid
-        }.map {streamStats in
-            StreamingStatistics(streamStats, roundTripTime: roundTripTime, codecStatsList: codecStatsList)
-        } ?? nil
-        
-        return result
-    }
-    
     public static func build(report: MCStatsReport) -> [StreamingStatistics] {
         let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
         guard let inboundRtpStreamStatsList = report.getStatsOf(inboundRtpStreamStatsType) as? [MCInboundRtpStreamStats] else {
@@ -118,7 +94,7 @@ extension StreamingStatistics.StatsInboundRtp {
         jitter = stats.jitter * 1000
         jitterBufferDelay = msNormalised(numerator: stats.jitter_buffer_delay, denominator: Double(stats.jitter_buffer_emitted_count))
         jitterBufferTargetDelay = msNormalised(numerator: stats.jitter_buffer_delay, denominator: Double(stats.jitter_buffer_emitted_count))
-        jitterBufferMinimumtDelay = msNormalised(numerator: stats.jitter_buffer_minimum_delay, denominator: Double(stats.jitter_buffer_emitted_count))
+        jitterBufferMinimumtDelay = 0//msNormalised(numerator: stats.jitter_buffer_minimum_delay, denominator: Double(stats.jitter_buffer_emitted_count))
         nackCount = Int(stats.nack_count)
         packetsLost = Double(stats.packets_lost)
         
