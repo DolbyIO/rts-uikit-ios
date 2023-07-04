@@ -8,14 +8,14 @@ import DolbyIOUIKit
 public struct SettingsScreen: View {
 
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var viewModel: SettingsViewModel = .init()
+    @StateObject private var viewModel: SettingsViewModel
 
     @State private var isShowingMultiviewScreen: Bool = false
     @State private var isShowingStreamSortOrderScreen: Bool = false
     @State private var isShowingAudioSelectionScreen: Bool = false
 
-    public init() {
-
+    public init(mode: SettingsMode) {
+        _viewModel = StateObject(wrappedValue: SettingsViewModel(mode: mode))
     }
 
     public var body: some View {
@@ -28,7 +28,7 @@ public struct SettingsScreen: View {
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsStreamSortorderScreen(viewModel: viewModel)),
+                destination: LazyNavigationDestinationView(SettingsStreamSortOrderScreen(viewModel: viewModel)),
                 isActive: $isShowingStreamSortOrderScreen) {
                     EmptyView()
                 }
@@ -100,7 +100,7 @@ public struct SettingsScreen: View {
 struct SettingsScreen_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SettingsScreen()
+            SettingsScreen(mode: .global)
         }
     }
 }

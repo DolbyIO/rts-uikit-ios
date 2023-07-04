@@ -69,12 +69,11 @@ public struct StreamingScreen: View {
                 }
             }
             ToolbarItem(placement: .principal) {
-                if let streamName = viewModel.streamDetail?.streamName {
-                    Text(
-                        verbatim: streamName,
-                        font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
-                    )
-                }
+                let streamName = viewModel.streamDetail.streamName
+                Text(
+                    verbatim: streamName,
+                    font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
+                )
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 SettingsButton { isShowingSettingsScreen = true }
@@ -146,8 +145,11 @@ public struct StreamingScreen: View {
             }
             .hidden()
 
-            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen()),
-                           isActive: $isShowingSettingsScreen
+            NavigationLink(
+                destination: LazyNavigationDestinationView(
+                    SettingsScreen(mode: viewModel.settingsMode)
+                ),
+                isActive: $isShowingSettingsScreen
             ) {
                 EmptyView()
             }.hidden()

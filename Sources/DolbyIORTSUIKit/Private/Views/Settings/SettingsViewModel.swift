@@ -11,13 +11,21 @@ import SwiftUI
 final class SettingsViewModel: ObservableObject {
 
     private let settingsManager: SettingsManager
+    private let mode: SettingsMode
+    
     private(set) var settingsScreenTitle: LocalizedStringKey
     private var subscriptions: [AnyCancellable] = []
+    
+    private var settings: StreamSettings = .default {
+        didSet {
+            updateState(for: settings)
+        }
+    }
 
-    @Published private(set) var showSourceLabels: Bool
-    @Published private(set) var multiviewLayout: StreamSettings.MultiviewLayout
-    @Published private(set) var streamSortOrder: StreamSettings.StreamSortOrder
-    @Published private(set) var audioSelection: StreamSettings.AudioSelection
+    @Published private(set) var showSourceLabels = StreamSettings.default.showSourceLabels
+    @Published private(set) var multiviewLayout = StreamSettings.default.multiviewLayout
+    @Published private(set) var streamSortOrder = StreamSettings.default.streamSortOrder
+    @Published private(set) var audioSelection = StreamSettings.default.audioSelection
 
     @Published private(set) var mutliviewSelectedLabelKey: LocalizedStringKey
     @Published private(set) var multiviewSelectionItems: [SelectionsGroup.Item] = []
@@ -28,18 +36,19 @@ final class SettingsViewModel: ObservableObject {
     @Published private(set) var audioSelectedLabelKey: LocalizedStringKey
     @Published private(set) var audioSelectionsItems: [SelectionsGroup.Item] = []
 
-    init(settingsManager: SettingsManager = .shared) {
+    init(
+        mode: SettingsMode,
+        settingsManager: SettingsManager = .shared
+    ) {
         self.settingsManager = settingsManager
-        if case .global = settingsManager.mode {
+        self.mode = mode
+        
+        switch mode {
+        case .global:
             self.settingsScreenTitle = "settings.global.title.label"
-        } else {
+        case .stream:
             self.settingsScreenTitle = "settings.stream.title.label"
         }
-
-        showSourceLabels = settingsManager.settings.showSourceLabels
-        multiviewLayout = settingsManager.settings.multiviewLayout
-        streamSortOrder = settingsManager.settings.streamSortOrder
-        audioSelection = settingsManager.settings.audioSelection
 
         mutliviewSelectedLabelKey = "place.holder"
         streamSortOrderSelectedLabelKey = "place.holder"
@@ -49,11 +58,17 @@ final class SettingsViewModel: ObservableObject {
     }
 
     func setShowSourceLabels(_ showSourceLabels: Bool) {
-        settingsManager.settings.showSourceLabels = showSourceLabels
+        var updatedSettings = settings
+        updatedSettings.showSourceLabels = showSourceLabels
+        
+        settingsManager.update(settings: updatedSettings, for: mode)
     }
 
     func setMultiviewLayout(_ multiviewLayout: StreamSettings.MultiviewLayout) {
-        settingsManager.settings.multiviewLayout = multiviewLayout
+        var updatedSettings = settings
+        updatedSettings.multiviewLayout = multiviewLayout
+
+        settingsManager.update(settings: updatedSettings, for: mode)
     }
 
     func selectMultiviewLayout(with index: Int) {
@@ -64,7 +79,10 @@ final class SettingsViewModel: ObservableObject {
     }
 
     func setStreamSortOrder(_ streamSortOrder: StreamSettings.StreamSortOrder) {
-        settingsManager.settings.streamSortOrder = streamSortOrder
+        var updatedSettings = settings
+        updatedSettings.streamSortOrder = streamSortOrder
+
+        settingsManager.update(settings: updatedSettings, for: mode)
     }
 
     func selectStreamSortOrder(with index: Int) {
@@ -75,7 +93,10 @@ final class SettingsViewModel: ObservableObject {
     }
 
     func setAudioSelection(_ audioSelection: StreamSettings.AudioSelection) {
-        settingsManager.settings.audioSelection = audioSelection
+        var updatedSettings = settings
+        updatedSettings.audioSelection = audioSelection
+
+        settingsManager.update(settings: updatedSettings, for: mode)
     }
 
     func selectAudioSelection(with index: Int) {
@@ -84,9 +105,9 @@ final class SettingsViewModel: ObservableObject {
         case 1: setAudioSelection(.followVideo)
         case 2: setAudioSelection(.mainSource)
         default:
-            if case .stream = settingsManager.mode {
-                if settingsManager.settings.audioSources.isEmpty == false {
-                    let label = settingsManager.settings.audioSources[index - 3]
+            if case .stream = mode {
+                if settings.audioSources.isEmpty == false {
+                    let label = settings.audioSources[index - 3]
                     setAudioSelection(.source(sourceId: label))
                 }
             }
@@ -97,16 +118,16 @@ final class SettingsViewModel: ObservableObject {
 extension SettingsViewModel {
 
     private func setupSettingsObservers() {
-        settingsManager.settingsPublisher
+        settingsManager.publisher(for: mode)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] settings in
                 guard let self = self else { return }
-                self.updateSettings(settings)
+                self.settings = settings
             }
             .store(in: &subscriptions)
     }
 
-    private func updateSettings(_ settings: StreamSettings) {
+    private func updateState(for settings: StreamSettings) {
         self.showSourceLabels = settings.showSourceLabels
         self.multiviewLayout = settings.multiviewLayout
         self.streamSortOrder = settings.streamSortOrder
@@ -158,7 +179,7 @@ extension SettingsViewModel {
     private func updateAudioSelection() {
         var items: [SelectionsGroup.Item]
 
-        switch settingsManager.mode {
+        switch mode {
         case .global:
             items = [
                 .init(key: "audio-selection.first-source.label",
@@ -180,7 +201,7 @@ extension SettingsViewModel {
                       selected: audioSelection == .mainSource)
             ]
 
-            settingsManager.settings.audioSources.forEach {
+            settings.audioSources.forEach {
                 items.append(
                     .init(key: LocalizedStringKey($0),
                           bundle: .module,

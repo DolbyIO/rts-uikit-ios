@@ -24,6 +24,6 @@ struct SettingsMultiviewScreen: View {
 
 struct SettingsMultiviewScreen_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsMultiviewScreen(viewModel: .init())
+        SettingsMultiviewScreen(viewModel: .init(mode: .global))
     }
 }

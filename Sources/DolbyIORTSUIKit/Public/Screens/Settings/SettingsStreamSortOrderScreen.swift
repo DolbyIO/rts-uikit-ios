@@ -5,7 +5,7 @@
 import SwiftUI
 import DolbyIOUIKit
 
-struct SettingsStreamSortorderScreen: View {
+struct SettingsStreamSortOrderScreen: View {
 
     @ObservedObject var viewModel: SettingsViewModel
 
@@ -24,6 +24,6 @@ struct SettingsStreamSortorderScreen: View {
 
 struct SettingsStreamSortorderScreen_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsStreamSortorderScreen(viewModel: .init())
+        SettingsStreamSortOrderScreen(viewModel: .init(mode: .global))
     }
 }
