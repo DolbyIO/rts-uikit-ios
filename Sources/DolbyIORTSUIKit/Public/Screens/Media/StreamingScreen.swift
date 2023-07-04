@@ -39,7 +39,7 @@ public struct StreamingScreen: View {
     
     @ViewBuilder
     private func streamView(for displayMode: StreamViewModel.DisplayMode) -> some View {
-        HStack {
+        ZStack {
             switch displayMode {
             case let .list(listViewModel):
                 ListView(
@@ -61,10 +61,12 @@ public struct StreamingScreen: View {
                 )
             }
         }
-        .navigationBarBackButtonHidden(true)
+        .overlay(alignment: .topLeading) {
+            liveIndicatorView
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                BackButton {
+                IconButton(iconAsset: .close) {
                     endStream()
                 }
             }
@@ -79,16 +81,12 @@ public struct StreamingScreen: View {
                 SettingsButton { isShowingSettingsScreen = true }
             }
         }
-        .overlay(alignment: .topLeading) {
-            liveIndicatorView
-        }
     }
     
     @ViewBuilder
     private func errorView(for viewModel: ErrorViewModel) -> some View {
         ErrorView(viewModel: viewModel)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationBarBackButtonHidden(true)
             .overlay(alignment: .topTrailing) {
                 closeButton
             }
@@ -110,7 +108,6 @@ public struct StreamingScreen: View {
     private var progressView: some View {
         ProgressView()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationBarBackButtonHidden(true)
     }
     
     @ViewBuilder
@@ -134,34 +131,38 @@ public struct StreamingScreen: View {
     }
 
     public var body: some View {
-        ZStack {
-            NavigationLink(
-                destination: LazyNavigationDestinationView(
-                    singleStreamDetailView
-                ),
-                isActive: $isShowingSingleViewScreen
-            ) {
-                EmptyView()
-            }
-            .hidden()
+        NavigationView {
+            ZStack {
+                NavigationLink(
+                    destination: LazyNavigationDestinationView(
+                        singleStreamDetailView
+                    ),
+                    isActive: $isShowingSingleViewScreen
+                ) {
+                    EmptyView()
+                }
+                .hidden()
 
-            NavigationLink(
-                destination: LazyNavigationDestinationView(
-                    SettingsScreen(mode: viewModel.settingsMode)
-                ),
-                isActive: $isShowingSettingsScreen
-            ) {
-                EmptyView()
-            }.hidden()
+                NavigationLink(
+                    destination: LazyNavigationDestinationView(
+                        SettingsScreen(mode: viewModel.settingsMode)
+                    ),
+                    isActive: $isShowingSettingsScreen
+                ) {
+                    EmptyView()
+                }.hidden()
 
-            switch viewModel.state {
-            case let .success(displayMode: displayMode):
-                streamView(for: displayMode)
-            case .loading:
-                progressView
-            case let .error(errorViewModel):
-                errorView(for: errorViewModel)
+                switch viewModel.state {
+                case let .success(displayMode: displayMode):
+                    streamView(for: displayMode)
+                case .loading:
+                    progressView
+                case let .error(errorViewModel):
+                    errorView(for: errorViewModel)
+                }
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
         }
     }
 }
