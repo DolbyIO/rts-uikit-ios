@@ -280,6 +280,15 @@ private extension StreamOrchestrator {
 // MARK: SubscriptionManagerDelegate implementation
 
 extension StreamOrchestrator: SubscriptionManagerDelegate {
+    
+    public func onDisconnected() {
+        let task = Task { [weak self] in
+            guard let self = self else { return }
+            await self.stateMachine.onDisconnected()
+        }
+        taskStreamContinuation?.yield(task)
+    }
+    
     public func onSubscribedError(_ reason: String) {
         let task = Task { [weak self] in
             guard let self = self else { return }
