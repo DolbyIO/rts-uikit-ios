@@ -252,33 +252,12 @@ final class StreamViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
-    private var sourcesCounter = 0
-    
     // swiftlint:disable cyclomatic_complexity function_body_length
     private func updateState(from sources: [StreamSource], settings: StreamSettings) {
         guard !sources.isEmpty else {
             return
         }
-        
-        if sources.count != sourcesCounter {
-            sourcesCounter = sources.count
-            print("@# count: \(sourcesCounter)")
-            sources.forEach { print("@#: id \($0.sourceId)") }
-            switch internalState {
-            case .error, .loading:
-                print("@# internal-status: error or loading")
-            case let .success(
-                displayMode: _,
-                sources: sources,
-                selectedVideoSource: vSource,
-                selectedAudioSource: _,
-                sourceAndViewRenderers: _,
-                detailSourceAndViewRenderers: _,
-                settings: _):
-                print("@# success: \(vSource.sourceId), \(sources.count)")
-            }
-        }
-        
+                
         updateStreamSettings(from: sources, settings: settings)
 
         let sortedSources: [StreamSource]
