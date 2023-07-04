@@ -35,7 +35,7 @@ open class StreamOrchestrator {
     private typealias OrchestratorTask = Task<Void, Never>
     private var taskStreamContinuation: AsyncStream<OrchestratorTask>.Continuation?
     private static var configuration: StreamOrchestrator.Configuration = .init()
-
+    
     private convenience init() {
         self.init(
             subscriptionManager: SubscriptionManager(),
@@ -264,6 +264,17 @@ private extension StreamOrchestrator {
         let (_, success) = await (startSubscribeStateUpdate, startSubscribe)
         return success
     }
+    
+    func stopAudio(for sourceId: String) async {
+        switch await stateMachine.currentState {
+        case let .subscribed(state):
+            if let source = state.sources.first (where: { $0.sourceId.value == sourceId }),
+               source.isPlayingAudio == true {
+                subscriptionManager.unprojectAudio(for: source)
+            }
+        default: break
+        }
+    }
 }
 
 // MARK: SubscriptionManagerDelegate implementation
@@ -382,6 +393,12 @@ extension StreamOrchestrator: SubscriptionManagerDelegate {
     public func onInactive(_ streamId: String, sourceId: String?) {
         let task = Task { [weak self] in
             guard let self = self else { return }
+            
+            // Unproject audio whose source is inactive
+            if let sourceId = sourceId {
+                await self.stopAudio(for: sourceId)
+            }
+            
             await self.stateMachine.onInactive(streamId, sourceId: sourceId)
         }
         taskStreamContinuation?.yield(task)
