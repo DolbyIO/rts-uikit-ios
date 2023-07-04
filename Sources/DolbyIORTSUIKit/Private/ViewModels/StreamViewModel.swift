@@ -257,7 +257,7 @@ final class StreamViewModel: ObservableObject {
         guard !sources.isEmpty else {
             return
         }
-        
+                
         updateStreamSettings(from: sources, settings: settings)
 
         let sortedSources: [StreamSource]
@@ -287,7 +287,7 @@ final class StreamViewModel: ObservableObject {
             detailSourceAndViewRenderers: existingDetailSourceAndViewRenderers,
             settings: _
         ):
-            selectedVideoSource = currentlySelectedVideoSource
+            selectedVideoSource = sources.first { $0.id == currentlySelectedVideoSource.id } ?? sortedSources[0]
             sourceAndViewRenderers = existingSourceAndViewRenderers
             detailSourceAndViewRenderers = existingDetailSourceAndViewRenderers
         }
