@@ -35,6 +35,8 @@ open class StreamOrchestrator {
     private typealias OrchestratorTask = Task<Void, Never>
     private var taskStreamContinuation: AsyncStream<OrchestratorTask>.Continuation?
     private static var configuration: StreamOrchestrator.Configuration = .init()
+    
+    private var lastSelectedAudioSource: StreamSource?
 
     private convenience init() {
         self.init(
@@ -115,9 +117,20 @@ open class StreamOrchestrator {
                     }
                 }
                 
+                // Unproject audio whose source has been stopped from the publisher
+                if let lastSource = self.lastSelectedAudioSource,
+                   lastSource.sourceId != source.sourceId,
+                   sources.first(where: { $0.id == lastSource.id }) == nil {
+                    group.addTask {
+                        await self.stateMachine.setPlayingAudio(false, for: lastSource)
+                        self.subscriptionManager.unprojectAudio(for: lastSource)
+                    }
+                }
+                
                 group.addTask {
                     self.subscriptionManager.projectAudio(for: source)
                     await self.stateMachine.setPlayingAudio(true, for: source)
+                    self.lastSelectedAudioSource = source
                 }
             }
         default:
