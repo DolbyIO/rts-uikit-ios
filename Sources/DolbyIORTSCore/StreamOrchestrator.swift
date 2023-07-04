@@ -270,12 +270,7 @@ private extension StreamOrchestrator {
         case let .subscribed(state):
             if let source = state.sources.first (where: { $0.sourceId.value == sourceId }),
                source.isPlayingAudio == true {
-                await withTaskGroup(of: Void.self) { [weak self] group in
-                    guard let self = self else { return }
-                    group.addTask {
-                        self.subscriptionManager.unprojectAudio(for: source)
-                    }
-                }
+                subscriptionManager.unprojectAudio(for: source)
             }
         default: break
         }
