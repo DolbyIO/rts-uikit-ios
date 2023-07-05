@@ -38,8 +38,8 @@ final public class SettingsManager {
     
     public func publisher(for mode: SettingsMode) -> AnyPublisher<StreamSettings, Never> {
         $settingsDictionary
-            .map {
-                $0[mode.storageKey] ?? StreamSettings.default
+            .compactMap {
+                $0[mode.storageKey] ?? $0[SettingsMode.global.storageKey]
             }
             .removeDuplicates()
             .eraseToAnyPublisher()
