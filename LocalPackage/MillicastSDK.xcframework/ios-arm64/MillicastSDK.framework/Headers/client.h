@@ -137,6 +137,9 @@ MILLICAST_API @interface MCClientOptions : NSObject
 /** @brief Force the playout delay to be 0. This asks the media server to remove any delay when processing frames (subscriber only) */
 @property(nonatomic, assign) BOOL forcePlayoutDelay;
 
+/* @brief Disable receiving audio completely. This should help reduce A/V sync related delays for video only streams */
+@property(nonatomic, assign) BOOL disableAudio;
+
 @end
 
 /**

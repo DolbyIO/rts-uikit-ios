@@ -51,7 +51,7 @@ protocol SubscriptionManagerProtocol: AnyObject {
 
 final class SubscriptionManager: SubscriptionManagerProtocol {
     private enum Defaults {
-        static let subscribeURL = "https://director-dev.millicast.com/api/director/subscribe"
+        static let subscribeURL = "https://director.millicast.com/api/director/subscribe"
     }
     private static let logger = Logger.make(category: String(describing: SubscriptionManager.self))
 
@@ -121,6 +121,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             
             let options = MCClientOptions()
             options.forcePlayoutDelay = true
+            options.disableAudio = true
             self.subscriber.setOptions(options)
             
             guard self.subscriber.subscribe() else {
