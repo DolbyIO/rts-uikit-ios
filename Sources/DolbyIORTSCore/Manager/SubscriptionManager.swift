@@ -38,8 +38,8 @@ protocol SubscriptionManagerDelegate: AnyObject {
 protocol SubscriptionManagerProtocol: AnyObject {
     var delegate: SubscriptionManagerDelegate? { get set }
 
-    func connect(streamName: String, accountID: String) async -> Bool
-    func startSubscribe() async -> Bool
+    func connect(streamName: String, accountID: String, dev: Bool) async -> Bool
+    func startSubscribe(forcePlayoutDelay: Bool, disableAudio: Bool) async -> Bool
     func stopSubscribe() async -> Bool
     func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource)
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder)
@@ -52,6 +52,7 @@ protocol SubscriptionManagerProtocol: AnyObject {
 final class SubscriptionManager: SubscriptionManagerProtocol {
     private enum Defaults {
         static let subscribeURL = "https://director.millicast.com/api/director/subscribe"
+        static let subscribeURLDev = "https://director-dev.millicast.com/api/director/subscribe"
     }
     private static let logger = Logger.make(category: String(describing: SubscriptionManager.self))
 
@@ -59,7 +60,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
     weak var delegate: SubscriptionManagerDelegate?
 
-    func connect(streamName: String, accountID: String) async -> Bool {
+    func connect(streamName: String, accountID: String, dev: Bool) async -> Bool {
         if subscriber != nil {
             _ = await stopSubscribe()
         }
@@ -86,7 +87,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
                 return false
             }
 
-            let credentials = self.makeCredentials(streamName: streamName, accountID: accountID)
+            let credentials = self.makeCredentials(streamName: streamName, accountID: accountID, dev: dev)
 
             self.subscriber.setCredentials(credentials)
 
@@ -101,7 +102,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         return await task.value
     }
 
-    func startSubscribe() async -> Bool {
+    func startSubscribe(forcePlayoutDelay: Bool, disableAudio: Bool) async -> Bool {
         let task = Task { [weak self] () -> Bool in
             Self.logger.debug("💼 Start subscribe")
 
@@ -120,8 +121,8 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             }
             
             let options = MCClientOptions()
-            options.forcePlayoutDelay = true
-            options.disableAudio = true
+            options.forcePlayoutDelay = forcePlayoutDelay
+            options.disableAudio = disableAudio
             self.subscriber.setOptions(options)
             
             guard self.subscriber.subscribe() else {
@@ -222,12 +223,12 @@ private extension SubscriptionManager {
         return MCSubscriber.create()
     }
 
-    func makeCredentials(streamName: String, accountID: String) -> MCSubscriberCredentials {
+    func makeCredentials(streamName: String, accountID: String, dev: Bool) -> MCSubscriberCredentials {
         let credentials = MCSubscriberCredentials()
         credentials.accountId = accountID
         credentials.streamName = streamName
         credentials.token = ""
-        credentials.apiUrl = Defaults.subscribeURL
+        credentials.apiUrl = dev ? Defaults.subscribeURLDev : Defaults.subscribeURL
 
         return credentials
     }
