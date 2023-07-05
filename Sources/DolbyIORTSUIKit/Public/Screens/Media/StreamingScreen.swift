@@ -171,8 +171,8 @@ public struct StreamingScreen: View {
 
 extension StreamingScreen {
     func endStream() {
+        _isShowingStreamView.wrappedValue = false
         Task {
-            _isShowingStreamView.wrappedValue = false
             await viewModel.endStream()
         }
     }
