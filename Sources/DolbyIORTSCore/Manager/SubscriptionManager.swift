@@ -27,6 +27,8 @@ protocol SubscriptionManagerDelegate: AnyObject {
     func onConnected()
 
     func onConnectionError(_ status: Int32, withReason reason: String)
+    
+    func onDisconnected()
 
     func onSignalingError(_ message: String)
 
@@ -233,6 +235,11 @@ private extension SubscriptionManager {
 // MARK: MCSubscriberListener implementation
 
 extension SubscriptionManager: MCSubscriberListener {
+    
+    func onDisconnected() {
+        Self.logger.debug("💼 Delegate - onDisconnected")
+        delegate?.onDisconnected()
+    }
 
     func onSubscribed() {
         Self.logger.debug("💼 Delegate - onSubscribed")

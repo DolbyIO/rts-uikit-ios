@@ -98,6 +98,16 @@ final actor StateMachine {
             Self.logger.error("🛑 Unexpected state on onConnectionError - \(self.currentState.description)")
         }
     }
+    
+    func onDisconnected() {
+        switch currentState {
+        case .connected, .subscribed, .connecting, .subscribing, .error, .stopped:
+            currentState = .disconnected
+
+        default:
+            Self.logger.error("🛑 Unexpected state on onDisconnected - \(self.currentState.description)")
+        }
+    }
 
     func onSubscribed() {
         switch currentState {
