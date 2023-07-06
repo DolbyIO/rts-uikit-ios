@@ -7,30 +7,30 @@ import DolbyIOUIKit
 import SwiftUI
 
 struct VideoRendererView: View {
-    private let viewModel: VideoRendererViewModel
+    @ObservedObject private var viewModel: VideoRendererViewModel
+    private let viewRenderer: StreamSourceViewRenderer
     private let maxWidth: CGFloat
     private let maxHeight: CGFloat
     private let contentMode: VideoRendererContentMode
     private let action: ((StreamSource) -> Void)?
+    @State var isViewVisible = false
 
     @ObservedObject private var themeManager = ThemeManager.shared
 
     init(
         viewModel: VideoRendererViewModel,
+        viewRenderer: StreamSourceViewRenderer,
         maxWidth: CGFloat,
         maxHeight: CGFloat,
         contentMode: VideoRendererContentMode,
         action: ((StreamSource) -> Void)? = nil
     ) {
         self.viewModel = viewModel
+        self.viewRenderer = viewRenderer
         self.maxWidth = maxWidth
         self.maxHeight = maxHeight
         self.contentMode = contentMode
         self.action = action
-
-        Task {
-            viewModel.playVideo(for: viewModel.streamSource)
-        }
     }
 
     private var theme: Theme {
@@ -61,7 +61,6 @@ struct VideoRendererView: View {
     }
 
     var body: some View {
-        let viewRenderer = viewModel.viewRenderer
         let videoSize: CGSize = {
             switch contentMode {
             case .aspectFit:
@@ -92,8 +91,17 @@ struct VideoRendererView: View {
             .onTapGesture {
                 action?(viewModel.streamSource)
             }
+            .onAppear {
+                isViewVisible = true
+                viewModel.playVideo(on: viewRenderer)
+            }
             .onDisappear {
-                viewModel.stopVideo(for: viewModel.streamSource)
+                isViewVisible = false
+                viewModel.stopVideo(on: viewRenderer)
+            }
+            .onChange(of: viewModel.videoQuality) { newValue in
+                guard isViewVisible else { return }
+                viewModel.playVideo(on: viewRenderer, quality: newValue)
             }
     }
 }

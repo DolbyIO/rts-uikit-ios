@@ -31,6 +31,7 @@ struct GridView: View {
     private let layout: GridViewLayout
     private let onVideoSelection: (StreamSource) -> Void
     @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
+    @StateObject private var viewRendererProvider: ViewRendererProvider = .init()
 
     init(
         viewModel: GridViewModel,
@@ -72,12 +73,14 @@ struct GridView: View {
                     
                     VideoRendererView(
                         viewModel: viewModel,
+                        viewRenderer: viewRendererProvider.renderer(for: viewModel.streamSource),
                         maxWidth: maxAllowedSubVideoWidth,
                         maxHeight: maxAllowedSubVideoHeight,
                         contentMode: .aspectFit
                     ) { source in
                         onVideoSelection(source)
                     }
+                    .id(viewModel.streamSource.id)
                     .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
                 }
             }
@@ -93,12 +96,14 @@ struct GridView: View {
                 ForEach(viewModel.allVideoViewModels, id: \.streamSource.id) { viewModel in
                     VideoRendererView(
                         viewModel: viewModel,
+                        viewRenderer: viewRendererProvider.renderer(for: viewModel.streamSource),
                         maxWidth: .infinity,
                         maxHeight: availableHeight / CGFloat(rowsCount),
                         contentMode: .aspectFit
                     ) { source in
                         onVideoSelection(source)
                     }
+                    .id(viewModel.streamSource.id)
                 }
             }.frame(height: availableHeight)
         }

@@ -13,15 +13,14 @@ public class StreamSourceViewRenderer: Identifiable {
     }
 
     private let renderer: MCIosVideoRenderer
-    private let source: StreamSource
-    private var videoTrack: MCVideoTrack
+    
+    let videoTrack: MCVideoTrack
 
     public let id = UUID()
 
     public init(_ streamSource: StreamSource) {
         let videoTrack = streamSource.videoTrack.track
         self.renderer = MCIosVideoRenderer()
-        self.source = streamSource
         self.videoTrack = videoTrack
 
         Task {
@@ -29,10 +28,6 @@ public class StreamSourceViewRenderer: Identifiable {
                 videoTrack.add(renderer)
             }
         }
-    }
-
-    private var hasValidDimensions: Bool {
-        renderer.getWidth() != 0 && renderer.getHeight() != 0
     }
 
     public var frameWidth: CGFloat {
@@ -45,5 +40,14 @@ public class StreamSourceViewRenderer: Identifiable {
 
     public var playbackView: UIView {
         renderer.getView()
+    }
+}
+
+// MARK: Helper functions
+
+extension StreamSourceViewRenderer {
+    
+    private var hasValidDimensions: Bool {
+        renderer.getWidth() != 0 && renderer.getHeight() != 0
     }
 }

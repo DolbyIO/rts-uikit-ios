@@ -24,6 +24,7 @@ struct SingleStreamView: View {
     @State private var isShowingSettingsScreen: Bool = false
     @State private var isShowingStatsInfoScreen: Bool = false
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
+    @StateObject private var viewRendererProvider: ViewRendererProvider = .init()
 
     @ObservedObject private var themeManager = ThemeManager.shared
 
@@ -97,16 +98,13 @@ struct SingleStreamView: View {
                     ForEach(viewModel.videoViewModels, id: \.streamSource.id) { videoRendererViewModel in
                         let maxAllowedVideoWidth = proxy.size.width
                         let maxAllowedVideoHeight = proxy.size.height
-                        ZStack {
-                            HStack {
-                                VideoRendererView(
-                                    viewModel: videoRendererViewModel,
-                                    maxWidth: maxAllowedVideoWidth,
-                                    maxHeight: maxAllowedVideoHeight,
-                                    contentMode: .aspectFit
-                                )
-                            }
-                        }
+                        VideoRendererView(
+                            viewModel: videoRendererViewModel,
+                            viewRenderer: viewRendererProvider.renderer(for: videoRendererViewModel.streamSource),
+                            maxWidth: maxAllowedVideoWidth,
+                            maxHeight: maxAllowedVideoHeight,
+                            contentMode: .aspectFit
+                        )
                         .sheet(isPresented: $isShowingStatsInfoScreen) {
                             statisticsView()
                         }

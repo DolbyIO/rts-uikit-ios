@@ -7,16 +7,18 @@ import DolbyIORTSCore
 import DolbyIOUIKit
 
 public struct StreamingScreen: View {
-    @StateObject private var viewModel: StreamViewModel = .init()
-    @Binding private var isShowingStreamView: Bool
+    @StateObject private var viewModel: StreamViewModel
     @State private var isShowingSingleViewScreen: Bool = false
     @State private var isShowingSettingsScreen: Bool = false
     @ObservedObject private var themeManager = ThemeManager.shared
     
+    private let onClose: () -> Void
+    
     private var theme: Theme { themeManager.theme }
     
-    public init(isShowingStreamView: Binding<Bool>) {
-        _isShowingStreamView = isShowingStreamView
+    public init(streamDetail: StreamDetail, onClose: @escaping () -> Void) {
+        _viewModel = StateObject(wrappedValue: .init(streamDetail: streamDetail))
+        self.onClose = onClose
     }
 
     @ViewBuilder
@@ -180,7 +182,7 @@ public struct StreamingScreen: View {
 
 extension StreamingScreen {
     func endStream() {
-        _isShowingStreamView.wrappedValue = false
+        onClose()
         Task {
             await viewModel.endStream()
         }
