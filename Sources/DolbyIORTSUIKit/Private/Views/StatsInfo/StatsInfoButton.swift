@@ -22,6 +22,7 @@ struct StatsInfoButton: View {
             showStats.toggle()
         }
         .contentShape(Rectangle())
+        .frame(width: 40, height: 40)
         .sheet(isPresented: $showStats) {
             StatisticsView(streamSource: viewModel.streamSource)
         }
