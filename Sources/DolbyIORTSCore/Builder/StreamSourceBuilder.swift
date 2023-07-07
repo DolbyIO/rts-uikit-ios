@@ -111,9 +111,9 @@ final class StreamSourceBuilder {
     }
 
     func build() throws -> StreamSource {
-        guard !hasMissingAudioTrack else {
-            throw BuildError.missingAudioTrack
-        }
+//        guard !hasMissingAudioTrack else {
+//            throw BuildError.missingAudioTrack
+//        }
 
         guard !hasMissingVideoTrack, let videoTrack = videoTrack else {
             throw BuildError.missingVideoTrack
