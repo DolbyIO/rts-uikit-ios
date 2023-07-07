@@ -118,6 +118,10 @@ final class StreamSourceBuilder {
         guard !hasMissingVideoTrack, let videoTrack = videoTrack else {
             throw BuildError.missingVideoTrack
         }
+        
+        guard sourceId.value == "CAM1" else {
+            throw BuildError.missingVideoTrack
+        }
 
         return StreamSource(
             id: identifier,

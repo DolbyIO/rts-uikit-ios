@@ -174,7 +174,12 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func projectVideo(for source: StreamSource, withQuality quality: StreamSource.VideoQuality) {
-        Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A")")
+        Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A") qualityToProject - \(quality.description) layerData = \(quality.layerData)")
+        
+        source.availableVideoQualityList.forEach { videoquality in
+            Self.logger.debug("💼 Project video for source - available resolutions are qualityToProject - \(videoquality.description) layerData = \(videoquality.layerData)")
+        }
+        
         let videoTrack = source.videoTrack
         let projectionData = MCProjectionData()
         projectionData.media = videoTrack.trackInfo.mediaType.rawValue

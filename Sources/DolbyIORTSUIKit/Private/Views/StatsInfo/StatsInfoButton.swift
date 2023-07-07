@@ -179,6 +179,10 @@ final class StatisticsViewModel {
             let codecs = "\(audioCodec ?? "")\(delimiter)\(videoCodec ?? "")"
             result.append(StatData(key: "stream.stats.codecs.label", value: codecs))
         }
+        let statsString: String = result.reduce("Stats information are:", { partialResult, statData in
+            partialResult + "\(statData.key.toString(with: .module)) =  \(statData.value); "
+        }) + ">>>>>"
+        print(">>>>>> - \(statsString)")
         return result
     }
 
