@@ -8,17 +8,22 @@ import SwiftUI
 
 struct StatsInfoButton: View {
 
-    @StateObject private var viewModel: StatsInfoViewModel
+    private let viewModel: StatsInfoViewModel
+    @State private var showStats: Bool = false
 
     init(streamSource: StreamSource) {
-        _viewModel = StateObject(wrappedValue: StatsInfoViewModel(streamSource: streamSource))
+        viewModel = StatsInfoViewModel(streamSource: streamSource)
     }
 
     var body: some View {
         IconButton(
             iconAsset: .info
         ) {
-            // TODO: Handle as part of status info screen ticket
+            showStats.toggle()
+        }
+        .contentShape(Rectangle())
+        .sheet(isPresented: $showStats) {
+            StatisticsView(streamSource: viewModel.streamSource)
         }
     }
 }
@@ -142,9 +147,6 @@ final class StatisticsViewModel {
         if let val = stats.statsInboundRtp?.jitterBufferTargetDelay {
             result.append(StatData(key: "stream.stats.jitter-buffer-target-delay.label", value: String(format:"%.2f ms", val)))
         }
-        if let val = stats.statsInboundRtp?.jitterBufferMinimumtDelay {
-            result.append(StatData(key: "stream.stats.jitter-buffer-minimum-delay.label", value: String(format:"%.2f ms", val)))
-        }
         if let videoPacketsLost = stats.statsInboundRtp?.packetsLost {
             result.append(StatData(key: "stream.stats.video-packet-loss.label", value: String(format:"%.2f", videoPacketsLost)))
         }
@@ -173,10 +175,12 @@ final class StatisticsViewModel {
             let codecs = "\(audioCodec ?? "")\(delimiter)\(videoCodec ?? "")"
             result.append(StatData(key: "stream.stats.codecs.label", value: codecs))
         }
+        
         let statsString: String = result.reduce("Stats information are:", { partialResult, statData in
             partialResult + "\(statData.key.toString(with: .module)) =  \(statData.value); "
         }) + ">>>>>"
         print(">>>>>> - \(statsString)")
+
         return result
     }
 

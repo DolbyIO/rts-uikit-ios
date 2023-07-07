@@ -119,6 +119,7 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
     let isPlayingVideo: Bool
     let audioTracks: [AudioTrackInfo]
     let videoTrack: VideoTrackInfo
+    public let streamingStats: StreamingStatistics?
 }
 
 extension StreamSource: Comparable {

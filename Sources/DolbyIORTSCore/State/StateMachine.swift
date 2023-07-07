@@ -221,11 +221,11 @@ final actor StateMachine {
             Self.logger.error("🛑 Unexpected state on onLayers - \(self.currentState.description)")
         }
     }
-
-    func onStatsReport(_ streamingStats: StreamingStatistics) {
+    
+    func onStatsReport(_ stats: [StreamingStatistics]) {
         switch currentState {
         case var .subscribed(state):
-            state.updateStreamingStatistics(streamingStats)
+            state.updateStreamingStatistics(stats)
             currentState = .subscribed(state)
         default:
             Self.logger.error("🛑 Unexpected state on onStatsReport - \(self.currentState.description)")

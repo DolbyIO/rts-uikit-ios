@@ -179,7 +179,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         projectionData.mid = videoTrack.trackInfo.mid
         projectionData.trackId = videoTrack.trackInfo.trackID
         projectionData.layer = quality.layerData
-
         subscriber.project(source.sourceId.value, withData: [projectionData])
     }
 
@@ -202,7 +201,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         projectionData.media = audioTrack.trackInfo.mediaType.rawValue
         projectionData.mid = audioTrack.trackInfo.mid
         projectionData.trackId = audioTrack.trackInfo.trackID
-
         subscriber.project(source.sourceId.value, withData: [projectionData])
     }
 

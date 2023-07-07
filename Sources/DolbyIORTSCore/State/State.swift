@@ -110,8 +110,16 @@ struct SubscribedState {
         numberOfStreamViewers = count
     }
 
-    mutating func updateStreamingStatistics(_ stats: StreamingStatistics?) {
-        streamingStats = stats
+    mutating func updateStreamingStatistics(_ stats: [StreamingStatistics]) {
+        streamSourceBuilders.forEach { builder in
+            if let mid = builder.videoTrack?.trackInfo.mid {
+                stats.first { currentStat in
+                    currentStat.mid == mid
+                }.map {
+                    builder.setStreamStatistics($0)
+                }
+            }
+        }
     }
 
     var sources: [StreamSource] {
