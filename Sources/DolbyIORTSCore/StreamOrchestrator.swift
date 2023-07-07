@@ -169,11 +169,11 @@ open class StreamOrchestrator {
                 case .auto:
                     hasAlreadySetToIdealVideoQuality = false
                 case .high:
-                    hasAlreadySetToIdealVideoQuality = true
+                    hasAlreadySetToIdealVideoQuality = false
                 case .medium:
                     hasAlreadySetToIdealVideoQuality = false
                 case .low:
-                    hasAlreadySetToIdealVideoQuality = false
+                    hasAlreadySetToIdealVideoQuality = true
                 }
                 
                 guard !hasAlreadySetToIdealVideoQuality, let qualityToProject = matchingSource.availableVideoQualityList.first(where: { quality in
@@ -181,11 +181,11 @@ open class StreamOrchestrator {
                     case .auto:
                         return false
                     case .high:
-                        return true
+                        return false
                     case .medium:
                         return false
                     case .low:
-                        return false
+                        return true
                     }
                 }) else {
                     return
