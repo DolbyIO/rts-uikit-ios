@@ -213,6 +213,7 @@ final actor StateMachine {
             default:
                 streamTypes = [.auto]
             }
+            print(">>>>> StateMachine -> setAvailableStreamTypes - \(streamTypes) - mid = \(mid)")
 
             state.setAvailableStreamTypes(streamTypes, for: mid)
             currentState = .subscribed(state)

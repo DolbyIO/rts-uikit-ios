@@ -170,8 +170,10 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func projectVideo(for source: StreamSource, withQuality quality: StreamSource.VideoQuality) {
-        Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A")")
         let videoTrack = source.videoTrack
+
+        Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A") qualityToProject - \(quality.description) layerData = \(quality.layerData) - mid = \(videoTrack.trackInfo.mid)")
+        
         let projectionData = MCProjectionData()
         projectionData.media = videoTrack.trackInfo.mediaType.rawValue
         projectionData.mid = videoTrack.trackInfo.mid

@@ -154,17 +154,49 @@ open class StreamOrchestrator {
             else {
                 return
             }
-            let videoTrack = source.videoTrack.track
+            let videoTrack = matchingSource.videoTrack.track
             await rendererRegistry.registerRenderer(renderer, for: videoTrack)
 
             if !matchingSource.isPlayingVideo {
-                subscriptionManager.projectVideo(for: source, withQuality: quality)
+                subscriptionManager.projectVideo(for: matchingSource, withQuality: .auto)
                 _ = await (
-                    stateMachine.setPlayingVideo(true, for: source),
-                    stateMachine.selectVideoQuality(quality, for: source)
+                    stateMachine.setPlayingVideo(true, for: matchingSource),
+                    stateMachine.selectVideoQuality(.auto, for: matchingSource)
+                )
+            } else {
+                let hasAlreadySetToIdealVideoQuality: Bool
+                switch matchingSource.preferredVideoQuality {
+                case .auto:
+                    hasAlreadySetToIdealVideoQuality = false
+                case .high:
+                    hasAlreadySetToIdealVideoQuality = false
+                case .medium:
+                    hasAlreadySetToIdealVideoQuality = false
+                case .low:
+                    hasAlreadySetToIdealVideoQuality = true
+                }
+                
+                guard !hasAlreadySetToIdealVideoQuality, let qualityToProject = matchingSource.availableVideoQualityList.first(where: { quality in
+                    switch quality {
+                    case .auto:
+                        return false
+                    case .high:
+                        return false
+                    case .medium:
+                        return false
+                    case .low:
+                        return true
+                    }
+                }) else {
+                    return
+                }
+                subscriptionManager.unprojectVideo(for: matchingSource)
+                subscriptionManager.projectVideo(for: matchingSource, withQuality: qualityToProject)
+                _ = await (
+                    stateMachine.setPlayingVideo(true, for: matchingSource),
+                    stateMachine.selectVideoQuality(qualityToProject, for: matchingSource)
                 )
             }
-
         default:
             return
         }

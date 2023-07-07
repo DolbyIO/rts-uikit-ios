@@ -102,7 +102,7 @@ struct SubscribedState {
         guard let builder = streamSourceBuilders.first(where: { $0.videoTrack?.trackInfo.mid == mid }) else {
             return
         }
-
+        print(">>>>> Actual state -> setAvailableStreamTypes - \(list)")
         builder.setAvailableVideoQualityList(list)
     }
 

@@ -94,6 +94,7 @@ final class StreamSourceBuilder {
     }
 
     func setAvailableVideoQualityList(_ list: [StreamSource.VideoQuality]) {
+        print(">>>>> StreamSourceBuilder -> setAvailableVideoQualityList - \(list)")
         availableVideoQualityList = list
     }
 
@@ -113,7 +114,12 @@ final class StreamSourceBuilder {
         guard !hasMissingVideoTrack, let videoTrack = videoTrack else {
             throw BuildError.missingVideoTrack
         }
+        
+        guard sourceId.value == "CAM1" else {
+            throw BuildError.missingVideoTrack
+        }
 
+//        print(">>>>> build -> availableVideoQualityList - \(availableVideoQualityList)")
         return StreamSource(
             id: identifier,
             streamId: streamId,
