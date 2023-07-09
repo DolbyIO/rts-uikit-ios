@@ -59,6 +59,16 @@ public struct StreamingScreen: View {
                         viewModel.selectVideoSource($0)
                     }
                 )
+            case let .grid(gridViewModel):
+                GridView(
+                    viewModel: gridViewModel,
+                    onPrimaryVideoSelection: { _ in
+                        isShowingSingleViewScreen = true
+                    },
+                    onSecondaryVideoSelection: {
+                        viewModel.selectVideoSource($0)
+                    }
+                )
             }
         }
         .overlay(alignment: .topLeading) {
@@ -117,6 +127,7 @@ public struct StreamingScreen: View {
             case let .success(displayMode: displayMode):
                 switch displayMode {
                 case .list: return true
+                case .grid: return true
                 case .single: return false
                 }
             default: return true

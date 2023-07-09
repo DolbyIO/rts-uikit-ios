@@ -51,6 +51,7 @@ final class StreamViewModel: ObservableObject {
     enum DisplayMode {
         case single(SingleStreamViewModel)
         case list(ListViewModel)
+        case grid(GridViewModel)
     }
 
     private let settingsManager: SettingsManager
@@ -157,6 +158,32 @@ final class StreamViewModel: ObservableObject {
 
             let updatedDisplayMode: DisplayMode
             switch displayMode {
+            case .grid:
+                let secondaryVideoSources = sources.filter { $0.id != matchingSource.id }
+                let showSourceLabels = settings.showSourceLabels
+                
+                let gridViewModel = GridViewModel(
+                    primaryVideoViewModel: VideoRendererViewModel(
+                        streamSource: matchingSource,
+                        viewRenderer: sourceAndViewRenderers.primaryRenderer(for: matchingSource),
+                        isSelectedVideoSource: true,
+                        isSelectedAudioSource: matchingSource.id == selectedAudioSource?.id,
+                        showSourceLabel: showSourceLabels,
+                        showAudioIndicator: matchingSource.id == selectedAudioSource?.id
+                    ),
+                    secondaryVideoViewModels: secondaryVideoSources.map {
+                        VideoRendererViewModel(
+                            streamSource: $0,
+                            viewRenderer: sourceAndViewRenderers.secondaryRenderer(for: $0),
+                            isSelectedVideoSource: false,
+                            isSelectedAudioSource: $0.id == selectedAudioSource?.id,
+                            showSourceLabel: showSourceLabels,
+                            showAudioIndicator: $0.id == selectedAudioSource?.id
+                        )
+                    }
+                )
+
+                updatedDisplayMode = .grid(gridViewModel)
             case .list:
                 let secondaryVideoSources = sources.filter { $0.id != matchingSource.id }
                 let showSourceLabels = settings.showSourceLabels
@@ -327,6 +354,32 @@ final class StreamViewModel: ObservableObject {
             )
 
             displayMode = .list(listViewModel)
+        case .grid:
+            let secondaryVideoSources = sortedSources.filter { $0.id != selectedVideoSource.id }
+            let showSourceLabels = settings.showSourceLabels
+
+            let gridViewModel = GridViewModel(
+                primaryVideoViewModel: VideoRendererViewModel(
+                    streamSource: selectedVideoSource,
+                    viewRenderer: sourceAndViewRenderers.primaryRenderer(for: selectedVideoSource),
+                    isSelectedVideoSource: true,
+                    isSelectedAudioSource: selectedVideoSource.id == selectedAudioSource?.id,
+                    showSourceLabel: showSourceLabels,
+                    showAudioIndicator: selectedVideoSource.id == selectedAudioSource?.id
+                ),
+                secondaryVideoViewModels: secondaryVideoSources.map {
+                    VideoRendererViewModel(
+                        streamSource: $0,
+                        viewRenderer: sourceAndViewRenderers.secondaryRenderer(for: $0),
+                        isSelectedVideoSource: false,
+                        isSelectedAudioSource: $0.id == selectedAudioSource?.id,
+                        showSourceLabel: showSourceLabels,
+                        showAudioIndicator: $0.id == selectedAudioSource?.id
+                    )
+                }
+            )
+
+            displayMode = .grid(gridViewModel)
         case .single:
             let singleStreamViewModel = SingleStreamViewModel(
                 videoViewModels: sortedSources.map {

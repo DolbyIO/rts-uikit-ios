@@ -74,6 +74,7 @@ final class SettingsViewModel: ObservableObject {
     func selectMultiviewLayout(with index: Int) {
         switch index {
         case 1: setMultiviewLayout(.single)
+        case 2: setMultiviewLayout(.grid)
         default: setMultiviewLayout(.list)
         }
     }
@@ -145,7 +146,10 @@ extension SettingsViewModel {
                   selected: multiviewLayout == .list),
             .init(key: "default-multi-view-layout.single-stream-view.label",
                   bundle: .module,
-                  selected: multiviewLayout == .single)
+                  selected: multiviewLayout == .single),
+            .init(key: "default-multi-view-layout.grid-view.label",
+                  bundle: .module,
+                  selected: multiviewLayout == .grid)
         ]
 
         switch multiviewLayout {
