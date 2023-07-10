@@ -83,8 +83,11 @@ struct SingleStreamView: View {
 
     var body: some View {
         ZStack {
-            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen()),
-                           isActive: $isShowingSettingsScreen
+            NavigationLink(
+                destination: LazyNavigationDestinationView(
+                    SettingsScreen(mode: viewModel.settingsMode)
+                ),
+                isActive: $isShowingSettingsScreen
             ) {
                 EmptyView()
             }.hidden()

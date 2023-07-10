@@ -57,7 +57,8 @@ final class StreamViewModel: ObservableObject {
     private let streamOrchestrator: StreamOrchestrator
     private var subscriptions: [AnyCancellable] = []
 
-    let streamDetail: StreamDetail?
+    let streamDetail: StreamDetail
+    let settingsMode: SettingsMode
 
     @Published private(set) var state: State = .loading
 
@@ -96,10 +97,11 @@ final class StreamViewModel: ObservableObject {
     ) {
         self.streamOrchestrator = streamOrchestrator
         self.settingsManager = settingsManager
-        self.streamDetail = streamOrchestrator.activeStreamDetail
-        if let streamId = streamOrchestrator.activeStreamDetail?.streamId {
-            settingsManager.setActiveSettings(for: .stream(streamID: streamId))
+        guard let streamDetail = streamOrchestrator.activeStreamDetail else {
+            fatalError("Streaming Screen should be used only after an `StreamOrchestrator.connect` call")
         }
+        self.streamDetail = streamDetail
+        self.settingsMode = .stream(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
 
         startObservers()
     }
@@ -126,7 +128,8 @@ final class StreamViewModel: ObservableObject {
                         showAudioIndicator: false
                     )
                 },
-                selectedVideoSource: selectedVideoSource
+                selectedVideoSource: selectedVideoSource,
+                streamDetail: streamDetail
             )
 
         default:
@@ -192,7 +195,8 @@ final class StreamViewModel: ObservableObject {
                             showAudioIndicator: false
                         )
                     },
-                    selectedVideoSource: matchingSource
+                    selectedVideoSource: matchingSource,
+                    streamDetail: streamDetail
                 )
                 updatedDisplayMode = .single(singleStreamViewModel)
             }
@@ -214,7 +218,6 @@ final class StreamViewModel: ObservableObject {
 
     func endStream() async {
         _ = await streamOrchestrator.stopConnection()
-        settingsManager.setActiveSettings(for: .global)
     }
 
     func playAudio(for source: StreamSource) {
@@ -230,8 +233,10 @@ final class StreamViewModel: ObservableObject {
     }
 
     private func startObservers() {
+        let settingsPublisher = settingsManager.publisher(for: settingsMode)
+
         streamOrchestrator.statePublisher
-            .combineLatest(settingsManager.settingsPublisher)
+            .combineLatest(settingsPublisher)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state, settings in
                 guard let self = self else { return }
@@ -334,7 +339,8 @@ final class StreamViewModel: ObservableObject {
                         showAudioIndicator: false
                     )
                 },
-                selectedVideoSource: selectedVideoSource
+                selectedVideoSource: selectedVideoSource,
+                streamDetail: streamDetail
             )
             displayMode = .single(singleStreamViewModel)
 
@@ -356,15 +362,16 @@ final class StreamViewModel: ObservableObject {
     private func updateStreamSettings(from sources: [StreamSource], settings: StreamSettings) {
         // Only update the settings when the sources change, only sources with at least one audio track
         let sourceIds = sources.filter { $0.audioTracksCount > 0 }.compactMap { $0.sourceId.value }
-        if sourceIds != settingsManager.settings.audioSources {
-            settingsManager.settings.audioSources = sourceIds
+        if sourceIds != settings.audioSources {
+            var updatedSettings = settings
+            updatedSettings.audioSources = sourceIds
 
             // If source selected in settings is no longer available, update the settings
-            if case let .source(sourceId) = settingsManager.settings.audioSelection {
-                if !settingsManager.settings.audioSources.contains(sourceId) {
-                    settingsManager.settings.audioSelection = .firstSource
-                }
+            if case let .source(sourceId) = settings.audioSelection, !settings.audioSources.contains(sourceId) {
+                updatedSettings.audioSelection = .firstSource
             }
+            
+            settingsManager.update(settings: updatedSettings, for: settingsMode)
         }
     }
 

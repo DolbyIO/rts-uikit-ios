@@ -193,7 +193,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             return
         }
 
-        Utils.configureAudioSession()
         let projectionData = MCProjectionData()
         audioTrack.track.enable(true)
         audioTrack.track.setVolume(1)

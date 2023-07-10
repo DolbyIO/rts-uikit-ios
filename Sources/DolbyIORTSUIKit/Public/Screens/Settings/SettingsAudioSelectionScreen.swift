@@ -24,6 +24,6 @@ struct SettingsAudioSelectionScreen: View {
 
 struct SettingsAudioSelectionScreen_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsAudioSelectionScreen(viewModel: .init())
+        SettingsAudioSelectionScreen(viewModel: .init(mode: .global))
     }
 }

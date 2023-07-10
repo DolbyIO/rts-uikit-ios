@@ -10,10 +10,16 @@ final class SingleStreamViewModel {
 
     let videoViewModels: [VideoRendererViewModel]
     let selectedVideoSource: StreamSource
+    let settingsMode: SettingsMode
 
-    init(videoViewModels: [VideoRendererViewModel], selectedVideoSource: StreamSource) {
+    init(
+        videoViewModels: [VideoRendererViewModel],
+        selectedVideoSource: StreamSource,
+        streamDetail: StreamDetail
+    ) {
         self.videoViewModels = videoViewModels
         self.selectedVideoSource = selectedVideoSource
+        self.settingsMode = .stream(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
     }
 
     func streamSource(for id: UUID) -> StreamSource? {
