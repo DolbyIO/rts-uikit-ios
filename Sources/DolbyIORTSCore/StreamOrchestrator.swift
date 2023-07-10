@@ -67,7 +67,7 @@ open class StreamOrchestrator {
         startStateMachineTasksSerialExecutor()
     }
     
-    public func connect(streamName: String, accountID: String, dev: Bool = false, forcePlayoutDelay: Bool = false, disableAudio: Bool = false) async -> Bool {
+    public func connect(streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool) async -> Bool {
         Self.logger.error("👮‍♂️ Start subscribe")
         
         self.dev = dev
