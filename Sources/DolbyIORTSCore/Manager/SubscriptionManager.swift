@@ -303,7 +303,7 @@ extension SubscriptionManager: MCSubscriberListener {
     }
 
     func onSignalingError(_ message: String!) {
-        Self.logger.error("💼 Delegate - onSignalingError")
+        Self.logger.error("💼 Delegate - onSignalingError", message)
         delegate?.onSignalingError(message)
     }
 
