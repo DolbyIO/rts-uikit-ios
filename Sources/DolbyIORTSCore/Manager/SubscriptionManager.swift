@@ -119,7 +119,8 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
                 Self.logger.warning("💼 Subscriber has already subscribed")
                 return false
             }
-            
+            self.subscriber.enableStats(true)
+
             let options = MCClientOptions()
             options.forcePlayoutDelay = forcePlayoutDelay
             options.disableAudio = disableAudio
@@ -130,7 +131,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
                 return false
             }
 
-            self.subscriber.enableStats(true)
             return true
         }
 
@@ -174,8 +174,10 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func projectVideo(for source: StreamSource, withQuality quality: StreamSource.VideoQuality) {
-        Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A")")
         let videoTrack = source.videoTrack
+
+        Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A") qualityToProject - \(quality.description) layerData = \(quality.layerData) - mid = \(videoTrack.trackInfo.mid)")
+        
         let projectionData = MCProjectionData()
         projectionData.media = videoTrack.trackInfo.mediaType.rawValue
         projectionData.mid = videoTrack.trackInfo.mid

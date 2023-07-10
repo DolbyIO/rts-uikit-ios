@@ -47,6 +47,7 @@ public struct IconButton: View {
                     tintColor: isFocused ? _focusedTintColor : _tintColor
                 )
             }
+            .padding(.all)
         }
         .focused($isFocused)
         .buttonStyle(
