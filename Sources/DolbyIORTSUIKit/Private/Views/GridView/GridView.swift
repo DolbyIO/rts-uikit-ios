@@ -29,20 +29,17 @@ struct GridView: View {
 
     private let viewModel: GridViewModel
     private let layout: GridViewLayout
-    private let onPrimaryVideoSelection: (StreamSource) -> Void
-    private let onSecondaryVideoSelection: (StreamSource) -> Void
+    private let onVideoSelection: (StreamSource) -> Void
     @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
 
     init(
         viewModel: GridViewModel,
         layout: GridViewLayout = .vertical(),
-        onPrimaryVideoSelection: @escaping (StreamSource) -> Void,
-        onSecondaryVideoSelection: @escaping (StreamSource) -> Void
+        onVideoSelection: @escaping (StreamSource) -> Void
     ) {
         self.viewModel = viewModel
         self.layout = layout
-        self.onPrimaryVideoSelection = onPrimaryVideoSelection
-        self.onSecondaryVideoSelection = onSecondaryVideoSelection
+        self.onVideoSelection = onVideoSelection
     }
 
     var body: some View {
@@ -79,7 +76,7 @@ struct GridView: View {
                         maxHeight: maxAllowedSubVideoHeight,
                         contentMode: .aspectFit
                     ) { source in
-                        onSecondaryVideoSelection(source)
+                        onVideoSelection(source)
                     }
                     .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
                 }
@@ -100,7 +97,7 @@ struct GridView: View {
                         maxHeight: availableHeight / CGFloat(rowsCount),
                         contentMode: .aspectFit
                     ) { source in
-                        onSecondaryVideoSelection(source)
+                        onVideoSelection(source)
                     }
                 }
             }.frame(height: availableHeight)

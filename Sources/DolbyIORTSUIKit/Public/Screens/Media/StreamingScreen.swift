@@ -62,11 +62,8 @@ public struct StreamingScreen: View {
             case let .grid(gridViewModel):
                 GridView(
                     viewModel: gridViewModel,
-                    onPrimaryVideoSelection: { _ in
+                    onVideoSelection: { _ in
                         isShowingSingleViewScreen = true
-                    },
-                    onSecondaryVideoSelection: {
-                        viewModel.selectVideoSource($0)
                     }
                 )
             }
