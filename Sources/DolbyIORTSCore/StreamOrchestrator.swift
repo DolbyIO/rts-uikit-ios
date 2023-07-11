@@ -24,7 +24,8 @@ open class StreamOrchestrator {
     private let subscriptionManager: SubscriptionManagerProtocol
     private let rendererRegistry: RendererRegistryProtocol
     private let taskScheduler: TaskSchedulerProtocol
-    
+    private let logHandler: MillicastLoggerHandler
+
     private var subscriptions: Set<AnyCancellable> = []
     private lazy var stateSubject: CurrentValueSubject<StreamState, Never> = CurrentValueSubject(.disconnected)
     public lazy var statePublisher: AnyPublisher<StreamState, Never> = stateSubject
@@ -60,6 +61,7 @@ open class StreamOrchestrator {
         self.subscriptionManager = subscriptionManager
         self.taskScheduler = taskScheduler
         self.rendererRegistry = rendererRegistry
+        self.logHandler = MillicastLoggerHandler()
         
         self.subscriptionManager.delegate = self
         

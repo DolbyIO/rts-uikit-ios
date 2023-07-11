@@ -68,7 +68,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         let subscriber = makeSubscriber()
         subscriber.setListener(self)
 
-        Self.logger.debug("💼 Connect with streamName & accountID")
+        Self.logger.log("💼 Connect with streamName & accountID")
 
         self.subscriber = subscriber
 
@@ -104,7 +104,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
     func startSubscribe(forcePlayoutDelay: Bool, disableAudio: Bool) async -> Bool {
         let task = Task { [weak self] () -> Bool in
-            Self.logger.debug("💼 Start subscribe")
+            Self.logger.log("💼 Start subscribe")
 
             guard let self = self else {
                 return false
@@ -140,7 +140,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
     func stopSubscribe() async -> Bool {
         let task = Task { [weak self] () -> Bool in
-            Self.logger.debug("💼 Stop subscribe")
+            Self.logger.log("💼 Stop subscribe")
 
             guard let self = self, let subscriber = subscriber else {
                 return false
@@ -177,7 +177,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     func projectVideo(for source: StreamSource, withQuality quality: StreamSource.VideoQuality) {
         let videoTrack = source.videoTrack
 
-        Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A") qualityToProject - \(quality.description) layerData = \(quality.layerData) - mid = \(videoTrack.trackInfo.mid)")
+        Self.logger.log("💼 Project video for source \(source.sourceId.value ?? "N/A") qualityToProject - \(quality.description) layerData = \(quality.layerData) - mid = \(videoTrack.trackInfo.mid)")
         
         let projectionData = MCProjectionData()
         projectionData.media = videoTrack.trackInfo.mediaType.rawValue
@@ -188,13 +188,13 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func unprojectVideo(for source: StreamSource) {
-        Self.logger.debug("💼 Project video for source \(source.sourceId.value ?? "N/A")")
+        Self.logger.log("💼 Project video for source \(source.sourceId.value ?? "N/A")")
         let videoTrack = source.videoTrack
         subscriber.unproject([videoTrack.trackInfo.mid])
     }
 
     func projectAudio(for source: StreamSource) {
-        Self.logger.debug("💼 Project audio for source \(source.sourceId.value ?? "N/A")")
+        Self.logger.log("💼 Project audio for source \(source.sourceId.value ?? "N/A")")
         guard let audioTrack = source.audioTracks.first else {
             return
         }
@@ -250,71 +250,71 @@ extension SubscriptionManager: MCSubscriberListener {
     
 
     func onSubscribed() {
-        Self.logger.debug("💼 Delegate - onSubscribed")
+        Self.logger.log("💼 Delegate - onSubscribed")
         delegate?.onSubscribed()
     }
 
     func onSubscribedError(_ reason: String!) {
-        Self.logger.error("💼 Delegate - onSubscribedError \(reason)")
+        Self.logger.error("💼 Delegate - onSubscribedError \(reason, privacy: .public)")
         delegate?.onSubscribedError(reason)
     }
 
     func onVideoTrack(_ track: MCVideoTrack!, withMid mid: String!) {
-        Self.logger.debug("💼 Delegate - onVideoTrack with mid \(mid)")
+        Self.logger.log("💼 Delegate - onVideoTrack with mid \(mid, privacy: .public)")
         delegate?.onVideoTrack(track, withMid: mid)
     }
 
     func onAudioTrack(_ track: MCAudioTrack!, withMid mid: String!) {
-        Self.logger.debug("💼 Delegate - onAudioTrack with mid \(mid)")
+        Self.logger.log("💼 Delegate - onAudioTrack with mid \(mid, privacy: .public)")
         delegate?.onAudioTrack(track, withMid: mid)
     }
 
     func onActive(_ streamId: String!, tracks: [String]!, sourceId: String!) {
-        Self.logger.debug("Callback -> onActive with sourceId \(sourceId ?? "NULL"), tracks - \(tracks)")
+        Self.logger.log("Callback -> onActive with sourceId \(sourceId ?? "NULL", privacy: .public), tracks - \(tracks, privacy: .public)")
         delegate?.onActive(streamId, tracks: tracks, sourceId: sourceId)
     }
 
     func onInactive(_ streamId: String!, sourceId: String!) {
-        Self.logger.debug("💼 Delegate - onInactive with sourceId \(sourceId ?? "NULL")")
+        Self.logger.log("💼 Delegate - onInactive with sourceId \(sourceId ?? "NULL", privacy: .public)")
         delegate?.onInactive(streamId, sourceId: sourceId)
     }
 
     func onStopped() {
-        Self.logger.debug("💼 Delegate - onStopped")
+        Self.logger.log("💼 Delegate - onStopped")
         delegate?.onStopped()
     }
 
     func onVad(_ mid: String!, sourceId: String!) {
-        Self.logger.debug("💼 Delegate - onVad with mid \(mid), sourceId \(sourceId)")
+        Self.logger.log("💼 Delegate - onVad with mid \(mid), sourceId \(sourceId, privacy: .public)")
     }
 
     func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) {
-        Self.logger.debug("💼 Delegate - onLayers for mid - \(mid) with activeLayers \(activeLayers), inactiveLayers \(inactiveLayers)")
+        Self.logger.log("💼 Delegate - onLayers for mid - \(mid, privacy: .public) with activeLayers \(activeLayers, privacy: .public), inactiveLayers \(inactiveLayers, privacy: .public)")
         delegate?.onLayers(mid, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
     }
 
     func onConnected() {
-        Self.logger.debug("💼 Delegate - onConnected")
+        Self.logger.log("💼 Delegate - onConnected")
         delegate?.onConnected()
     }
 
     func onConnectionError(_ status: Int32, withReason reason: String!) {
-        Self.logger.error("💼 Delegate - onConnectionError")
+        Self.logger.error("💼 Delegate - onConnectionError - \(status, privacy: .public), \(reason, privacy: .public)")
         delegate?.onConnectionError(status, withReason: reason)
     }
 
     func onSignalingError(_ message: String!) {
-        Self.logger.error("💼 Delegate - onSignalingError \(message)")
+        Self.logger.error("💼 Delegate - onSignalingError \(message, privacy: .public)")
         delegate?.onSignalingError(message)
     }
 
     func onStatsReport(_ report: MCStatsReport!) {
-        Self.logger.debug("💼 Delegate - onStatsReport")
+        Self.logger.log("💼 Delegate - onStatsReport")
         delegate?.onStatsReport(report)
     }
 
     func onViewerCount(_ count: Int32) {
-        Self.logger.debug("💼 Delegate - onViewerCount")
+        Self.logger.log("💼 Delegate - onViewerCount")
         delegate?.onViewerCount(count)
     }
 }
