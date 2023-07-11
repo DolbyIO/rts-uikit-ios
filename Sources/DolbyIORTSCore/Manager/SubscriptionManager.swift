@@ -124,6 +124,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             let options = MCClientOptions()
             options.forcePlayoutDelay = forcePlayoutDelay
             options.disableAudio = disableAudio
+            options.autoReconnect = false
             self.subscriber.setOptions(options)
             
             guard self.subscriber.subscribe() else {
