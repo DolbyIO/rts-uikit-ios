@@ -40,6 +40,7 @@ open class StreamOrchestrator {
     private var dev = false
     private var forcePlayoutDelay = false
     private var disableAudio = false
+    private var documentDirectoryPath: String? = nil
     
     private convenience init() {
         self.init(
@@ -69,12 +70,13 @@ open class StreamOrchestrator {
         startStateMachineTasksSerialExecutor()
     }
     
-    public func connect(streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool) async -> Bool {
+    public func connect(streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool, documentDirectoryPath: String?) async -> Bool {
         Self.logger.error("👮‍♂️ Start subscribe")
         
         self.dev = dev
         self.forcePlayoutDelay = forcePlayoutDelay
         self.disableAudio = disableAudio
+        self.documentDirectoryPath = documentDirectoryPath
         
         async let startConnectionStateUpdate: Void = stateMachine.startConnection(streamName: streamName, accountID: accountID)
         async let startConnection = subscriptionManager.connect(streamName: streamName, accountID: accountID, dev: dev)
@@ -280,7 +282,7 @@ private extension StreamOrchestrator {
                 _ = await self.connect(
                     streamName: streamDetail.streamName,
                     accountID: streamDetail.accountID,
-                    dev: self.dev, forcePlayoutDelay: self.forcePlayoutDelay, disableAudio: self.disableAudio
+                    dev: self.dev, forcePlayoutDelay: self.forcePlayoutDelay, disableAudio: self.disableAudio, documentDirectoryPath: self.documentDirectoryPath
                 )
             }
         }
@@ -303,7 +305,7 @@ private extension StreamOrchestrator {
     
     func startSubscribe() async -> Bool {
         async let startSubscribeStateUpdate: Void = stateMachine.startSubscribe()
-        async let startSubscribe = subscriptionManager.startSubscribe(forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio)
+        async let startSubscribe = subscriptionManager.startSubscribe(forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio, documentDirectoryPath: documentDirectoryPath)
         let (_, success) = await (startSubscribeStateUpdate, startSubscribe)
         return success
     }

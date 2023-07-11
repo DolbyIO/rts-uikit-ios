@@ -140,6 +140,9 @@ MILLICAST_API @interface MCClientOptions : NSObject
 /* @brief Disable receiving audio completely. This should help reduce A/V sync related delays for video only streams */
 @property(nonatomic, assign) BOOL disableAudio;
 
+/* @brief Enable logging RTC Event Log into a file. Provide the full path */
+@property(nonatomic, retain) NSString *rtcEventLogOutputPath;
+
 @end
 
 /**

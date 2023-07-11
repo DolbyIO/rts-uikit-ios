@@ -24,4 +24,9 @@ class Utils {
             return
         }
     }
+    
+    public static func getCurrentTimestampInMilliseconds() -> Int64 {
+        let currentTime = Date().timeIntervalSince1970
+        return Int64(currentTime * 1000)
+    }
 }

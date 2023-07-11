@@ -39,7 +39,7 @@ protocol SubscriptionManagerProtocol: AnyObject {
     var delegate: SubscriptionManagerDelegate? { get set }
 
     func connect(streamName: String, accountID: String, dev: Bool) async -> Bool
-    func startSubscribe(forcePlayoutDelay: Bool, disableAudio: Bool) async -> Bool
+    func startSubscribe(forcePlayoutDelay: Bool, disableAudio: Bool, documentDirectoryPath: String?) async -> Bool
     func stopSubscribe() async -> Bool
     func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource)
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder)
@@ -102,7 +102,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         return await task.value
     }
 
-    func startSubscribe(forcePlayoutDelay: Bool, disableAudio: Bool) async -> Bool {
+    func startSubscribe(forcePlayoutDelay: Bool, disableAudio: Bool, documentDirectoryPath: String?) async -> Bool {
         let task = Task { [weak self] () -> Bool in
             Self.logger.log("💼 Start subscribe")
 
@@ -125,6 +125,11 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             options.forcePlayoutDelay = forcePlayoutDelay
             options.disableAudio = disableAudio
             options.autoReconnect = false
+            
+            if let documentDirectoryPath = documentDirectoryPath {
+                options.rtcEventLogOutputPath = documentDirectoryPath + "/\(Utils.getCurrentTimestampInMilliseconds()).proto"
+            }
+          
             self.subscriber.setOptions(options)
             
             guard self.subscriber.subscribe() else {
