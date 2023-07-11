@@ -17,14 +17,16 @@ final class TaskScheduler: TaskSchedulerProtocol {
     private var subscriptions: Set<AnyCancellable> = []
 
     func scheduleTask(timeInterval: TimeInterval, task: @escaping () -> Void) {
+        guard subscriptions.isEmpty else { return }
         Self.logger.debug("⏰ Scheduled task at \(Date()) to execute after time interval \(timeInterval)")
 
         subscriptions.removeAll()
         let timer = Timer.publish(every: timeInterval, on: .main, in: .common)
 
-        timer.autoconnect().sink { _ in
+        timer.autoconnect().sink { [weak self] _ in
             Self.logger.debug("⏰ Executed task at \(Date())")
             task()
+            self?.invalidate()
         }.store(in: &subscriptions)
     }
 
