@@ -37,7 +37,7 @@ protocol SubscriptionManagerDelegate: AnyObject {
 
 protocol SubscriptionManagerProtocol: AnyObject {
     var delegate: SubscriptionManagerDelegate? { get set }
-
+    
     func connect(streamName: String, accountID: String, dev: Bool) async -> Bool
     func startSubscribe(forcePlayoutDelay: Bool, disableAudio: Bool, documentDirectoryPath: String?) async -> Bool
     func stopSubscribe() async -> Bool
@@ -56,10 +56,10 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
     private static let logger = Logger.make(category: String(describing: SubscriptionManager.self))
 
-    private var subscriber: MCSubscriber!
+    private var subscriber: MCSubscriber?
 
     weak var delegate: SubscriptionManagerDelegate?
-
+    
     func connect(streamName: String, accountID: String, dev: Bool) async -> Bool {
         if subscriber != nil {
             _ = await stopSubscribe()
@@ -69,8 +69,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         subscriber.setListener(self)
 
         Self.logger.log("💼 Connect with streamName & accountID")
-
-        self.subscriber = subscriber
 
         guard streamName.count > 0, accountID.count > 0 else {
             Self.logger.warning("💼 Invalid credentials passed to connect")
@@ -82,19 +80,21 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
                 return false
             }
 
-            guard !self.isSubscribed, !self.isConnected else {
+            guard !subscriber.isSubscribed(), !subscriber.isConnected() else {
                 Self.logger.warning("💼 Subscriber has already connected or subscribed")
                 return false
             }
 
             let credentials = self.makeCredentials(streamName: streamName, accountID: accountID, dev: dev)
 
-            self.subscriber.setCredentials(credentials)
+            subscriber.setCredentials(credentials)
 
-            guard self.subscriber.connect() else {
+            guard subscriber.connect() else {
                 Self.logger.warning("💼 Subscriber has failed to connect")
                 return false
             }
+            
+            self.subscriber = subscriber
 
             return true
         }
@@ -106,20 +106,20 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         let task = Task { [weak self] () -> Bool in
             Self.logger.log("💼 Start subscribe")
 
-            guard let self = self else {
+            guard let self = self, let subscriber = self.subscriber else {
                 return false
             }
 
-            guard self.isConnected else {
+            guard subscriber.isConnected() else {
                 Self.logger.warning("💼 Subscriber hasn't completed connect to start subscribe")
                 return false
             }
 
-            guard !self.isSubscribed else {
+            guard !subscriber.isSubscribed() else {
                 Self.logger.warning("💼 Subscriber has already subscribed")
                 return false
             }
-            self.subscriber.enableStats(true)
+            subscriber.enableStats(true)
 
             let options = MCClientOptions()
             options.forcePlayoutDelay = forcePlayoutDelay
@@ -130,9 +130,9 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
                 options.rtcEventLogOutputPath = documentDirectoryPath + "/\(Utils.getCurrentTimestampInMilliseconds()).proto"
             }
           
-            self.subscriber.setOptions(options)
+            subscriber.setOptions(options)
             
-            guard self.subscriber.subscribe() else {
+            guard subscriber.subscribe() else {
                 Self.logger.warning("💼 Subscribe call has failed")
                 return false
             }
@@ -176,10 +176,15 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder) {
         Self.logger.warning("💼 Add remote track for source - \(sourceBuilder.sourceId.value ?? "MAIN")")
-        sourceBuilder.supportedTrackItems.forEach { subscriber.addRemoteTrack($0.mediaType.rawValue) }
+        guard let subscriber = self.subscriber else { return }
+        sourceBuilder.supportedTrackItems.forEach {
+            subscriber.addRemoteTrack($0.mediaType.rawValue)
+        }
     }
 
     func projectVideo(for source: StreamSource, withQuality quality: StreamSource.VideoQuality) {
+        guard let subscriber = self.subscriber else { return }
+
         let videoTrack = source.videoTrack
 
         Self.logger.log("💼 Project video for source \(source.sourceId.value ?? "N/A") qualityToProject - \(quality.description) layerData = \(quality.layerData) - mid = \(videoTrack.trackInfo.mid)")
@@ -194,13 +199,18 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
     func unprojectVideo(for source: StreamSource) {
         Self.logger.log("💼 Project video for source \(source.sourceId.value ?? "N/A")")
+        guard let subscriber = self.subscriber else { return }
+
         let videoTrack = source.videoTrack
         subscriber.unproject([videoTrack.trackInfo.mid])
     }
 
     func projectAudio(for source: StreamSource) {
         Self.logger.log("💼 Project audio for source \(source.sourceId.value ?? "N/A")")
-        guard let audioTrack = source.audioTracks.first else {
+        guard
+            let subscriber = self.subscriber,
+            let audioTrack = source.audioTracks.first
+        else {
             return
         }
 
@@ -215,7 +225,10 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func unprojectAudio(for source: StreamSource) {
-        guard let audioTrack = source.audioTracks.first else {
+        guard
+            let subscriber = self.subscriber,
+            let audioTrack = source.audioTracks.first
+        else {
             return
         }
 
@@ -275,7 +288,7 @@ extension SubscriptionManager: MCSubscriberListener {
     }
 
     func onActive(_ streamId: String!, tracks: [String]!, sourceId: String!) {
-        Self.logger.log("Callback -> onActive with sourceId \(sourceId ?? "NULL", privacy: .public), tracks - \(tracks, privacy: .public)")
+        Self.logger.log("💼 Delegate - onActive with sourceId \(sourceId ?? "NULL", privacy: .public), tracks - \(tracks, privacy: .public)")
         delegate?.onActive(streamId, tracks: tracks, sourceId: sourceId)
     }
 
@@ -321,17 +334,5 @@ extension SubscriptionManager: MCSubscriberListener {
     func onViewerCount(_ count: Int32) {
         Self.logger.log("💼 Delegate - onViewerCount")
         delegate?.onViewerCount(count)
-    }
-}
-
-// MARK: Helper functions
-
-private extension SubscriptionManager {
-    var isSubscribed: Bool {
-        subscriber.isSubscribed()
-    }
-
-    var isConnected: Bool {
-        subscriber.isConnected()
     }
 }

@@ -27,10 +27,6 @@ struct VideoRendererView: View {
         self.maxHeight = maxHeight
         self.contentMode = contentMode
         self.action = action
-
-        Task {
-            viewModel.playVideo(for: viewModel.streamSource)
-        }
     }
 
     private var theme: Theme {
@@ -92,8 +88,8 @@ struct VideoRendererView: View {
             .onTapGesture {
                 action?(viewModel.streamSource)
             }
-            .onDisappear {
-                viewModel.stopVideo(for: viewModel.streamSource)
+            .onAppear {
+                viewModel.playVideo(for: viewModel.streamSource)
             }
     }
 }

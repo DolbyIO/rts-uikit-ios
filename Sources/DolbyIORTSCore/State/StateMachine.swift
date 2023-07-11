@@ -11,6 +11,9 @@ final actor StateMachine {
     private static let logger = Logger.make(category: String(describing: StateMachine.self))
 
     private(set) var currentState: State {
+        willSet {
+            Self.logger.error("🎰 State transition from - \(self.currentState.description) to \(newValue.description)")
+        }
         didSet {
             stateSubject.send(currentState)
         }
@@ -24,30 +27,15 @@ final actor StateMachine {
     }
 
     func startConnection(streamName: String, accountID: String) {
-        switch currentState {
-        case .disconnected, .error, .stopped:
-            currentState = .connecting
-        default:
-            Self.logger.error("🛑 Unexpected state on startConnection - \(self.currentState.description)")
-        }
+        currentState = .connecting
     }
 
     func startSubscribe() {
-        switch currentState {
-        case .connected:
-            currentState = .subscribing
-        default:
-            Self.logger.error("🛑 Unexpected state on startSubscribe - \(self.currentState.description)")
-        }
+        currentState = .subscribing
     }
 
     func stopSubscribe() {
-        switch currentState {
-        case .subscribed, .connected:
-            currentState = .disconnected
-        default:
-            Self.logger.error("🛑 Unexpected state on stopSubscribe - \(self.currentState.description)")
-        }
+        currentState = .disconnected
     }
 
     func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource) {
@@ -82,50 +70,29 @@ final actor StateMachine {
 
     func onConnected() {
         switch currentState {
-        case .connecting, .error:
-            currentState = .connected
-        default:
+        case .subscribed:
+            // TODO: Millicast SDK now fires an `onConnected` randomly even when there is an active subscription
+            // This workaround is to ignore those `onConnect` callbacks / state transitions
             Self.logger.error("🛑 Unexpected state on onConnected - \(self.currentState.description)")
+        default:
+            currentState = .connected
         }
     }
 
     func onConnectionError(_ status: Int32, withReason reason: String) {
-        switch currentState {
-        case .connected, .subscribed, .connecting, .subscribing, .error, .stopped:
-            currentState = .error(.init(error: .connectFailed(reason: reason)))
-
-        default:
-            Self.logger.error("🛑 Unexpected state on onConnectionError - \(self.currentState.description)")
-        }
+        currentState = .error(.init(error: .connectFailed(reason: reason)))
     }
 
     func onSubscribed() {
-        switch currentState {
-        case .subscribing:
-            currentState = .subscribed(.init())
-        default:
-            Self.logger.error("🛑 Unexpected state on onSubscribed - \(self.currentState.description)")
-        }
+        currentState = .subscribed(.init())
     }
 
     func onSubscribedError(_ reason: String) {
-        switch currentState {
-        case .connected, .connecting, .subscribed, .subscribing, .error:
-            currentState = .error(.init(error: .subscribeFailed(reason: reason)))
-
-        default:
-            Self.logger.error("🛑 Unexpected state on onSubscribedError - \(self.currentState.description)")
-        }
+        currentState = .error(.init(error: .subscribeFailed(reason: reason)))
     }
 
     func onSignalingError(_ message: String) {
-        switch currentState {
-        case .connected, .connecting, .subscribed, .subscribing:
-            currentState = .error(.init(error: .signalingError(reason: message)))
-
-        default:
-            Self.logger.error("🛑 Unexpected state on onSignalingError - \(self.currentState.description)")
-        }
+        currentState = .error(.init(error: .signalingError(reason: message)))
     }
 
     func onActive(_ streamId: String, tracks: [String], sourceId: String?) {

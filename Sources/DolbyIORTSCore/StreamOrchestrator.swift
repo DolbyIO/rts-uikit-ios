@@ -242,22 +242,34 @@ open class StreamOrchestrator {
 // MARK: Private helper methods
 
 private extension StreamOrchestrator {
+    
     func startStateObservation() {
         Task { [weak self] in
             guard let self = self else { return }
             await self.stateMachine.statePublisher
                 .sink { state in
                     switch state {
-                    case let .error(errorState):
-                        switch errorState.error {
-                        case .connectFailed:
-                            self.scheduleReconnection()
-                        default:
-                            //No-op
-                            break
+                    case .error, .stopped:
+                        Task { [weak self] in
+                            guard
+                                let self = self,
+                                let streamDetail = self.activeStreamDetail
+                            else {
+                                return
+                            }
+
+                            self.scheduleReconnection(with: streamDetail.streamName, accountID: streamDetail.accountID)
                         }
-                    case .stopped:
-                        self.scheduleReconnection()
+                    case .connected:
+                        self.invalidateScheduleReconnections()
+                        Task { [weak self] in
+                            guard let self = self else { return }
+                            _ = await self.startSubscribe()
+                        }
+
+                    case .subscribed:
+                        self.invalidateScheduleReconnections()
+                        
                     default:
                         // No-op
                         break
@@ -270,22 +282,28 @@ private extension StreamOrchestrator {
         }
     }
     
-    func scheduleReconnection() {
+    func scheduleReconnection(with streamName: String, accountID: String) {
         guard Self.configuration.retryOnConnectionError else {
             return
         }
+
         Self.logger.error("👮‍♂️ Scheduling a reconnect")
         taskScheduler.scheduleTask(timeInterval: Defaults.retryConnectionTimeInterval) { [weak self] in
-            guard let self = self, let streamDetail = self.activeStreamDetail else { return }
+            guard let self = self else { return }
             Task {
-                self.taskScheduler.invalidate()
                 _ = await self.connect(
-                    streamName: streamDetail.streamName,
-                    accountID: streamDetail.accountID,
+                    streamName: streamName,
+                    accountID: accountID,
                     dev: self.dev, forcePlayoutDelay: self.forcePlayoutDelay, disableAudio: self.disableAudio, documentDirectoryPath: self.documentDirectoryPath
                 )
+                
+                self.taskScheduler.invalidate()
             }
         }
+    }
+    
+    func invalidateScheduleReconnections() {
+        self.taskScheduler.invalidate()
     }
     
     func startStateMachineTasksSerialExecutor() {
@@ -350,7 +368,6 @@ extension StreamOrchestrator: SubscriptionManagerDelegate {
         let task = Task { [weak self] in
             guard let self = self else { return }
             await self.stateMachine.onConnected()
-            _ = await self.startSubscribe()
         }
         taskStreamContinuation?.yield(task)
     }
