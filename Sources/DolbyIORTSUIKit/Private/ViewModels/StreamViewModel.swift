@@ -138,6 +138,10 @@ final class StreamViewModel: ObservableObject {
         }
     }
 
+    private func secondaryVideoSources(_ sources: [StreamSource], _ matchingSource: StreamSource) -> [StreamSource] {
+        return sources.filter { $0.id != matchingSource.id }
+    }
+
     // swiftlint:disable function_body_length
     func selectVideoSource(_ source: StreamSource) {
         switch internalState {
@@ -159,7 +163,7 @@ final class StreamViewModel: ObservableObject {
             let updatedDisplayMode: DisplayMode
             switch displayMode {
             case .grid:
-                let secondaryVideoSources = sources.filter { $0.id != matchingSource.id }
+                let secondaryVideoSources = secondaryVideoSources(sources, matchingSource)
                 let showSourceLabels = settings.showSourceLabels
                 
                 let gridViewModel = GridViewModel(
@@ -185,7 +189,7 @@ final class StreamViewModel: ObservableObject {
 
                 updatedDisplayMode = .grid(gridViewModel)
             case .list:
-                let secondaryVideoSources = sources.filter { $0.id != matchingSource.id }
+                let secondaryVideoSources = secondaryVideoSources(sources, matchingSource)
                 let showSourceLabels = settings.showSourceLabels
 
                 let listViewModel = ListViewModel(

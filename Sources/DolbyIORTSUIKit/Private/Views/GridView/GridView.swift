@@ -48,7 +48,7 @@ struct GridView: View {
                 let screenSize = proxy.size
                 switch layout {
                 case .horizontal(rowsPortrait: let rowsPortrait, rowsLandscape: let rowsLandscape):
-                    gridHorizontal(availableHeight: screenSize.height, rowsCount: deviceOrientation.isPortrait ? rowsPortrait : rowsLandscape)
+                    gridHorizontal(screenSize.height, deviceOrientation.isPortrait ? rowsPortrait : rowsLandscape)
                 case .vertical(columnsPortrait: let columnsPortrait, columnsLandscape: let columnsLandscape):
                     gridVertical(screenSize, deviceOrientation.isPortrait ? columnsPortrait : columnsLandscape)
                 }
@@ -85,7 +85,7 @@ struct GridView: View {
         }
     }
 
-    private func gridHorizontal(availableHeight: CGFloat, rowsCount: Int) -> some View {
+    private func gridHorizontal(_ availableHeight: CGFloat, _ rowsCount: Int) -> some View {
         let rows = [GridItem](repeating: GridItem(.fixed((availableHeight - (Layout.spacing1x * CGFloat(rowsCount))) / CGFloat(rowsCount)), spacing: Layout.spacing1x), count: rowsCount)
 
         return ScrollView(.horizontal) {
