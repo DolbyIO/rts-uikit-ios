@@ -22,11 +22,11 @@ final actor RendererRegistry: RendererRegistryProtocol {
 
     func registerRenderer(_ renderer: StreamSourceViewRenderer, for track: MCVideoTrack) {
         guard let trackID = track.getId() else {
-            Self.logger.error("📺 Register renderer \(renderer.id) called with an invalid VideoTrack")
+            Self.logger.error("📺 Register renderer \(renderer.id, privacy: .public) called with an invalid VideoTrack")
             return
         }
 
-        Self.logger.error("📺 Register renderer \(renderer.id)")
+        Self.logger.error("📺 Register renderer \(renderer.id, privacy: .public)")
         if let renderers = rendererDictionary[trackID] {
             Self.logger.error("📺 Renderer dictionary has an entry for trackID - \(trackID)")
             guard !renderers.contains(renderer) else {
@@ -35,7 +35,7 @@ final actor RendererRegistry: RendererRegistryProtocol {
             }
             renderers.add(renderer)
         } else {
-            Self.logger.error("📺 Create a new renderer list for trackID - \(trackID)")
+            Self.logger.error("📺 Create a new renderer list for trackID - \(trackID, privacy: .public)")
             let renderers = NSHashTable<StreamSourceViewRenderer>(options: .weakMemory)
             renderers.add(renderer)
             rendererDictionary[trackID] = renderers
@@ -44,11 +44,11 @@ final actor RendererRegistry: RendererRegistryProtocol {
 
     func deregisterRenderer(_ renderer: StreamSourceViewRenderer, for track: MCVideoTrack) {
         guard let trackID = track.getId() else {
-            Self.logger.error("📺 Deregister renderer \(renderer.id) called with an invalid VideoTrack")
+            Self.logger.error("📺 Deregister renderer \(renderer.id, privacy: .public) called with an invalid VideoTrack")
             return
         }
 
-        Self.logger.error("📺 Deregister renderer \(renderer.id)")
+        Self.logger.error("📺 Deregister renderer \(renderer.id, privacy: .public)")
         if let renderers = rendererDictionary[trackID] {
             renderers.remove(renderer)
         }

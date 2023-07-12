@@ -99,12 +99,12 @@ open class StreamOrchestrator {
     }
     
     public func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource) {
-        Self.logger.error("👮‍♂️ Select video quality \(quality.description) for source - \(source.sourceId.value ?? "Main")")
+        Self.logger.error("👮‍♂️ Select video quality \(quality.description) for source - \(source.sourceId.value ?? "Main", privacy: .public)")
         subscriptionManager.selectVideoQuality(quality, for: source)
     }
     
     public func playAudio(for source: StreamSource) async {
-        Self.logger.error("👮‍♂️ Play Audio for source - \(source.sourceId.value ?? "Main")")
+        Self.logger.error("👮‍♂️ Play Audio for source - \(source.sourceId.value ?? "Main", privacy: .public)")
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
             guard
@@ -138,7 +138,7 @@ open class StreamOrchestrator {
     }
     
     public func stopAudio(for source: StreamSource) async {
-        Self.logger.error("👮‍♂️ Stop Audio for source - \(source.sourceId.value ?? "Main")")
+        Self.logger.error("👮‍♂️ Stop Audio for source - \(source.sourceId.value ?? "Main", privacy: .public)")
         
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
@@ -157,7 +157,7 @@ open class StreamOrchestrator {
     }
     
     public func playVideo(for source: StreamSource, on renderer: StreamSourceViewRenderer, quality: StreamSource.VideoQuality) async {
-        Self.logger.error("👮‍♂️ Play Video for source - \(source.sourceId.value ?? "Main") on renderer - \(renderer.id)")
+        Self.logger.error("👮‍♂️ Play Video for source - \(source.sourceId.value ?? "Main") on renderer - \(renderer.id, privacy: .public)")
         
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
@@ -215,7 +215,7 @@ open class StreamOrchestrator {
     }
     
     public func stopVideo(for source: StreamSource, on renderer: StreamSourceViewRenderer) async {
-        Self.logger.error("👮‍♂️ Stop Video for source - \(source.sourceId.value ?? "Main") on renderer - \(renderer.id)")
+        Self.logger.error("👮‍♂️ Stop Video for source - \(source.sourceId.value ?? "Main") on renderer - \(renderer.id, privacy: .public)")
         
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):

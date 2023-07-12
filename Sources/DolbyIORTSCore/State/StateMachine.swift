@@ -12,7 +12,7 @@ final actor StateMachine {
 
     private(set) var currentState: State {
         willSet {
-            Self.logger.error("🎰 State transition from - \(self.currentState.description) to \(newValue.description)")
+            Self.logger.error("🎰 State transition from - \(self.currentState.description, privacy: .public) to \(newValue.description, privacy: .public)")
         }
         didSet {
             stateSubject.send(currentState)
@@ -44,7 +44,7 @@ final actor StateMachine {
             state.updatePreferredVideoQuality(quality, for: source.sourceId.value)
             currentState = .subscribed(state)
         default:
-            Self.logger.error("🛑 Unexpected state on selectVideoQuality - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on selectVideoQuality - \(self.currentState.description, privacy: .public)")
         }
     }
 
@@ -54,7 +54,7 @@ final actor StateMachine {
             state.setPlayingAudio(enable, for: source.sourceId.value)
             currentState = .subscribed(state)
         default:
-            Self.logger.error("🛑 Unexpected state on setPlayingAudio - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on setPlayingAudio - \(self.currentState.description, privacy: .public)")
         }
     }
 
@@ -64,7 +64,7 @@ final actor StateMachine {
             state.setPlayingVideo(enable, for: source.sourceId.value)
             currentState = .subscribed(state)
         default:
-            Self.logger.error("🛑 Unexpected state on setPlayingVideo - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on setPlayingVideo - \(self.currentState.description, privacy: .public)")
         }
     }
 
@@ -73,7 +73,7 @@ final actor StateMachine {
         case .subscribed:
             // TODO: Millicast SDK now fires an `onConnected` randomly even when there is an active subscription
             // This workaround is to ignore those `onConnect` callbacks / state transitions
-            Self.logger.error("🛑 Unexpected state on onConnected - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onConnected - \(self.currentState.description, privacy: .public)")
         default:
             currentState = .connected
         }
@@ -101,7 +101,7 @@ final actor StateMachine {
             state.add(streamId: streamId, sourceId: sourceId, tracks: tracks)
             currentState = .subscribed(state)
         default:
-            Self.logger.error("🛑 Unexpected state on onActive - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onActive - \(self.currentState.description, privacy: .public)")
         }
     }
 
@@ -119,7 +119,7 @@ final actor StateMachine {
                 currentState = .subscribed(state)
             }
         default:
-            Self.logger.error("🛑 Unexpected state on onInactive - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onInactive - \(self.currentState.description, privacy: .public)")
         }
     }
 
@@ -130,7 +130,7 @@ final actor StateMachine {
             currentState = .subscribed(state)
 
         default:
-            Self.logger.error("🛑 Unexpected state on onVideoTrack - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onVideoTrack - \(self.currentState.description, privacy: .public)")
         }
     }
 
@@ -140,7 +140,7 @@ final actor StateMachine {
             state.addAudioTrack(track, mid: mid)
             currentState = .subscribed(state)
         default:
-            Self.logger.error("🛑 Unexpected state on onAudioTrack - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onAudioTrack - \(self.currentState.description, privacy: .public)")
         }
     }
 
@@ -174,7 +174,7 @@ final actor StateMachine {
             state.setAvailableStreamTypes(streamTypes, for: mid)
             currentState = .subscribed(state)
         default:
-            Self.logger.error("🛑 Unexpected state on onLayers - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onLayers - \(self.currentState.description, privacy: .public)")
         }
     }
     
@@ -184,7 +184,7 @@ final actor StateMachine {
             state.updateStreamingStatistics(stats)
             currentState = .subscribed(state)
         default:
-            Self.logger.error("🛑 Unexpected state on onStatsReport - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onStatsReport - \(self.currentState.description, privacy: .public)")
         }
     }
 
@@ -194,7 +194,7 @@ final actor StateMachine {
             state.updateViewerCount(Int(count))
             currentState = .subscribed(state)
         default:
-            Self.logger.error("🛑 Unexpected state on onViewerCount - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onViewerCount - \(self.currentState.description, privacy: .public)")
         }
     }
 
@@ -203,7 +203,7 @@ final actor StateMachine {
         case .subscribed, .connected:
             currentState = .stopped
         default:
-            Self.logger.error("🛑 Unexpected state on onStopped - \(self.currentState.description)")
+            Self.logger.error("🛑 Unexpected state on onStopped - \(self.currentState.description, privacy: .public)")
         }
     }
 }

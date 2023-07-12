@@ -175,7 +175,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder) {
-        Self.logger.warning("💼 Add remote track for source - \(sourceBuilder.sourceId.value ?? "MAIN")")
+        Self.logger.warning("💼 Add remote track for source - \(sourceBuilder.sourceId.value ?? "MAIN", privacy: .public)")
         guard let subscriber = self.subscriber else { return }
         sourceBuilder.supportedTrackItems.forEach {
             subscriber.addRemoteTrack($0.mediaType.rawValue)
@@ -187,7 +187,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
         let videoTrack = source.videoTrack
 
-        Self.logger.log("💼 Project video for source \(source.sourceId.value ?? "N/A") qualityToProject - \(quality.description) layerData = \(quality.layerData) - mid = \(videoTrack.trackInfo.mid)")
+        Self.logger.log("💼 Project video for source \(source.sourceId.value ?? "N/A") qualityToProject - \(quality.description, privacy: .public) layerData = \(quality.layerData) - mid = \(videoTrack.trackInfo.mid, privacy: .public)")
         
         let projectionData = MCProjectionData()
         projectionData.media = videoTrack.trackInfo.mediaType.rawValue
@@ -198,7 +198,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func unprojectVideo(for source: StreamSource) {
-        Self.logger.log("💼 Project video for source \(source.sourceId.value ?? "N/A")")
+        Self.logger.log("💼 Project video for source \(source.sourceId.value ?? "N/A", privacy: .public)")
         guard let subscriber = self.subscriber else { return }
 
         let videoTrack = source.videoTrack
@@ -206,7 +206,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func projectAudio(for source: StreamSource) {
-        Self.logger.log("💼 Project audio for source \(source.sourceId.value ?? "N/A")")
+        Self.logger.log("💼 Project audio for source \(source.sourceId.value ?? "N/A", privacy: .public)")
         guard
             let subscriber = self.subscriber,
             let audioTrack = source.audioTracks.first
