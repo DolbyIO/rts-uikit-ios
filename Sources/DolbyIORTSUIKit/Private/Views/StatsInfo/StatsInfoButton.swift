@@ -7,14 +7,14 @@ import DolbyIOUIKit
 import SwiftUI
 
 struct StatsInfoButton: View {
-
+    
     private let viewModel: StatsInfoViewModel
     @State private var showStats: Bool = false
-
+    
     init(streamSource: StreamSource) {
         viewModel = StatsInfoViewModel(streamSource: streamSource)
     }
-
+    
     var body: some View {
         IconButton(
             iconAsset: .info
@@ -31,13 +31,13 @@ struct StatsInfoButton: View {
 
 struct StatisticsView: View {
     private let viewModel: StatisticsViewModel
-
+    
     @ObservedObject private var themeManager = ThemeManager.shared
-
+    
     init(streamSource: StreamSource) {
         viewModel = StatisticsViewModel(streamSource: streamSource)
     }
-
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -47,10 +47,10 @@ struct StatisticsView: View {
                     .padding([.top], 5)
                 Text("stream.media-stats.label",
                      font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title))
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding([.top], 20)
-                    .padding([.bottom], 25)
-
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding([.top], 20)
+                .padding([.bottom], 25)
+                
                 HStack {
                     Text("stream.stats.name.label",
                          font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title))
@@ -60,16 +60,16 @@ struct StatisticsView: View {
                     .frame(width: 170, alignment: .leading)
                 }
                 .padding([.leading, .trailing], 15)
-
+                
                 ForEach(viewModel.data) { item in
                     HStack {
                         Text(item.key,
                              font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
-                            .frame(width: 170, alignment: .leading)
+                        .frame(width: 170, alignment: .leading)
                         
                         Text(verbatim: item.value,
                              font: .custom("AvenirNext-DemiBold", size: FontSize.caption1, relativeTo: .caption))
-                            .frame(width: 170, alignment: .leading)
+                        .frame(width: 170, alignment: .leading)
                     }
                     .padding([.top], 5)
                     .padding([.leading, .trailing], 15)
@@ -81,30 +81,50 @@ struct StatisticsView: View {
                     .ignoresSafeArea(.container, edges: .all)
             }
             .cornerRadius(Layout.cornerRadius14x)
+            .contextMenu {
+                Button(action: {
+                    copyToPasteboard(text: formattedText())
+                }) {
+                    Text("Copy")
+                    Image(systemName: "doc.on.doc")
+                }
+            }
+    }
+    
+    func formattedText() -> String {
+        var text = ""
+        viewModel.data.forEach  { item in
+            text += "\(item.key.toString()): \(item.value)\n"
+        }
+        return text
+    }
+    
+    func copyToPasteboard(text: String) {
+        UIPasteboard.general.string = text
     }
 }
 
 
 final class StatisticsViewModel {
     private let streamSource: StreamSource
-
+    
     init(streamSource: StreamSource) {
         self.streamSource = streamSource
     }
-
+    
     struct StatData: Identifiable {
         var id = UUID()
         var key: LocalizedStringKey
         var value: String
     }
-
+    
     var data: [StatData] {
         guard let stats = streamSource.streamingStats else {
             return []
         }
-
+        
         var result = [StatData]()
-
+        
         if let val = stats.mid {
             result.append(StatData(key: "stream.stats.mid.label", value: String(val)))
         }
@@ -154,18 +174,12 @@ final class StatisticsViewModel {
         if let videoPacketsLost = stats.statsInboundRtp?.packetsLost {
             result.append(StatData(key: "stream.stats.video-packet-loss.label", value: String(format:"%.2f", videoPacketsLost)))
         }
-
+        
         
         if let rtt = stats.roundTripTime {
             result.append(StatData(key: "stream.stats.rtt.label", value: String(rtt)))
         }
-
-//        if let audioPacketsLost = stats.audioStatsInboundRtp?.packetsLost {
-//            result.append(StatData(key: "stream.stats.audio-packet-loss.label", value: String(audioPacketsLost)))
-//        }
-//        if let audioJitter = stats.audioStatsInboundRtp?.jitter {
-//            result.append(StatData(key: "stream.stats.audio-jitter.label", value: "\(audioJitter)"))
-//        }
+        
         if let timestamp = stats.statsInboundRtp?.timestamp {
             result.append(StatData(key: "stream.stats.timestamp.label", value: String(timestamp))) // change to dateStr when timestamp is fixed
         }
@@ -181,26 +195,26 @@ final class StatisticsViewModel {
         }
         return result
     }
-
+    
     private func dateStr(timestamp: Double) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         dateFormatter.locale = NSLocale.current
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-
+        
         let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
         return dateFormatter.string(from: date)
     }
-
+    
     private func formatBytes(bytes: Int) -> String {
         return "\(formatNumber(input: bytes))B"
     }
-
+    
     private func formatBitRate(bitRate: Int) -> String {
         let value = formatNumber(input: bitRate).lowercased()
         return "\(value)bps"
     }
-
+    
     private func formatNumber(input: Int) -> String {
         if input < KILOBYTES { return String(input) }
         if input >= KILOBYTES && input < MEGABYTES { return "\(input / KILOBYTES) K"} else { return "\(input / MEGABYTES) M" }
