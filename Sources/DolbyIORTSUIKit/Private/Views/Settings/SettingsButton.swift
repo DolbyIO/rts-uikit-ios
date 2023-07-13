@@ -17,6 +17,5 @@ struct SettingsButton: View {
         IconButton(iconAsset: .settings, action: {
             onAction()
         })
-        .scaleEffect(0.5, anchor: .trailing)
     }
 }

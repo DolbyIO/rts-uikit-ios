@@ -7,7 +7,7 @@ import Foundation
 final class UserInteractionViewModel: ObservableObject {
 
     private enum Constants {
-        static let interactivityTimeOut: CGFloat = 5
+        static let interactivityTimeOut: CGFloat = 10
     }
 
     // MARK: Manage interactivity on views

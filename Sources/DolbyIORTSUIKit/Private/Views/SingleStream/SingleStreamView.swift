@@ -108,14 +108,6 @@ struct SingleStreamView: View {
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .overlay(alignment: .top) {
-                    topToolBarView
-                        .offset(x: 0, y: showScreenControls ? 0 : -Animation.offset)
-                }
-                .overlay(alignment: .bottom) {
-                    bottomToolBarView
-                        .offset(x: 0, y: showScreenControls ? 0 : Animation.offset)
-                }
                 .onAppear {
                     showControlsAndObserveInteractions()
                 }
@@ -134,6 +126,14 @@ struct SingleStreamView: View {
                     } else {
                         showControlsAndObserveInteractions()
                     }
+                }
+                .overlay(alignment: .top) {
+                    topToolBarView
+                        .offset(x: 0, y: showScreenControls ? 0 : -Animation.offset)
+                }
+                .overlay(alignment: .bottom) {
+                    bottomToolBarView
+                        .offset(x: 0, y: showScreenControls ? 0 : Animation.offset)
                 }
                 .onChange(of: selectedVideoStreamSourceId) { newValue in
                     guard let selectedStreamSource = viewModel.streamSource(for: newValue) else {

@@ -47,8 +47,8 @@ public struct IconButton: View {
                     tintColor: isFocused ? _focusedTintColor : _tintColor
                 )
             }
-            .padding(.all)
         }
+        .frame(minWidth: Layout.spacing7x, minHeight: Layout.spacing7x)
         .focused($isFocused)
         .buttonStyle(
             ClearButtonStyle(isFocused: isFocused, focusedBackgroundColor: .clear)
