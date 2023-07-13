@@ -9,20 +9,18 @@ import SwiftUI
 struct StatsInfoButton: View {
     
     private let viewModel: StatsInfoViewModel
-    @State private var showStats: Bool = false
+    @Binding private var isShowingStatsScreen: Bool
     
-    init(streamSource: StreamSource) {
+    init(streamSource: StreamSource, showingStatsScreen: Binding<Bool>) {
         viewModel = StatsInfoViewModel(streamSource: streamSource)
+        _isShowingStatsScreen = showingStatsScreen
     }
     
     var body: some View {
         IconButton(
             iconAsset: .info
         ) {
-            showStats.toggle()
-        }
-        .sheet(isPresented: $showStats) {
-            StatisticsView(streamSource: viewModel.streamSource)
+            isShowingStatsScreen.toggle()
         }
     }
 }
@@ -31,62 +29,67 @@ struct StatisticsView: View {
     private let viewModel: StatisticsViewModel
     
     @ObservedObject private var themeManager = ThemeManager.shared
-    
+    @Environment(\.presentationMode) var presentationMode
+
     init(streamSource: StreamSource) {
         viewModel = StatisticsViewModel(streamSource: streamSource)
     }
     
     var body: some View {
-        ScrollView {
-            VStack {
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(Color.gray)
-                    .frame(width: 48, height: 5)
-                    .padding([.top], 5)
-                Text("stream.media-stats.label",
-                     font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title))
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding([.top], 20)
-                .padding([.bottom], 25)
-                
-                HStack {
-                    Text("stream.stats.name.label",
-                         font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title))
-                    .frame(width: 170, alignment: .leading)
-                    Text("stream.stats.value.label",
-                         font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title))
-                    .frame(width: 170, alignment: .leading)
-                }
-                .padding([.leading, .trailing], 15)
-                
-                ForEach(viewModel.data) { item in
-                    HStack {
-                        Text(item.key,
-                             font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
-                        .frame(width: 170, alignment: .leading)
+        NavigationView {
+            ZStack {
+                ScrollView {
+                    VStack {
+                        HStack {
+                            Text("stream.stats.name.label",
+                                 font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title))
+                            .frame(width: 170, alignment: .leading)
+                            Text("stream.stats.value.label",
+                                 font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title))
+                            .frame(width: 170, alignment: .leading)
+                        }
                         
-                        Text(verbatim: item.value,
-                             font: .custom("AvenirNext-DemiBold", size: FontSize.caption1, relativeTo: .caption))
-                        .frame(width: 170, alignment: .leading)
+                        ForEach(viewModel.data) { item in
+                            HStack {
+                                Text(item.key,
+                                     font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
+                                .multilineTextAlignment(.leading)
+                                .frame(width: 170, alignment: .leading)
+                                
+                                Text(verbatim: item.value,
+                                     font: .custom("AvenirNext-DemiBold", size: FontSize.caption1, relativeTo: .caption))
+                                .multilineTextAlignment(.leading)
+                                .frame(width: 170, alignment: .leading)
+                            }
+                            .padding([.top], 5)
+                        }
                     }
-                    .padding([.top], 5)
-                    .padding([.leading, .trailing], 15)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding([.top, .bottom], 30)
+                    .background {
+                        Color(uiColor: themeManager.theme.background).opacity(0.7)
+                    }
                 }
-            }.padding([.bottom], 10)
-        }.frame(alignment: .bottom)
-            .background {
-                Rectangle().fill(Color(uiColor: themeManager.theme.background).opacity(0.7))
-                    .ignoresSafeArea(.container, edges: .all)
-            }
-            .cornerRadius(Layout.cornerRadius14x)
-            .contextMenu {
-                Button(action: {
-                    copyToPasteboard(text: formattedText())
-                }) {
-                    Text("Copy")
-                    Image(systemName: "doc.on.doc")
+                .navigationBarHidden(false)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle("stream.media-stats.label")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        IconButton(iconAsset: .close) {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                }
+                .contextMenu {
+                    Button(action: {
+                        copyToPasteboard(text: formattedText())
+                    }) {
+                        Text("Copy")
+                        Image(systemName: "doc.on.doc")
+                    }
                 }
             }
+        }
     }
     
     func formattedText() -> String {

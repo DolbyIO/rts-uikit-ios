@@ -22,6 +22,7 @@ struct SingleStreamView: View {
     @State private var showScreenControls = false
     @State private var selectedVideoStreamSourceId: UUID
     @State private var isShowingSettingsScreen: Bool = false
+    @State private var isShowingStatsScreen: Bool = false
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
 
     @ObservedObject private var themeManager = ThemeManager.shared
@@ -60,7 +61,7 @@ struct SingleStreamView: View {
     private var bottomToolBarView: some View {
         let source = viewModel.selectedVideoSource
         HStack {
-            StatsInfoButton(streamSource: source)
+            StatsInfoButton(streamSource: source, showingStatsScreen: $isShowingStatsScreen)
 
             Spacer()
 
@@ -134,6 +135,9 @@ struct SingleStreamView: View {
                 .overlay(alignment: .bottom) {
                     bottomToolBarView
                         .offset(x: 0, y: showScreenControls ? 0 : Animation.offset)
+                }
+                .fullScreenCover(isPresented: $isShowingStatsScreen) {
+                    StatisticsView(streamSource: viewModel.selectedVideoSource)
                 }
                 .onChange(of: selectedVideoStreamSourceId) { newValue in
                     guard let selectedStreamSource = viewModel.streamSource(for: newValue) else {
