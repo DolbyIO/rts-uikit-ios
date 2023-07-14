@@ -5,12 +5,13 @@
 import Foundation
 import MillicastSDK
 
-public struct StreamingStatistics {
+public struct StreamingStatistics : Equatable, Hashable {
     public let roundTripTime: Double?
     public let audioStatsInboundRtp: StatsInboundRtp?
     public let videoStatsInboundRtp: StatsInboundRtp?
+    public let streamId: String?
 
-    public struct StatsInboundRtp {
+    public struct StatsInboundRtp : Hashable {
         public let sid: String
         public let kind: String
         public let decoder: String?
@@ -64,6 +65,23 @@ extension StreamingStatistics {
             .map {
                 StatsInboundRtp($0, codecStatsList: codecStatsList)
             }
+        streamId = videoStatsInboundRtp?.sid ?? audioStatsInboundRtp?.sid
+    }
+    
+    public static func == (lhs: StreamingStatistics, rhs: StreamingStatistics) -> Bool {
+        if lhs.roundTripTime != rhs.roundTripTime {
+            return false
+        }
+        if lhs.audioStatsInboundRtp?.sid != rhs.audioStatsInboundRtp?.sid {
+            return false
+        }
+        if lhs.videoStatsInboundRtp?.sid != rhs.videoStatsInboundRtp?.sid {
+            return false
+        }
+        if lhs.videoStatsInboundRtp?.frameWidth != rhs.videoStatsInboundRtp?.frameWidth {
+            return false
+        }
+        return true
     }
 }
 

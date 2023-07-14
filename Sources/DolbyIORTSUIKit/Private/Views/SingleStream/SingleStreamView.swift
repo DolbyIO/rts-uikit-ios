@@ -22,6 +22,7 @@ struct SingleStreamView: View {
     @State private var showScreenControls = false
     @State private var selectedVideoStreamSourceId: UUID
     @State private var isShowingSettingsScreen: Bool = false
+    @State private var isShowingStatsInfoScreen: Bool = false
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
 
     @ObservedObject private var themeManager = ThemeManager.shared
@@ -58,9 +59,16 @@ struct SingleStreamView: View {
 
     @ViewBuilder
     private var bottomToolBarView: some View {
-        let source = viewModel.selectedVideoSource
         HStack {
-            StatsInfoButton(streamSource: source)
+            StatsInfoButton { isShowingStatsInfoScreen.toggle() }
+                .gesture(
+                    DragGesture()
+                        .onChanged { _ in
+                            withAnimation {
+                                isShowingStatsInfoScreen = false
+                            }
+                        }
+                )
 
             Spacer()
 
@@ -91,6 +99,17 @@ struct SingleStreamView: View {
             ) {
                 EmptyView()
             }.hidden()
+            
+            if isShowingStatsInfoScreen {
+                HStack {
+                    StatisticsInfoView(streamingStatistics: viewModel.streamSource(for: selectedVideoStreamSourceId)?.statisticsData)
+                    
+                    Spacer()
+                }
+                .ignoresSafeArea(.all)
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .transition(.slide)
+            }
 
             GeometryReader { proxy in
                 TabView(selection: $selectedVideoStreamSourceId) {
