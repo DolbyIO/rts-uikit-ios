@@ -9,11 +9,11 @@ public struct StreamingStatistics : Equatable, Hashable {
     public let roundTripTime: Double?
     public let audioStatsInboundRtp: StatsInboundRtp?
     public let videoStatsInboundRtp: StatsInboundRtp?
-    public let streamId: String?
 
     public struct StatsInboundRtp : Hashable {
         public let sid: String
         public let kind: String
+        public let mid: String
         public let decoder: String?
         public let frameWidth: Int
         public let frameHeight: Int
@@ -65,7 +65,6 @@ extension StreamingStatistics {
             .map {
                 StatsInboundRtp($0, codecStatsList: codecStatsList)
             }
-        streamId = videoStatsInboundRtp?.sid ?? audioStatsInboundRtp?.sid
     }
     
     public static func == (lhs: StreamingStatistics, rhs: StreamingStatistics) -> Bool {
@@ -89,6 +88,7 @@ extension StreamingStatistics.StatsInboundRtp {
     init(_ stats: MCInboundRtpStreamStats, codecStatsList: [MCCodecsStats]?) {
         sid = stats.sid  as String
         kind = stats.kind as String
+        mid = stats.mid as String
         decoder = stats.decoder_implementation as String?
         frameWidth = Int(stats.frame_width)
         frameHeight = Int(stats.frame_height)

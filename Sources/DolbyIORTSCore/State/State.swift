@@ -112,9 +112,14 @@ struct SubscribedState {
 
     mutating func updateStreamingStatistics(_ stats: StreamingStatistics?) {
         streamingStats = stats
-        guard let builder = streamSourceBuilders.first
-//                (where: { $0.streamId == stats?.streamId })
-        else {
+        print("===> stats: \(stats)")
+        streamSourceBuilders.forEach { each in
+            print("===> trackId = \(String(describing: each.videoTrack?.trackInfo.mid))")
+        }
+        guard let builder = streamSourceBuilders.first(
+            where: { $0.videoTrack?.trackInfo.mid == stats?.videoStatsInboundRtp?.mid }
+        ) else {
+            print("===> missing builder: trackId = \(String(describing: stats?.videoStatsInboundRtp?.mid))")
             return
         }
         if let statistics = stats {
