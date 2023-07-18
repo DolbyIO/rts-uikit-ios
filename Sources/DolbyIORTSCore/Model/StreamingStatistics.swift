@@ -5,40 +5,46 @@
 import Foundation
 import MillicastSDK
 
+public struct AllStreamingStatistics : Equatable, Hashable {
+    public let roundTripTime: Double?
+    public var videoStatsInboundRtpList: [StatsInboundRtp]?
+    public var audioStatsInboundRtpList: [StatsInboundRtp]?
+}
+
 public struct StreamingStatistics : Equatable, Hashable {
     public let roundTripTime: Double?
     public let audioStatsInboundRtp: StatsInboundRtp?
     public let videoStatsInboundRtp: StatsInboundRtp?
+}
 
-    public struct StatsInboundRtp : Hashable {
-        public let sid: String
-        public let kind: String
-        public let mid: String
-        public let decoder: String?
-        public let frameWidth: Int
-        public let frameHeight: Int
-        public let fps: Int
-        public let audioLevel: Int
-        public let totalEnergy: Double
-        public let framesReceived: Int
-        public let framesDecoded: Int
-        public let nackCount: Int
-        public let bytesReceived: Int
-        public let totalSampleDuration: Double
-        public let codec: String?
-        public let jitter: Double
-        public let packetsReceived: Double
-        public let packetsLost: Double
-        public let timestamp: Double
-        public var codecName: String?
+public struct StatsInboundRtp : Hashable {
+    public let sid: String
+    public let kind: String
+    public let mid: String
+    public let decoder: String?
+    public let frameWidth: Int
+    public let frameHeight: Int
+    public let fps: Int
+    public let audioLevel: Int
+    public let totalEnergy: Double
+    public let framesReceived: Int
+    public let framesDecoded: Int
+    public let nackCount: Int
+    public let bytesReceived: Int
+    public let totalSampleDuration: Double
+    public let codec: String?
+    public let jitter: Double
+    public let packetsReceived: Double
+    public let packetsLost: Double
+    public let timestamp: Double
+    public var codecName: String?
 
-        public var videoResolution: String {
-            "\(frameWidth) x \(frameHeight)"
-        }
+    public var videoResolution: String {
+        "\(frameWidth) x \(frameHeight)"
     }
 }
 
-extension StreamingStatistics {
+extension AllStreamingStatistics {
     init?(_ report: MCStatsReport) {
         let receivedType = MCRemoteInboundRtpStreamStats.get_type()
         guard let remoteInboundStreamStatsList = report.getStatsOf(receivedType) as? [MCRemoteInboundRtpStreamStats] else {
@@ -53,38 +59,57 @@ extension StreamingStatistics {
 
         let codecType = MCCodecsStats.get_type()
         let codecStatsList = report.getStatsOf(codecType) as? [MCCodecsStats]
-
-        videoStatsInboundRtp = inboundRtpStreamStatsList
-            .first { $0.kind == "video" }
+        
+        let videos = inboundRtpStreamStatsList
+            .filter { $0.kind == "video" }
             .map {
                 StatsInboundRtp($0, codecStatsList: codecStatsList)
             }
+        videoStatsInboundRtpList = [StatsInboundRtp]()
+        audioStatsInboundRtpList = [StatsInboundRtp]()
+        videoStatsInboundRtpList?.append(contentsOf: videos)
 
-        audioStatsInboundRtp = inboundRtpStreamStatsList
-            .first { $0.kind == "audio" }
+        let audios = inboundRtpStreamStatsList
+            .filter { $0.kind == "audio" }
             .map {
                 StatsInboundRtp($0, codecStatsList: codecStatsList)
             }
+        audioStatsInboundRtpList?.append(contentsOf: audios)
     }
     
-    public static func == (lhs: StreamingStatistics, rhs: StreamingStatistics) -> Bool {
-        if lhs.roundTripTime != rhs.roundTripTime {
+    public static func == (lhs: AllStreamingStatistics, rhs: AllStreamingStatistics) -> Bool {
+        if lhs.videoStatsInboundRtpList?.count != rhs.videoStatsInboundRtpList?.count {
             return false
         }
-        if lhs.audioStatsInboundRtp?.sid != rhs.audioStatsInboundRtp?.sid {
+        if lhs.audioStatsInboundRtpList?.count != rhs.audioStatsInboundRtpList?.count {
             return false
         }
-        if lhs.videoStatsInboundRtp?.sid != rhs.videoStatsInboundRtp?.sid {
-            return false
-        }
-        if lhs.videoStatsInboundRtp?.frameWidth != rhs.videoStatsInboundRtp?.frameWidth {
+        if lhs.videoStatsInboundRtpList != rhs.videoStatsInboundRtpList {
             return false
         }
         return true
     }
 }
 
-extension StreamingStatistics.StatsInboundRtp {
+extension StreamingStatistics {
+    public static func == (lhs: StreamingStatistics, rhs: StreamingStatistics) -> Bool {
+        if lhs.audioStatsInboundRtp?.mid != rhs.audioStatsInboundRtp?.mid {
+            return false
+        }
+        if lhs.videoStatsInboundRtp?.mid != rhs.videoStatsInboundRtp?.mid {
+            return false
+        }
+        if lhs.videoStatsInboundRtp?.bytesReceived != rhs.videoStatsInboundRtp?.bytesReceived {
+            return false
+        }
+        if lhs.audioStatsInboundRtp?.bytesReceived != rhs.audioStatsInboundRtp?.bytesReceived {
+            return false
+        }
+        return true
+    }
+}
+
+extension StatsInboundRtp {
     init(_ stats: MCInboundRtpStreamStats, codecStatsList: [MCCodecsStats]?) {
         sid = stats.sid  as String
         kind = stats.kind as String

@@ -221,7 +221,7 @@ final actor StateMachine {
         }
     }
 
-    func onStatsReport(_ streamingStats: StreamingStatistics) {
+    func onStatsReport(_ streamingStats: AllStreamingStatistics) {
         switch currentState {
         case var .subscribed(state):
             state.updateStreamingStatistics(streamingStats)

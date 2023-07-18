@@ -21,9 +21,10 @@ public struct StreamingScreen: View {
 
     @ViewBuilder
     private var singleStreamDetailView: some View {
-        if let detailSingleStreamViewModel = viewModel.detailSingleStreamViewModel {
+        if let singleStreamUiState = viewModel.detailSingleStreamViewModel {
             SingleStreamView(
-                viewModel: detailSingleStreamViewModel,
+                viewModel: viewModel,
+                uiState: singleStreamUiState,
                 isShowingDetailPresentation: true,
                 onSelect: {
                     viewModel.selectVideoSource($0)
@@ -51,9 +52,10 @@ public struct StreamingScreen: View {
                         viewModel.selectVideoSource($0)
                     }
                 )
-            case let .single(singleStreamViewModel):
+            case let .single(singleStreamUiState):
                 SingleStreamView(
-                    viewModel: singleStreamViewModel,
+                    viewModel: viewModel,
+                    uiState: singleStreamUiState,
                     isShowingDetailPresentation: false,
                     onSelect: {
                         viewModel.selectVideoSource($0)
