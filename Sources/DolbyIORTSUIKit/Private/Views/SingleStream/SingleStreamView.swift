@@ -14,8 +14,7 @@ struct SingleStreamView: View {
         static let offset: CGFloat = 200.0
     }
 
-    @ObservedObject var viewModel: StreamViewModel
-    private let uiState: SingleStreamViewModel
+    private let viewModel: SingleStreamViewModel
     private let isShowingDetailPresentation: Bool
     private let onSelect: ((StreamSource) -> Void)
     private let onClose: (() -> Void)?
@@ -29,18 +28,16 @@ struct SingleStreamView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
 
     init(
-        viewModel: StreamViewModel,
-        uiState: SingleStreamViewModel,
+        viewModel: SingleStreamViewModel,
         isShowingDetailPresentation: Bool,
         onSelect: @escaping (StreamSource) -> Void,
         onClose: (() -> Void)? = nil
     ) {
         self.viewModel = viewModel
-        self.uiState = uiState
         self.isShowingDetailPresentation = isShowingDetailPresentation
         self.onSelect = onSelect
         self.onClose = onClose
-        _selectedVideoStreamSourceId = State(wrappedValue: uiState.selectedVideoSource.id)
+        _selectedVideoStreamSourceId = State(wrappedValue: viewModel.selectedVideoSource.id)
     }
 
     private var theme: Theme {
@@ -96,7 +93,7 @@ struct SingleStreamView: View {
         ZStack {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
-                    SettingsScreen(mode: uiState.settingsMode)
+                    SettingsScreen(mode: viewModel.settingsMode)
                 ),
                 isActive: $isShowingSettingsScreen
             ) {
@@ -105,7 +102,7 @@ struct SingleStreamView: View {
 
             GeometryReader { proxy in
                 TabView(selection: $selectedVideoStreamSourceId) {
-                    ForEach(uiState.videoViewModels, id: \.streamSource.id) { videoRendererViewModel in
+                    ForEach(viewModel.videoViewModels, id: \.streamSource.id) { videoRendererViewModel in
                         let maxAllowedVideoWidth = proxy.size.width
                         let maxAllowedVideoHeight = proxy.size.height
                         ZStack {
@@ -119,15 +116,8 @@ struct SingleStreamView: View {
                             }
                             .sheet(isPresented: $isShowingStatsInfoScreen) {
                                 HStack {
-                                    switch viewModel.state {
-                                    case .success:
-                                        if let singleStreamUiState = viewModel.detailSingleStreamViewModel {
-                                            StatisticsInfoView(viewModel: StatsInfoViewModel(streamSource: singleStreamUiState.selectedVideoSource))
-                                        }
-                                        Spacer()
-                                    default:
-                                        EmptyView()
-                                    }
+                                    StatisticsInfoView(viewModel: StatsInfoViewModel(streamSource: viewModel.selectedVideoSource))
+                                    Spacer()
                                 }
                                 .frame(alignment: Alignment.bottom)
                                 .edgesIgnoringSafeArea(.all)
@@ -166,7 +156,7 @@ struct SingleStreamView: View {
                     }
                 }
                 .onChange(of: selectedVideoStreamSourceId) { newValue in
-                    guard let selectedStreamSource = uiState.streamSource(for: newValue) else {
+                    guard let selectedStreamSource = viewModel.streamSource(for: newValue) else {
                         return
                     }
                     onSelect(selectedStreamSource)
