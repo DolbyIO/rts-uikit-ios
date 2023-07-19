@@ -125,7 +125,7 @@ final class StreamSourceBuilder {
             sourceId: sourceId,
             availableVideoQualityList: availableVideoQualityList,
             preferredVideoQuality: preferredVideoQuality,
-            statisticsData: streamingStatistics,
+            streamingStatistics: streamingStatistics,
             isPlayingAudio: isPlayingAudio,
             isPlayingVideo: isPlayingVideo,
             audioTracks: audioTracks,

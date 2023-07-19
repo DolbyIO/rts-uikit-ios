@@ -10,7 +10,7 @@ struct StatsInfoButton: View {
     
     private let onAction: () -> Void
 
-    init(onAction: @escaping (() -> Void) = {}) {
+    init(onAction: @escaping (() -> Void)) {
         self.onAction = onAction
     }
 

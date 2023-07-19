@@ -17,7 +17,7 @@ public struct StreamingStatistics : Equatable, Hashable {
     public let videoStatsInboundRtp: StatsInboundRtp?
 }
 
-public struct StatsInboundRtp : Hashable {
+public struct StatsInboundRtp : Equatable, Hashable {
     public let sid: String
     public let kind: String
     public let mid: String
@@ -75,37 +75,6 @@ extension AllStreamingStatistics {
                 StatsInboundRtp($0, codecStatsList: codecStatsList)
             }
         audioStatsInboundRtpList?.append(contentsOf: audios)
-    }
-    
-    public static func == (lhs: AllStreamingStatistics, rhs: AllStreamingStatistics) -> Bool {
-        if lhs.videoStatsInboundRtpList?.count != rhs.videoStatsInboundRtpList?.count {
-            return false
-        }
-        if lhs.audioStatsInboundRtpList?.count != rhs.audioStatsInboundRtpList?.count {
-            return false
-        }
-        if lhs.videoStatsInboundRtpList != rhs.videoStatsInboundRtpList {
-            return false
-        }
-        return true
-    }
-}
-
-extension StreamingStatistics {
-    public static func == (lhs: StreamingStatistics, rhs: StreamingStatistics) -> Bool {
-        if lhs.audioStatsInboundRtp?.mid != rhs.audioStatsInboundRtp?.mid {
-            return false
-        }
-        if lhs.videoStatsInboundRtp?.mid != rhs.videoStatsInboundRtp?.mid {
-            return false
-        }
-        if lhs.videoStatsInboundRtp?.bytesReceived != rhs.videoStatsInboundRtp?.bytesReceived {
-            return false
-        }
-        if lhs.audioStatsInboundRtp?.bytesReceived != rhs.audioStatsInboundRtp?.bytesReceived {
-            return false
-        }
-        return true
     }
 }
 

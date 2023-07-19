@@ -43,7 +43,7 @@ struct StatisticsInfoView: View {
                 
                 ForEach(viewModel.data) { item in
                     HStack {
-                        Text(item.key, font: fontTable).frame(width: 170, alignment: .leading)
+                        Text(item.key).font(fontTable).frame(width: 170, alignment: .leading)
                         Text(item.value).font(fontTable).frame(width: 170, alignment: .leading)
                     }
                     .padding([.top], 5)
