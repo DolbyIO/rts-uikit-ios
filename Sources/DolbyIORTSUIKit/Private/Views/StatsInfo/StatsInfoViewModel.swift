@@ -64,7 +64,7 @@ final class StatsInfoViewModel: ObservableObject {
                 delimiter = ""
             }
             let codecs = "\(audioCodec ?? "")\(delimiter)\(videoCodec ?? "")"
-            result.append(StatData(key: "stream.stats.codecs.label", value: codecs))
+            result.append(StatData(key: String(localized: "stream.stats.codecs.label"), value: codecs))
         }
         return result
     }
