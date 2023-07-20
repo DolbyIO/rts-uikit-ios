@@ -22,6 +22,7 @@ struct SingleStreamView: View {
     @State private var showScreenControls = false
     @State private var selectedVideoStreamSourceId: UUID
     @State private var isShowingSettingsScreen: Bool = false
+    @State private var isShowingStatsInfoScreen: Bool = false
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
 
     @ObservedObject private var themeManager = ThemeManager.shared
@@ -58,9 +59,8 @@ struct SingleStreamView: View {
 
     @ViewBuilder
     private var bottomToolBarView: some View {
-        let source = viewModel.selectedVideoSource
         HStack {
-            StatsInfoButton(streamSource: source)
+            StatsInfoButton { isShowingStatsInfoScreen.toggle() }
 
             Spacer()
 
@@ -94,19 +94,23 @@ struct SingleStreamView: View {
 
             GeometryReader { proxy in
                 TabView(selection: $selectedVideoStreamSourceId) {
-                    ForEach(viewModel.videoViewModels, id: \.streamSource.id) { viewModel in
+                    ForEach(viewModel.videoViewModels, id: \.streamSource.id) { videoRendererViewModel in
                         let maxAllowedVideoWidth = proxy.size.width
                         let maxAllowedVideoHeight = proxy.size.height
-
-                        HStack {
-                            VideoRendererView(
-                                viewModel: viewModel,
-                                maxWidth: maxAllowedVideoWidth,
-                                maxHeight: maxAllowedVideoHeight,
-                                contentMode: .aspectFit
-                            )
+                        ZStack {
+                            HStack {
+                                VideoRendererView(
+                                    viewModel: videoRendererViewModel,
+                                    maxWidth: maxAllowedVideoWidth,
+                                    maxHeight: maxAllowedVideoHeight,
+                                    contentMode: .aspectFit
+                                )
+                            }
                         }
-                        .tag(viewModel.streamSource.id)
+                        .sheet(isPresented: $isShowingStatsInfoScreen) {
+                            statisticsView()
+                        }
+                        .tag(videoRendererViewModel.streamSource.id)
                         .frame(width: proxy.size.width, height: proxy.size.height)
                     }
                 }
@@ -147,6 +151,15 @@ struct SingleStreamView: View {
             }
             .navigationBarHidden(isShowingDetailPresentation)
         }
+    }
+    
+    private func statisticsView() -> some View {
+        return HStack {
+            StatisticsInfoView(viewModel: StatsInfoViewModel(streamSource: viewModel.selectedVideoSource))
+            Spacer()
+        }
+        .frame(alignment: Alignment.bottom)
+        .edgesIgnoringSafeArea(.all)
     }
 
     private func showControlsAndObserveInteractions() {

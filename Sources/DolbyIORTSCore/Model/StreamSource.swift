@@ -115,6 +115,7 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
     public let sourceId: SourceId
     public let availableVideoQualityList: [VideoQuality]
     public let preferredVideoQuality: VideoQuality
+    public let streamingStatistics: StreamingStatistics?
     let isPlayingAudio: Bool
     let isPlayingVideo: Bool
     let audioTracks: [AudioTrackInfo]

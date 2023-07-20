@@ -293,7 +293,6 @@ final class StreamViewModel: ObservableObject {
         guard !sources.isEmpty else {
             return
         }
-                
         updateStreamSettings(from: sources, settings: settings)
 
         let sortedSources: [StreamSource]

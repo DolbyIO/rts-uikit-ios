@@ -7,18 +7,18 @@ import DolbyIOUIKit
 import SwiftUI
 
 struct StatsInfoButton: View {
+    
+    private let onAction: () -> Void
 
-    @StateObject private var viewModel: StatsInfoViewModel
-
-    init(streamSource: StreamSource) {
-        _viewModel = StateObject(wrappedValue: StatsInfoViewModel(streamSource: streamSource))
+    init(onAction: @escaping (() -> Void)) {
+        self.onAction = onAction
     }
 
     var body: some View {
         IconButton(
             iconAsset: .info
         ) {
-            // TODO: Handle as part of status info screen ticket
+            onAction()
         }
     }
 }
