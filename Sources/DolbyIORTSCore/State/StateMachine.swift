@@ -82,7 +82,7 @@ final actor StateMachine {
 
     func onConnected() {
         switch currentState {
-        case .connecting:
+        case .connecting, .disconnected:
             currentState = .connected
         default:
             Self.logger.error("🛑 Unexpected state on onConnected - \(self.currentState.description)")
