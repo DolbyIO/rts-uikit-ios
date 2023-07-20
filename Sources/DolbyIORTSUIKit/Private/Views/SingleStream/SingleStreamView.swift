@@ -61,14 +61,6 @@ struct SingleStreamView: View {
     private var bottomToolBarView: some View {
         HStack {
             StatsInfoButton { isShowingStatsInfoScreen.toggle() }
-                .gesture(
-                    DragGesture()
-                        .onChanged { _ in
-                            withAnimation {
-                                isShowingStatsInfoScreen = false
-                            }
-                        }
-                )
 
             Spacer()
 
@@ -114,14 +106,9 @@ struct SingleStreamView: View {
                                     contentMode: .aspectFit
                                 )
                             }
-                            .sheet(isPresented: $isShowingStatsInfoScreen) {
-                                HStack {
-                                    StatisticsInfoView(viewModel: StatsInfoViewModel(streamSource: viewModel.selectedVideoSource))
-                                    Spacer()
-                                }
-                                .frame(alignment: Alignment.bottom)
-                                .edgesIgnoringSafeArea(.all)
-                            }
+                        }
+                        .sheet(isPresented: $isShowingStatsInfoScreen) {
+                            statisticsView()
                         }
                         .tag(videoRendererViewModel.streamSource.id)
                         .frame(width: proxy.size.width, height: proxy.size.height)
@@ -165,6 +152,24 @@ struct SingleStreamView: View {
             .navigationBarHidden(isShowingDetailPresentation)
         }
     }
+    
+    private func statisticsView() -> some View {
+        return HStack {
+            StatisticsInfoView(viewModel: StatsInfoViewModel(streamSource: viewModel.selectedVideoSource))
+            Spacer()
+        }
+        .frame(alignment: Alignment.bottom)
+        .edgesIgnoringSafeArea(.all)
+        .modify { view in
+            if #available(iOS 16.4, *) {
+                view
+                    .presentationDetents([.medium, .large])
+                    .presentationBackground(.thinMaterial)
+            } else {
+                view
+            }
+        }
+    }
 
     private func showControlsAndObserveInteractions() {
         withAnimation(.spring(blendDuration: Animation.blendDuration)) {
@@ -181,5 +186,13 @@ struct SingleStreamView: View {
             showScreenControls = false
         }
         userInteractionViewModel.stopInteractivityTimer()
+    }
+}
+
+extension View {
+    func modify<Content: View>(
+        @ViewBuilder _ transform: (Self) -> Content
+    ) -> some View {
+        return transform(self)
     }
 }
