@@ -160,15 +160,6 @@ struct SingleStreamView: View {
         }
         .frame(alignment: Alignment.bottom)
         .edgesIgnoringSafeArea(.all)
-        .modify { view in
-            if #available(iOS 16.4, *) {
-                view
-                    .presentationDetents([.medium, .large])
-                    .presentationBackground(.thinMaterial)
-            } else {
-                view
-            }
-        }
     }
 
     private func showControlsAndObserveInteractions() {
@@ -186,13 +177,5 @@ struct SingleStreamView: View {
             showScreenControls = false
         }
         userInteractionViewModel.stopInteractivityTimer()
-    }
-}
-
-extension View {
-    func modify<Content: View>(
-        @ViewBuilder _ transform: (Self) -> Content
-    ) -> some View {
-        return transform(self)
     }
 }
