@@ -33,21 +33,11 @@ final actor StateMachine {
     }
 
     func startSubscribe() {
-        switch currentState {
-        case .connected:
-            currentState = .subscribing
-        default:
-            Self.logger.error("🛑 Unexpected state on startSubscribe - \(self.currentState.description)")
-        }
+        currentState = .subscribing
     }
 
     func stopSubscribe() {
-        switch currentState {
-        case .subscribed, .connected:
-            currentState = .disconnected
-        default:
-            Self.logger.error("🛑 Unexpected state on stopSubscribe - \(self.currentState.description)")
-        }
+        currentState = .disconnected
     }
 
     func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource) {
@@ -81,22 +71,11 @@ final actor StateMachine {
     }
 
     func onConnected() {
-        switch currentState {
-        case .connecting, .disconnected:
-            currentState = .connected
-        default:
-            Self.logger.error("🛑 Unexpected state on onConnected - \(self.currentState.description)")
-        }
+        currentState = .connected
     }
 
     func onConnectionError(_ status: Int32, withReason reason: String) {
-        switch currentState {
-        case .connected, .subscribed, .connecting, .subscribing, .error, .stopped:
-            currentState = .error(.init(error: .connectFailed(reason: reason)))
-
-        default:
-            Self.logger.error("🛑 Unexpected state on onConnectionError - \(self.currentState.description)")
-        }
+        currentState = .error(.init(error: .connectFailed(reason: reason)))
     }
     
     func onDisconnected() {
@@ -110,32 +89,15 @@ final actor StateMachine {
     }
 
     func onSubscribed() {
-        switch currentState {
-        case .subscribing:
-            currentState = .subscribed(.init())
-        default:
-            Self.logger.error("🛑 Unexpected state on onSubscribed - \(self.currentState.description)")
-        }
+        currentState = .subscribed(.init())
     }
 
     func onSubscribedError(_ reason: String) {
-        switch currentState {
-        case .connected, .connecting, .subscribed, .subscribing, .error:
-            currentState = .error(.init(error: .subscribeFailed(reason: reason)))
-
-        default:
-            Self.logger.error("🛑 Unexpected state on onSubscribedError - \(self.currentState.description)")
-        }
+        currentState = .error(.init(error: .subscribeFailed(reason: reason)))
     }
 
     func onSignalingError(_ message: String) {
-        switch currentState {
-        case .connected, .connecting, .subscribed, .subscribing:
-            currentState = .error(.init(error: .signalingError(reason: message)))
-
-        default:
-            Self.logger.error("🛑 Unexpected state on onSignalingError - \(self.currentState.description)")
-        }
+        currentState = .error(.init(error: .signalingError(reason: message)))
     }
 
     func onActive(_ streamId: String, tracks: [String], sourceId: String?) {
@@ -242,11 +204,6 @@ final actor StateMachine {
     }
 
     func onStopped() {
-        switch currentState {
-        case .subscribed, .connected:
-            currentState = .stopped
-        default:
-            Self.logger.error("🛑 Unexpected state on onStopped - \(self.currentState.description)")
-        }
+        currentState = .stopped
     }
 }
