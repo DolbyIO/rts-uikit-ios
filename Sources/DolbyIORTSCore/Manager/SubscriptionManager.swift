@@ -127,6 +127,11 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             }
 
             self.subscriber.enableStats(true)
+            
+            let options = MCClientOptions()
+            options.autoReconnect = false
+            self.subscriber.setOptions(options)
+            
             return true
         }
 
