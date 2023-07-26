@@ -48,10 +48,10 @@ final class StatsInfoViewModel: ObservableObject {
             result.append(StatData(key: String(localized: "stream.stats.video-packet-loss.label"), value: String(videoPacketsLost)))
         }
         if let audioJitter = stats.audioStatsInboundRtp?.jitter {
-            result.append(StatData(key: String(localized: "stream.stats.audio-jitter.label"), value: "\(audioJitter)"))
+            result.append(StatData(key: String(localized: "stream.stats.audio-jitter.label"), value: "\(audioJitter) ms"))
         }
         if let videoJitter = stats.videoStatsInboundRtp?.jitter {
-            result.append(StatData(key: String(localized: "stream.stats.video-jitter.label"), value: "\(videoJitter)"))
+            result.append(StatData(key: String(localized: "stream.stats.video-jitter.label"), value: "\(videoJitter) ms"))
         }
         if let timestamp = stats.audioStatsInboundRtp?.timestamp {
             result.append(StatData(key: String(localized: "stream.stats.timestamp.label"), value: String(timestamp))) // change to dateStr when timestamp is fixed
