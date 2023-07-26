@@ -54,7 +54,7 @@ final class StatsInfoViewModel: ObservableObject {
             result.append(StatData(key: String(localized: "stream.stats.video-jitter.label"), value: "\(videoJitter) ms"))
         }
         if let timestamp = stats.audioStatsInboundRtp?.timestamp {
-            result.append(StatData(key: String(localized: "stream.stats.timestamp.label"), value: String(timestamp))) // change to dateStr when timestamp is fixed
+            result.append(StatData(key: String(localized: "stream.stats.timestamp.label"), value: dateStr(timestamp / 1000)))
         }
         let audioCodec = stats.audioStatsInboundRtp?.codecName
         let videoCodec = stats.videoStatsInboundRtp?.codecName
@@ -69,7 +69,7 @@ final class StatsInfoViewModel: ObservableObject {
         return result
     }
 
-    private func dateStr(timestamp: Double) -> String {
+    private func dateStr(_ timestamp: Double) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         dateFormatter.locale = NSLocale.current
