@@ -13,7 +13,8 @@ struct StatisticsInfoView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     
     private let fontCaption = Font.custom("AvenirNext-Bold", size: FontSize.caption1)
-    private let fontTable = Font.custom("AvenirNext-Regular", size: FontSize.caption1)
+    private let fontTable = Font.custom("AvenirNext-Regular", size: FontSize.body)
+    private let fontTableValue = Font.custom("AvenirNext-Bold", size: FontSize.body)
     private let fontTitle = Font.custom("AvenirNext-Bold", size: FontSize.title2)
     
     init(viewModel: StatsInfoViewModel) {
@@ -43,8 +44,8 @@ struct StatisticsInfoView: View {
                 
                 ForEach(viewModel.data) { item in
                     HStack {
-                        Text(item.key).font(fontTable).frame(width: 170, alignment: .leading)
-                        Text(item.value).font(fontTable).frame(width: 170, alignment: .leading)
+                        Text(item.key).font(fontTable).foregroundColor(Color(theme.neutral200)).frame(width: 170, alignment: .leading)
+                        Text(item.value).font(fontTableValue).foregroundColor(Color(theme.onBackground)).bold().frame(width: 170, alignment: .leading)
                     }
                     .padding([.top], 5)
                 }
