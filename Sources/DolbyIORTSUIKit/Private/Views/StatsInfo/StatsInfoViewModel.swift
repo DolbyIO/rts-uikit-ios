@@ -48,10 +48,10 @@ final class StatsInfoViewModel: ObservableObject {
             result.append(StatData(key: String(localized: "stream.stats.video-packet-loss.label"), value: String(videoPacketsLost)))
         }
         if let audioJitter = stats.audioStatsInboundRtp?.jitter {
-            result.append(StatData(key: String(localized: "stream.stats.audio-jitter.label"), value: "\(audioJitter) ms"))
+            result.append(StatData(key: String(localized: "stream.stats.audio-jitter.label"), value: "\(Int(audioJitter * 1000)) ms"))
         }
         if let videoJitter = stats.videoStatsInboundRtp?.jitter {
-            result.append(StatData(key: String(localized: "stream.stats.video-jitter.label"), value: "\(videoJitter) ms"))
+            result.append(StatData(key: String(localized: "stream.stats.video-jitter.label"), value: "\(Int(videoJitter * 1000)) ms"))
         }
         if let timestamp = stats.audioStatsInboundRtp?.timestamp {
             result.append(StatData(key: String(localized: "stream.stats.timestamp.label"), value: dateStr(timestamp / 1000)))
@@ -73,7 +73,7 @@ final class StatsInfoViewModel: ObservableObject {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         dateFormatter.locale = NSLocale.current
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS'Z'"
 
         let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
         return dateFormatter.string(from: date)
