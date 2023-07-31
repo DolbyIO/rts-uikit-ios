@@ -7,12 +7,13 @@ import Foundation
 import MillicastSDK
 import os
 
-final actor StateMachine {
+final class StateMachine {
     private static let logger = Logger.make(category: String(describing: StateMachine.self))
 
     private(set) var currentState: State {
         didSet {
             stateSubject.send(currentState)
+            Self.logger.debug("🎰 State change from \(oldValue.description) to \(self.currentState.description)")
         }
     }
 
@@ -24,12 +25,7 @@ final actor StateMachine {
     }
 
     func startConnection(streamName: String, accountID: String) {
-        switch currentState {
-        case .disconnected, .error, .stopped:
-            currentState = .connecting
-        default:
-            Self.logger.error("🛑 Unexpected state on startConnection - \(self.currentState.description)")
-        }
+        currentState = .connecting
     }
 
     func startSubscribe() {
@@ -38,16 +34,6 @@ final actor StateMachine {
 
     func stopSubscribe() {
         currentState = .disconnected
-    }
-
-    func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource) {
-        switch currentState {
-        case let .subscribed(state):
-            state.updatePreferredVideoQuality(quality, for: source.sourceId.value)
-            currentState = .subscribed(state)
-        default:
-            Self.logger.error("🛑 Unexpected state on selectVideoQuality - \(self.currentState.description)")
-        }
     }
 
     func setPlayingAudio(_ enable: Bool, for source: StreamSource) {
@@ -152,7 +138,7 @@ final actor StateMachine {
     func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [MCLayerData]) {
         switch currentState {
         case let .subscribed(state):
-            let streamTypes: [StreamSource.VideoQuality]
+            let streamTypes: [StreamSource.LowLevelVideoQuality]
             let filteredActiveLayers = activeLayers.filter({ layer in
                 // For H.264 there are no temporal layers and the id is set to 255. For VP8 use the first temporal layer.
                 return layer.temporalLayerId == 0 || layer.temporalLayerId == 255
@@ -180,6 +166,16 @@ final actor StateMachine {
             currentState = .subscribed(state)
         default:
             Self.logger.error("🛑 Unexpected state on onLayers - \(self.currentState.description)")
+        }
+    }
+    
+    func selectVideoQuality(_ quality: VideoQuality, for source: StreamSource) {
+        switch currentState {
+        case let .subscribed(state):
+            state.setSelectedVideoQuality(quality, for: source.sourceId.value)
+            currentState = .subscribed(state)
+        default:
+            Self.logger.error("🛑 Unexpected state on selectVideoQuality - \(self.currentState.description)")
         }
     }
 

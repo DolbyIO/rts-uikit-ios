@@ -18,17 +18,20 @@ final class LiveIndicatorViewModel: ObservableObject {
     }
 
     private func setupStateObservers() {
-        streamOrchestrator.statePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
-                guard let self = self else { return }
-                switch state {
-                case let .subscribed(sources: sources, numberOfStreamViewers: _):
-                    self.isStreamActive = !sources.isEmpty
-                default:
-                    break
+        Task { [weak self] in
+            guard let self = self else { return }
+
+            await self.streamOrchestrator.statePublisher
+                .receive(on: DispatchQueue.main)
+                .sink { state in
+                    switch state {
+                    case let .subscribed(sources: sources, numberOfStreamViewers: _):
+                        self.isStreamActive = !sources.isEmpty
+                    default:
+                        break
+                    }
                 }
-            }
-            .store(in: &subscriptions)
+                .store(in: &subscriptions)
+        }
     }
 }
