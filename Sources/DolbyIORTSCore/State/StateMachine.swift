@@ -65,13 +65,7 @@ final class StateMachine {
     }
     
     func onDisconnected() {
-        switch currentState {
-        case .connected, .subscribed, .connecting, .subscribing, .error, .stopped:
-            currentState = .disconnected
-
-        default:
-            Self.logger.error("🛑 Unexpected state on onDisconnected - \(self.currentState.description)")
-        }
+        currentState = .disconnected
     }
 
     func onSubscribed() {

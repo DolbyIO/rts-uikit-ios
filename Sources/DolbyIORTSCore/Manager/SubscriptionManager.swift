@@ -65,11 +65,14 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             _ = await stopSubscribe()
         }
         
-        let subscriber = makeSubscriber()
-        subscriber.setListener(self)
+        guard let subscriber = makeSubscriber() else {
+            Self.logger.error("💼 Failed to initialise subscriber")
+            return false
+        }
 
         Self.logger.debug("💼 Connect with streamName & accountID")
 
+        subscriber.setListener(self)
         self.subscriber = subscriber
 
         guard streamName.count > 0, accountID.count > 0 else {
@@ -124,12 +127,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
                 Self.logger.error("💼 Subscribe call has failed")
                 return false
             }
-
-            self.subscriber.enableStats(true)
-            
-            let options = MCClientOptions()
-            options.autoReconnect = false
-            self.subscriber.setOptions(options)
             
             return true
         }
@@ -219,8 +216,16 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
 private extension SubscriptionManager {
 
-    func makeSubscriber() -> MCSubscriber {
-        return MCSubscriber.create()
+    func makeSubscriber() -> MCSubscriber? {
+        let subscriber = MCSubscriber.create()
+        
+        subscriber?.enableStats(true)
+        
+        let options = MCClientOptions()
+        options.autoReconnect = false
+        subscriber?.setOptions(options)
+        
+        return subscriber
     }
 
     func makeCredentials(streamName: String, accountID: String) -> MCSubscriberCredentials {
