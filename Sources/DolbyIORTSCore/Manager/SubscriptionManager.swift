@@ -141,7 +141,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             guard let self = self, let subscriber = subscriber else {
                 return false
             }
-            subscriber.enableStats(false)
 
             guard subscriber.unsubscribe() else {
                 Self.logger.error("💼 Failed to unsubscribe")
