@@ -130,9 +130,11 @@ MILLICAST_API @interface MCClientOptions : NSObject
 /** @brief Attempt to reconnect by default in case of connection error/network dropout. This must be set before calling connect. Enabled by default */
 @property(nonatomic, assign) BOOL autoReconnect;
 
-/** @brief Enable the rate at which you want to receive stats report (not implemented yet) */
+/** @brief Enable the rate at which you want to receive stats report */
 @property(nonatomic, assign) int statsDelayMs;
 
+/** @brief The minimum video jitter buffer delay in milliseconds. Defaults to 0*/
+@property(nonatomic, assign) int videoJitterMinimumDelayMs;
 
 /** @brief Force the playout delay to be 0. This asks the media server to remove any delay when processing frames (subscriber only) */
 @property(nonatomic, assign) BOOL forcePlayoutDelay;
