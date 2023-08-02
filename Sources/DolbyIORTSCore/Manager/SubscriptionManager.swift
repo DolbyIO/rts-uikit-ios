@@ -38,8 +38,16 @@ protocol SubscriptionManagerDelegate: AnyObject {
 protocol SubscriptionManagerProtocol: AnyObject {
     var delegate: SubscriptionManagerDelegate? { get set }
     
-    func connect(streamName: String, accountID: String, dev: Bool) async -> Bool
-    func startSubscribe(forcePlayoutDelay: Bool, disableAudio: Bool, documentDirectoryPath: String?) async -> Bool
+    func connect(
+        streamName: String,
+        accountID: String,
+        dev: Bool,
+        forcePlayoutDelay: Bool,
+        disableAudio: Bool,
+        jitterBufferDelay: Int,
+        documentDirectoryPath: String?
+    ) async -> Bool
+    func startSubscribe() async -> Bool
     func stopSubscribe() async -> Bool
     func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource)
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder)
@@ -60,12 +68,28 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
     weak var delegate: SubscriptionManagerDelegate?
     
-    func connect(streamName: String, accountID: String, dev: Bool) async -> Bool {
+    func connect(
+        streamName: String,
+        accountID: String,
+        dev: Bool,
+        forcePlayoutDelay: Bool,
+        disableAudio: Bool,
+        jitterBufferDelay: Int,
+        documentDirectoryPath: String?
+    ) async -> Bool {
         if subscriber != nil {
             _ = await stopSubscribe()
         }
         
-        let subscriber = makeSubscriber()
+        guard let subscriber = makeSubscriber(
+            forcePlayoutDelay: forcePlayoutDelay,
+            disableAudio: disableAudio,
+            jitterBufferDelay: jitterBufferDelay,
+            documentDirectoryPath: documentDirectoryPath
+        ) else {
+            Self.logger.warning("💼 Failed to initialise Subscriber")
+            return false
+        }
         subscriber.setListener(self)
 
         Self.logger.log("💼 Connect with streamName & accountID")
@@ -102,7 +126,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         return await task.value
     }
 
-    func startSubscribe(forcePlayoutDelay: Bool, disableAudio: Bool, documentDirectoryPath: String?) async -> Bool {
+    func startSubscribe() async -> Bool {
         let task = Task { [weak self] () -> Bool in
             Self.logger.log("💼 Start subscribe")
 
@@ -119,19 +143,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
                 Self.logger.warning("💼 Subscriber has already subscribed")
                 return false
             }
-            subscriber.enableStats(true)
 
-            let options = MCClientOptions()
-            options.forcePlayoutDelay = forcePlayoutDelay
-            options.disableAudio = disableAudio
-            options.autoReconnect = false
-            
-            if let documentDirectoryPath = documentDirectoryPath {
-                options.rtcEventLogOutputPath = documentDirectoryPath + "/\(Utils.getCurrentTimestampInMilliseconds()).proto"
-            }
-          
-            subscriber.setOptions(options)
-            
             guard subscriber.subscribe() else {
                 Self.logger.warning("💼 Subscribe call has failed")
                 return false
@@ -150,7 +162,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             guard let self = self, let subscriber = subscriber else {
                 return false
             }
-            subscriber.enableStats(false)
 
             guard subscriber.unsubscribe() else {
                 Self.logger.warning("💼 Failed to unsubscribe")
@@ -240,8 +251,31 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
 private extension SubscriptionManager {
 
-    func makeSubscriber() -> MCSubscriber {
-        return MCSubscriber.create()
+    func makeSubscriber(
+        forcePlayoutDelay: Bool,
+        disableAudio: Bool,
+        jitterBufferDelay: Int,
+        documentDirectoryPath: String?
+    ) -> MCSubscriber? {
+        guard let subscriber = MCSubscriber.create() else {
+            return nil
+        }
+        
+        subscriber.enableStats(true)
+
+        let options = MCClientOptions()
+        options.forcePlayoutDelay = forcePlayoutDelay
+        options.disableAudio = disableAudio
+        options.autoReconnect = false
+        options.videoJitterMinimumDelayMs = Int32(jitterBufferDelay)
+        
+        if let documentDirectoryPath = documentDirectoryPath {
+            options.rtcEventLogOutputPath = documentDirectoryPath + "/\(Utils.getCurrentTimestampInMilliseconds()).proto"
+        }
+      
+        subscriber.setOptions(options)
+        
+        return subscriber
     }
 
     func makeCredentials(streamName: String, accountID: String, dev: Bool) -> MCSubscriberCredentials {
