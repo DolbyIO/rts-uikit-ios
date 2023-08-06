@@ -88,6 +88,13 @@ open class StreamOrchestrator {
         self.jitterBufferDelay = jitterBufferDelay
         self.documentDirectoryPath = documentDirectoryPath
         
+        let timeStamp = Utils.getISO8601TimestampForCurrentDate()
+
+        self.logHandler.updateLogFileDetail(
+            documentDirectoryPath: documentDirectoryPath,
+            subscribeTimeStamp: timeStamp
+        )
+
         async let startConnectionStateUpdate: Void = stateMachine.startConnection(streamName: streamName, accountID: accountID)
         async let startConnection = subscriptionManager.connect(
             streamName: streamName,
@@ -96,7 +103,8 @@ open class StreamOrchestrator {
             forcePlayoutDelay: forcePlayoutDelay,
             disableAudio: disableAudio,
             jitterBufferDelay: jitterBufferDelay,
-            documentDirectoryPath: documentDirectoryPath
+            documentDirectoryPath: documentDirectoryPath,
+            subscribeTimeStamp: timeStamp
         )
         
         let (_, connectionResult) = await (startConnectionStateUpdate, startConnection)

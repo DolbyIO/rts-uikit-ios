@@ -45,7 +45,8 @@ protocol SubscriptionManagerProtocol: AnyObject {
         forcePlayoutDelay: Bool,
         disableAudio: Bool,
         jitterBufferDelay: Int,
-        documentDirectoryPath: String?
+        documentDirectoryPath: String?,
+        subscribeTimeStamp: String
     ) async -> Bool
     func startSubscribe() async -> Bool
     func stopSubscribe() async -> Bool
@@ -75,7 +76,8 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         forcePlayoutDelay: Bool,
         disableAudio: Bool,
         jitterBufferDelay: Int,
-        documentDirectoryPath: String?
+        documentDirectoryPath: String?,
+        subscribeTimeStamp: String
     ) async -> Bool {
         if subscriber != nil {
             _ = await stopSubscribe()
@@ -85,7 +87,8 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             forcePlayoutDelay: forcePlayoutDelay,
             disableAudio: disableAudio,
             jitterBufferDelay: jitterBufferDelay,
-            documentDirectoryPath: documentDirectoryPath
+            documentDirectoryPath: documentDirectoryPath,
+            subscribeTimeStamp: subscribeTimeStamp
         ) else {
             Self.logger.warning("💼 Failed to initialise Subscriber")
             return false
@@ -255,7 +258,8 @@ private extension SubscriptionManager {
         forcePlayoutDelay: Bool,
         disableAudio: Bool,
         jitterBufferDelay: Int,
-        documentDirectoryPath: String?
+        documentDirectoryPath: String?,
+        subscribeTimeStamp: String
     ) -> MCSubscriber? {
         guard let subscriber = MCSubscriber.create() else {
             return nil
@@ -270,7 +274,7 @@ private extension SubscriptionManager {
         options.videoJitterMinimumDelayMs = Int32(jitterBufferDelay)
         
         if let documentDirectoryPath = documentDirectoryPath {
-            options.rtcEventLogOutputPath = documentDirectoryPath + "/\(Utils.getCurrentTimestampInMilliseconds()).proto"
+            options.rtcEventLogOutputPath = "\(documentDirectoryPath)/\(subscribeTimeStamp)_rtclogs.proto"
         }
       
         subscriber.setOptions(options)

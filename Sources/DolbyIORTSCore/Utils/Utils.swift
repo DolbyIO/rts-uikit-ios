@@ -29,4 +29,11 @@ class Utils {
         let currentTime = Date().timeIntervalSince1970
         return Int64(currentTime * 1000)
     }
+    
+    public static func getISO8601TimestampForCurrentDate() -> String {
+        let currentDate = Date.now
+        let utcISODateFormatter = ISO8601DateFormatter()
+        utcISODateFormatter.formatOptions = [.withFullDate, .withFullTime]
+        return utcISODateFormatter.string(from: currentDate)
+    }
 }
