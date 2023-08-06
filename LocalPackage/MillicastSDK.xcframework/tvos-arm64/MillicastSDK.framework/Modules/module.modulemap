@@ -1,6 +1,0 @@
-framework module MillicastSDK {
-  umbrella header "MillicastSDK.h"
-
-  export *
-  module * { export * }
-}
