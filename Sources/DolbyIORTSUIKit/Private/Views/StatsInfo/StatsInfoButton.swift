@@ -149,7 +149,7 @@ final class StatisticsViewModel {
             result.append(StatData(key: "stream.stats.video-total-received.label", value: formatBytes(bytes: videoBytesReceived)))
         }
         if let val = stats.statsInboundRtp?.packetsReceived {
-            result.append(StatData(key: "stream.stats.packets-received.label", value: String(format:"%.2f", val)))
+            result.append(StatData(key: "stream.stats.packets-received.label", value: String(val)))
         }
         if let val = stats.statsInboundRtp?.framesDecoded {
             result.append(StatData(key: "stream.stats.frames-decoded.label", value: String(val)))
@@ -173,7 +173,7 @@ final class StatisticsViewModel {
             result.append(StatData(key: "stream.stats.jitter-buffer-minimum-delay.label", value: String(format:"%.2f ms", val)))
         }
         if let videoPacketsLost = stats.statsInboundRtp?.packetsLost {
-            result.append(StatData(key: "stream.stats.video-packet-loss.label", value: String(format:"%.2f", videoPacketsLost)))
+            result.append(StatData(key: "stream.stats.video-packet-loss.label", value: String(videoPacketsLost)))
         }
         
         

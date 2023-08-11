@@ -35,8 +35,8 @@ public struct StreamingStatistics: Equatable, Hashable {
         public let totalSampleDuration: Double
         public let codec: String?
         public let jitter: Double
-        public let packetsReceived: Double
-        public let packetsLost: Double
+        public let packetsReceived: Int
+        public let packetsLost: Int
         public let timestamp: Double
         public var codecName: String?
         
@@ -87,7 +87,7 @@ extension StreamingStatistics.StatsInboundRtp {
         fps = Int(stats.frames_per_second)
         bytesReceived = Int(stats.bytes_received)
         framesReceived = Int(stats.frames_received)
-        packetsReceived = Double(stats.packets_received)
+        packetsReceived = Int(stats.packets_received)
         framesDecoded = Int(stats.frames_decoded)
         framesDropped = Int(stats.frames_dropped)
         jitterBufferEmittedCount = Int(stats.jitter_buffer_emitted_count)
@@ -96,7 +96,7 @@ extension StreamingStatistics.StatsInboundRtp {
         jitterBufferTargetDelay = msNormalised(numerator: stats.jitter_buffer_target_delay, denominator: Double(stats.jitter_buffer_emitted_count))
         jitterBufferMinimumtDelay = msNormalised(numerator: stats.jitter_buffer_minimum_delay, denominator: Double(stats.jitter_buffer_emitted_count))
         nackCount = Int(stats.nack_count)
-        packetsLost = Double(stats.packets_lost)
+        packetsLost = Int(stats.packets_lost)
         
         trackIdentifier = stats.track_identifier as String
         decoder = stats.decoder_implementation as String?
