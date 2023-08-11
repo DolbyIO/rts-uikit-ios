@@ -93,7 +93,7 @@ extension StreamingStatistics.StatsInboundRtp {
         jitterBufferEmittedCount = Int(stats.jitter_buffer_emitted_count)
         jitter = stats.jitter * 1000
         jitterBufferDelay = msNormalised(numerator: stats.jitter_buffer_delay, denominator: Double(stats.jitter_buffer_emitted_count))
-        jitterBufferTargetDelay = msNormalised(numerator: stats.jitter_buffer_delay, denominator: Double(stats.jitter_buffer_emitted_count))
+        jitterBufferTargetDelay = msNormalised(numerator: stats.jitter_buffer_target_delay, denominator: Double(stats.jitter_buffer_emitted_count))
         jitterBufferMinimumtDelay = msNormalised(numerator: stats.jitter_buffer_minimum_delay, denominator: Double(stats.jitter_buffer_emitted_count))
         nackCount = Int(stats.nack_count)
         packetsLost = Double(stats.packets_lost)

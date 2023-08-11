@@ -464,7 +464,10 @@ extension StreamOrchestrator: SubscriptionManagerDelegate {
                 guard let sourceBuilder = state.streamSourceBuilders.first(where: { $0.sourceId.value == sourceId }) else {
                     return
                 }
-                self.subscriptionManager.addRemoteTrack(sourceBuilder)
+                // Ignore add remote call for the first source, using cached source
+                if state.cachedSourceZeroVideoTrackAndMid != nil || state.cachedSourceZeroAudioTrackAndMid != nil {
+                    self.subscriptionManager.addRemoteTrack(sourceBuilder)
+                }
             default:
                 return
             }

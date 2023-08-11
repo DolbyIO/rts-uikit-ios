@@ -34,21 +34,42 @@ enum State: CustomStringConvertible {
     }
 }
 
+struct VideoTrackAndMid {
+    let videoTrack: MCVideoTrack
+    let mid: String
+}
+
+struct AudioTrackAndMid {
+    let audioTrack: MCAudioTrack
+    let mid: String
+}
+
 struct SubscribedState {
 
     private(set) var streamSourceBuilders: [StreamSourceBuilder]
     private(set) var numberOfStreamViewers: Int
     private(set) var streamingStats: StreamingStatistics?
+    private(set) var cachedSourceZeroVideoTrackAndMid: VideoTrackAndMid?
+    private(set) var cachedSourceZeroAudioTrackAndMid: AudioTrackAndMid?
 
-    init() {
+    init(cachedVideoTrackDetail: VideoTrackAndMid?, cachedAudioTrackDetail: AudioTrackAndMid?) {
+        cachedSourceZeroVideoTrackAndMid = cachedVideoTrackDetail
+        cachedSourceZeroAudioTrackAndMid = cachedAudioTrackDetail
         streamSourceBuilders = []
         numberOfStreamViewers = 0
     }
 
     mutating func add(streamId: String, sourceId: String?, tracks: [String]) {
-        streamSourceBuilders.append(
-            StreamSourceBuilder.init(streamId: streamId, sourceId: sourceId, tracks: tracks)
-        )
+        let streamSourceBuilder = StreamSourceBuilder.init(streamId: streamId, sourceId: sourceId, tracks: tracks)
+        if let videoTrackAndMid = cachedSourceZeroVideoTrackAndMid {
+            streamSourceBuilder.addVideoTrack(videoTrackAndMid.videoTrack, mid: videoTrackAndMid.mid)
+            cachedSourceZeroVideoTrackAndMid = nil
+        }
+        if let audioTrackAndMid = cachedSourceZeroAudioTrackAndMid {
+            streamSourceBuilder.addAudioTrack(audioTrackAndMid.audioTrack, mid: audioTrackAndMid.mid)
+            cachedSourceZeroAudioTrackAndMid = nil
+        }
+        streamSourceBuilders.append(streamSourceBuilder)
     }
 
     mutating func remove(streamId: String, sourceId: String?) {
