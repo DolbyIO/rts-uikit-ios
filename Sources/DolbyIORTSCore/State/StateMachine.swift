@@ -82,7 +82,11 @@ final actor StateMachine {
     }
 
     func onConnectionError(_ status: Int32, withReason reason: String) {
-        currentState = .error(.init(error: .connectFailed(reason: reason)))
+        if status == 1000 || (status == 0 && reason.hasPrefix("Could not connect via HTTPS")) {
+            currentState = .error(.init(error: .networkFailure))
+        } else {
+            currentState = .error(.init(error: .connectFailed(reason: reason)))
+        }
     }
 
     func onSubscribed() {
@@ -210,11 +214,6 @@ final actor StateMachine {
     }
 
     func onStopped() {
-        switch currentState {
-        case .subscribed, .connected:
-            currentState = .stopped
-        default:
-            Self.logger.error("🛑 Unexpected state on onStopped - \(self.currentState.description, privacy: .public)")
-        }
+        currentState = .stopped
     }
 }

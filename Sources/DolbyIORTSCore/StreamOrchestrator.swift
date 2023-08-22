@@ -25,6 +25,7 @@ open class StreamOrchestrator {
     private let rendererRegistry: RendererRegistryProtocol
     private let taskScheduler: TaskSchedulerProtocol
     private let logHandler: MillicastLoggerHandler
+    private let networkMonitor: NetworkMonitor
 
     private var subscriptions: Set<AnyCancellable> = []
     private lazy var stateSubject: CurrentValueSubject<StreamState, Never> = CurrentValueSubject(.disconnected)
@@ -42,12 +43,14 @@ open class StreamOrchestrator {
     private var disableAudio = false
     private var jitterBufferDelay = 0
     private var documentDirectoryPath: String? = nil
-    
+    private var networkSubscription: AnyCancellable?
+
     private convenience init() {
         self.init(
             subscriptionManager: SubscriptionManager(),
             taskScheduler: TaskScheduler(),
-            rendererRegistry: RendererRegistry()
+            rendererRegistry: RendererRegistry(),
+            networkMonitor: NetworkMonitor.shared
         )
     }
     
@@ -58,12 +61,14 @@ open class StreamOrchestrator {
     init(
         subscriptionManager: SubscriptionManagerProtocol,
         taskScheduler: TaskSchedulerProtocol,
-        rendererRegistry: RendererRegistryProtocol
+        rendererRegistry: RendererRegistryProtocol,
+        networkMonitor: NetworkMonitor
     ) {
         self.subscriptionManager = subscriptionManager
         self.taskScheduler = taskScheduler
         self.rendererRegistry = rendererRegistry
         self.logHandler = MillicastLoggerHandler()
+        self.networkMonitor = networkMonitor
         
         self.subscriptionManager.delegate = self
         
@@ -81,6 +86,7 @@ open class StreamOrchestrator {
         documentDirectoryPath: String?
     ) async -> Bool {
         Self.logger.error("👮‍♂️ Start subscribe")
+        self.startNetworkObserver()
         
         self.dev = dev
         self.forcePlayoutDelay = forcePlayoutDelay
@@ -117,6 +123,7 @@ open class StreamOrchestrator {
     public func stopConnection() async -> Bool {
         Self.logger.error("👮‍♂️ Stop subscribe")
         activeStreamDetail = nil
+        networkSubscription = nil
         async let stopSubscribeOnStateMachine: Void = stateMachine.stopSubscribe()
         async let resetRegistry: Void = rendererRegistry.reset()
         async let stopSubscription: Bool = await subscriptionManager.stopSubscribe()
@@ -269,6 +276,19 @@ open class StreamOrchestrator {
 
 private extension StreamOrchestrator {
     
+    func startNetworkObserver() {
+        networkSubscription = networkMonitor.$isReachable
+            .sink { [weak self] hasConnection in
+                guard let self = self, !hasConnection else { return }
+
+                Task { [weak self] in
+                    guard let self = self else { return }
+                    await self.stateMachine.onConnectionError(1000, withReason: "")
+                    _ = await self.subscriptionManager.stopSubscribe()
+                }
+            }
+    }
+    
     func startStateObservation() {
         Task { [weak self] in
             guard let self = self else { return }
@@ -316,6 +336,8 @@ private extension StreamOrchestrator {
         Self.logger.error("👮‍♂️ Scheduling a reconnect")
         taskScheduler.scheduleTask(timeInterval: Defaults.retryConnectionTimeInterval) { [weak self] in
             guard let self = self else { return }
+            
+            self.startNetworkObserver()
             Task {
                 _ = await self.connect(
                     streamName: streamName,

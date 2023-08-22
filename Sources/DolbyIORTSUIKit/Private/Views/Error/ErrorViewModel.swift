@@ -27,6 +27,8 @@ final class ErrorViewModel {
             switch streamError {
             case .connectFailed:
                 return (.offlineErrorTitle, .offlineErrorSubtitle)
+            case .networkFailure:
+                return (.noInternetErrorTitle, nil)
             default:
                 return (.genericErrorTitle, nil)
             }

@@ -301,10 +301,10 @@ extension SubscriptionManager: MCSubscriberListener {
     }
     
     func onDisconnected() {
-        
+        // Simulate a no network error on `onDisconnected`
+        delegate?.onConnectionError(1000, withReason: "")
     }
     
-
     func onSubscribed() {
         Self.logger.log("💼 Delegate - onSubscribed")
         delegate?.onSubscribed()
