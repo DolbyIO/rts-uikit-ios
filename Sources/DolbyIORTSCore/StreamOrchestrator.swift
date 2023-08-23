@@ -284,7 +284,6 @@ private extension StreamOrchestrator {
                 Task { [weak self] in
                     guard let self = self else { return }
                     await self.stateMachine.onConnectionError(1000, withReason: "")
-                    _ = await self.subscriptionManager.stopSubscribe()
                 }
             }
     }
