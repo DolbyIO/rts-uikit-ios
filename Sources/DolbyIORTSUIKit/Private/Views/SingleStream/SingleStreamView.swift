@@ -24,6 +24,7 @@ struct SingleStreamView: View {
     @State private var isShowingSettingsScreen: Bool = false
     @State private var isShowingStatsScreen: Bool = false
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
+    @StateObject private var viewRendererProvider: ViewRendererProvider = .init()
 
     @ObservedObject private var themeManager = ThemeManager.shared
 
@@ -92,23 +93,29 @@ struct SingleStreamView: View {
 
             GeometryReader { proxy in
                 TabView(selection: $selectedVideoStreamSourceId) {
-                    ForEach(viewModel.videoViewModels, id: \.streamSource.id) { viewModel in
+                    ForEach(viewModel.videoViewModels, id: \.streamSource.id) { videoRendererViewModel in
                         let maxAllowedVideoWidth = proxy.size.width
                         let maxAllowedVideoHeight = proxy.size.height
-
-                        HStack {
-                            VideoRendererView(
-                                viewModel: viewModel,
-                                maxWidth: maxAllowedVideoWidth,
-                                maxHeight: maxAllowedVideoHeight,
-                                contentMode: .aspectFit
-                            )
-                        }
-                        .tag(viewModel.streamSource.id)
+                        VideoRendererView(
+                            viewModel: videoRendererViewModel,
+                            viewRenderer: viewRendererProvider.renderer(for: videoRendererViewModel.streamSource),
+                            maxWidth: maxAllowedVideoWidth,
+                            maxHeight: maxAllowedVideoHeight,
+                            contentMode: .aspectFit
+                        )
+                        .tag(videoRendererViewModel.streamSource.id)
                         .frame(width: proxy.size.width, height: proxy.size.height)
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                .overlay(alignment: .top) {
+                    topToolBarView
+                        .offset(x: 0, y: showScreenControls ? 0 : -Animation.offset)
+                }
+                .overlay(alignment: .bottom) {
+                    bottomToolBarView
+                        .offset(x: 0, y: showScreenControls ? 0 : Animation.offset)
+                }
                 .onAppear {
                     showControlsAndObserveInteractions()
                 }
@@ -127,14 +134,6 @@ struct SingleStreamView: View {
                     } else {
                         showControlsAndObserveInteractions()
                     }
-                }
-                .overlay(alignment: .top) {
-                    topToolBarView
-                        .offset(x: 0, y: showScreenControls ? 0 : -Animation.offset)
-                }
-                .overlay(alignment: .bottom) {
-                    bottomToolBarView
-                        .offset(x: 0, y: showScreenControls ? 0 : Animation.offset)
                 }
                 .fullScreenCover(isPresented: $isShowingStatsScreen) {
                     StatisticsView(streamSource: viewModel.selectedVideoSource)

@@ -50,9 +50,8 @@ protocol SubscriptionManagerProtocol: AnyObject {
     ) async -> Bool
     func startSubscribe() async -> Bool
     func stopSubscribe() async -> Bool
-    func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource)
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder)
-    func projectVideo(for source: StreamSource, withQuality quality: StreamSource.VideoQuality)
+    func projectVideo(for source: StreamSource, withQuality quality: VideoQuality)
     func unprojectVideo(for source: StreamSource)
     func projectAudio(for source: StreamSource)
     func unprojectAudio(for source: StreamSource)
@@ -183,11 +182,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         return await task.value
     }
 
-    func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource) {
-        Self.logger.warning("💼 Select Video Quality \(quality.description) \(source.sourceId.value ?? "MAIN")")
-        projectVideo(for: source, withQuality: quality)
-    }
-
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder) {
         Self.logger.warning("💼 Add remote track for source - \(sourceBuilder.sourceId.value ?? "MAIN", privacy: .public)")
         guard let subscriber = self.subscriber else { return }
@@ -195,19 +189,21 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             subscriber.addRemoteTrack($0.mediaType.rawValue)
         }
     }
-
-    func projectVideo(for source: StreamSource, withQuality quality: StreamSource.VideoQuality) {
+    
+    func projectVideo(for source: StreamSource, withQuality quality: VideoQuality) {
         guard let subscriber = self.subscriber else { return }
 
         let videoTrack = source.videoTrack
-
-        Self.logger.log("💼 Project video for source \(source.sourceId.value ?? "N/A") qualityToProject - \(quality.description, privacy: .public) layerData = \(quality.layerData) - mid = \(videoTrack.trackInfo.mid, privacy: .public)")
+        let matchingVideoQuality = source.lowLevelVideoQualityList.matching(videoQuality: quality)
         
+        Self.logger.debug("💼 Project video for source \(String(describing: source.sourceId.value), privacy: .public) with quality - \(String(describing: matchingVideoQuality?.description), privacy: .public)")
+
         let projectionData = MCProjectionData()
         projectionData.media = videoTrack.trackInfo.mediaType.rawValue
         projectionData.mid = videoTrack.trackInfo.mid
         projectionData.trackId = videoTrack.trackInfo.trackID
-        projectionData.layer = quality.layerData
+        projectionData.layer = matchingVideoQuality?.layerData
+
         subscriber.project(source.sourceId.value, withData: [projectionData])
     }
 
@@ -228,7 +224,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             return
         }
 
-        Utils.configureAudioSession()
         let projectionData = MCProjectionData()
         audioTrack.track.enable(true)
         audioTrack.track.setVolume(1)
@@ -301,6 +296,7 @@ extension SubscriptionManager: MCSubscriberListener {
     }
     
     func onDisconnected() {
+        Self.logger.log("💼 Delegate - onDisconnected")
         // Simulate a no network error on `onDisconnected`
         delegate?.onConnectionError(1000, withReason: "")
     }

@@ -98,13 +98,6 @@ struct SubscribedState {
         streamSourceBuilders.remove(at: indexToRemove)
     }
 
-    func updatePreferredVideoQuality(_ videoQuality: StreamSource.VideoQuality, for sourceId: String?) {
-        guard let builder = streamSourceBuilders.first(where: { $0.sourceId.value == sourceId }) else {
-            return
-        }
-        builder.updatePreferredVideoQuality(videoQuality)
-    }
-
     func setPlayingAudio(_ enable: Bool, for sourceId: String?) {
         guard let builder = streamSourceBuilders.first(where: { $0.sourceId.value == sourceId }) else {
             return
@@ -119,12 +112,19 @@ struct SubscribedState {
         builder.setPlayingVideo(enable)
     }
 
-    func setAvailableStreamTypes(_ list: [StreamSource.VideoQuality], for mid: String) {
+    func setAvailableStreamTypes(_ list: [StreamSource.LowLevelVideoQuality], for mid: String) {
         guard let builder = streamSourceBuilders.first(where: { $0.videoTrack?.trackInfo.mid == mid }) else {
             return
         }
 
         builder.setAvailableVideoQualityList(list)
+    }
+    
+    func setSelectedVideoQuality(_ videoQuality: VideoQuality, for sourceId: String?) {
+        guard let builder = streamSourceBuilders.first(where: { $0.sourceId.value == sourceId }) else {
+            return
+        }
+        builder.setSelectedVideoQuality(videoQuality)
     }
 
     mutating func updateViewerCount(_ count: Int) {
@@ -137,7 +137,7 @@ struct SubscribedState {
                 stats.first { currentStat in
                     currentStat.mid == mid
                 }.map {
-                    builder.setStreamStatistics($0)
+                    builder.setStatistics($0)
                 }
             }
         }

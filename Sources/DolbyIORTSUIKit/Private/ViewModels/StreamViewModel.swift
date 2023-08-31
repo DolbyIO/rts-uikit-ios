@@ -23,8 +23,6 @@ final class StreamViewModel: ObservableObject {
                 sources: _,
                 selectedVideoSource: _,
                 selectedAudioSource: _,
-                sourceAndViewRenderers: _,
-                detailSourceAndViewRenderers: _,
                 settings: _
             ):
                 self = .success(displayMode: displayMode)
@@ -41,8 +39,6 @@ final class StreamViewModel: ObservableObject {
             sources: [StreamSource],
             selectedVideoSource: StreamSource,
             selectedAudioSource: StreamSource?,
-            sourceAndViewRenderers: StreamSourceAndViewRenderers,
-            detailSourceAndViewRenderers: StreamSourceAndViewRenderers,
             settings: StreamSettings
         )
         case error(ErrorViewModel)
@@ -57,7 +53,7 @@ final class StreamViewModel: ObservableObject {
     private let streamOrchestrator: StreamOrchestrator
     private var subscriptions: [AnyCancellable] = []
 
-    let streamDetail: StreamDetail?
+    var streamDetail: StreamDetail?
 
     @Published private(set) var state: State = .loading
 
@@ -68,6 +64,9 @@ final class StreamViewModel: ObservableObject {
             // Play Audio when the selectedAudioSource changes
             if let newlySelectedAudioSource = internalState.selectedAudioSource,
                newlySelectedAudioSource.id != oldValue.selectedAudioSource?.id {
+                if let previouslySelectedAudioSource = oldValue.selectedAudioSource {
+                    stopAudio(for: previouslySelectedAudioSource)
+                }
                 playAudio(for: newlySelectedAudioSource)
             }
         }
@@ -80,8 +79,6 @@ final class StreamViewModel: ObservableObject {
             sources: existingSources,
             selectedVideoSource: _,
             selectedAudioSource: _,
-            sourceAndViewRenderers: _,
-            detailSourceAndViewRenderers: _,
             settings: _
         ):
             return existingSources
@@ -96,9 +93,14 @@ final class StreamViewModel: ObservableObject {
     ) {
         self.streamOrchestrator = streamOrchestrator
         self.settingsManager = settingsManager
-        self.streamDetail = streamOrchestrator.activeStreamDetail
-        if let streamId = streamOrchestrator.activeStreamDetail?.streamId {
-            settingsManager.setActiveSettings(for: .stream(streamID: streamId))
+        
+        Task { @StreamOrchestrator [weak self] in
+            guard let self = self else { return }
+            let activeStreamDetail = await streamOrchestrator.activeStreamDetail
+            self.streamDetail = activeStreamDetail
+            if let streamId = activeStreamDetail?.streamId {
+                settingsManager.setActiveSettings(for: .stream(streamID: streamId))
+            }
         }
 
         startObservers()
@@ -111,19 +113,17 @@ final class StreamViewModel: ObservableObject {
             sources: sources,
             selectedVideoSource: selectedVideoSource,
             selectedAudioSource: selectedAudioSource,
-            sourceAndViewRenderers: _,
-            detailSourceAndViewRenderers: existingDetailSourceAndViewRenderers,
             settings: _
         ):
             return SingleStreamViewModel(
                 videoViewModels: sources.map {
                     VideoRendererViewModel(
                         streamSource: $0,
-                        viewRenderer: existingDetailSourceAndViewRenderers.primaryRenderer(for: $0),
                         isSelectedVideoSource: $0 == selectedVideoSource,
                         isSelectedAudioSource: $0 == selectedAudioSource,
                         showSourceLabel: false,
-                        showAudioIndicator: false
+                        showAudioIndicator: false,
+                        videoQuality: .auto
                     )
                 },
                 selectedVideoSource: selectedVideoSource
@@ -134,6 +134,10 @@ final class StreamViewModel: ObservableObject {
         }
     }
 
+    private func secondaryVideoSources(_ sources: [StreamSource], _ matchingSource: StreamSource) -> [StreamSource] {
+        return sources.filter { $0.id != matchingSource.id }
+    }
+
     // swiftlint:disable function_body_length
     func selectVideoSource(_ source: StreamSource) {
         switch internalState {
@@ -142,8 +146,6 @@ final class StreamViewModel: ObservableObject {
             sources: sources,
             selectedVideoSource: _,
             selectedAudioSource: _,
-            sourceAndViewRenderers: sourceAndViewRenderers,
-            detailSourceAndViewRenderers: detailSourceAndViewRenderers,
             settings: settings
         ):
             guard let matchingSource = sources.first(where: { $0.id == source.id }) else {
@@ -155,26 +157,26 @@ final class StreamViewModel: ObservableObject {
             let updatedDisplayMode: DisplayMode
             switch displayMode {
             case .list:
-                let secondaryVideoSources = sources.filter { $0.id != matchingSource.id }
+                let secondaryVideoSources = secondaryVideoSources(sources, matchingSource)
                 let showSourceLabels = settings.showSourceLabels
 
                 let listViewModel = ListViewModel(
                     primaryVideoViewModel: VideoRendererViewModel(
                         streamSource: matchingSource,
-                        viewRenderer: sourceAndViewRenderers.primaryRenderer(for: matchingSource),
                         isSelectedVideoSource: true,
                         isSelectedAudioSource: matchingSource.id == selectedAudioSource?.id,
                         showSourceLabel: showSourceLabels,
-                        showAudioIndicator: matchingSource.id == selectedAudioSource?.id
+                        showAudioIndicator: matchingSource.id == selectedAudioSource?.id,
+                        videoQuality: .auto
                     ),
                     secondaryVideoViewModels: secondaryVideoSources.map {
                         VideoRendererViewModel(
                             streamSource: $0,
-                            viewRenderer: sourceAndViewRenderers.secondaryRenderer(for: $0),
                             isSelectedVideoSource: false,
                             isSelectedAudioSource: $0.id == selectedAudioSource?.id,
                             showSourceLabel: showSourceLabels,
-                            showAudioIndicator: $0.id == selectedAudioSource?.id
+                            showAudioIndicator: $0.id == selectedAudioSource?.id,
+                            videoQuality: $0.videoQualityList.contains(.low) ? .low : .auto
                         )
                     }
                 )
@@ -185,11 +187,11 @@ final class StreamViewModel: ObservableObject {
                     videoViewModels: sources.map {
                         VideoRendererViewModel(
                             streamSource: $0,
-                            viewRenderer: sourceAndViewRenderers.primaryRenderer(for: $0),
                             isSelectedVideoSource: $0.id == matchingSource.id,
                             isSelectedAudioSource: $0.id == selectedAudioSource?.id,
                             showSourceLabel: false,
-                            showAudioIndicator: false
+                            showAudioIndicator: false,
+                            videoQuality: .auto
                         )
                     },
                     selectedVideoSource: matchingSource
@@ -202,8 +204,6 @@ final class StreamViewModel: ObservableObject {
                 sources: sources,
                 selectedVideoSource: matchingSource,
                 selectedAudioSource: selectedAudioSource,
-                sourceAndViewRenderers: sourceAndViewRenderers,
-                detailSourceAndViewRenderers: detailSourceAndViewRenderers,
                 settings: settings
             )
         default:
@@ -218,38 +218,43 @@ final class StreamViewModel: ObservableObject {
     }
 
     func playAudio(for source: StreamSource) {
-        Task {
-            await self.streamOrchestrator.playAudio(for: source)
+        Task { @StreamOrchestrator [weak self] in
+            await self?.streamOrchestrator.playAudio(for: source)
         }
     }
 
     func stopAudio(for source: StreamSource) {
-        Task {
-            await self.streamOrchestrator.stopAudio(for: source)
+        Task { @StreamOrchestrator [weak self] in
+            await self?.streamOrchestrator.stopAudio(for: source)
         }
     }
 
     private func startObservers() {
-        streamOrchestrator.statePublisher
-            .combineLatest(settingsManager.settingsPublisher)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] state, settings in
-                guard let self = self else { return }
-                switch state {
-                case let .subscribed(sources: sources, numberOfStreamViewers: _):
-                    self.updateState(from: sources, settings: settings)
-                case .connecting, .subscribing, .connected:
-                    self.internalState = .loading
-                case let .error(streamError):
-                    self.internalState = .error(ErrorViewModel(error: streamError))
-                case .stopped:
-                    self.internalState = .error(.streamOffline)
-                default:
-                    // Handle's scenario where there is no sources
-                    self.internalState = .error(.genericError)
-                }
+        Task { @StreamOrchestrator [weak self] in
+            guard let self = self else {
+                return
             }
-            .store(in: &subscriptions)
+            await self.streamOrchestrator.statePublisher
+                .combineLatest(self.settingsManager.settingsPublisher)
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] state, settings in
+                    guard let self = self else { return }
+                    switch state {
+                    case let .subscribed(sources: sources, numberOfStreamViewers: _):
+                        self.updateState(from: sources, settings: settings)
+                    case .connecting, .subscribing, .connected:
+                        self.internalState = .loading
+                    case let .error(streamError):
+                        self.internalState = .error(ErrorViewModel(error: streamError))
+                    case .stopped:
+                        self.internalState = .error(.streamOffline)
+                    default:
+                        // Handle's scenario where there is no sources
+                        self.internalState = .error(.genericError)
+                    }
+                }
+                .store(in: &self.subscriptions)
+        }
     }
 
     // swiftlint:disable cyclomatic_complexity function_body_length
@@ -269,29 +274,19 @@ final class StreamViewModel: ObservableObject {
         }
 
         let selectedVideoSource: StreamSource
-        let sourceAndViewRenderers: StreamSourceAndViewRenderers
-        let detailSourceAndViewRenderers: StreamSourceAndViewRenderers
 
         switch internalState {
         case .error, .loading:
             selectedVideoSource = sortedSources[0]
-            sourceAndViewRenderers = StreamSourceAndViewRenderers()
-            detailSourceAndViewRenderers = StreamSourceAndViewRenderers()
 
         case let .success(
             displayMode: _,
             sources: _,
             selectedVideoSource: currentlySelectedVideoSource,
             selectedAudioSource: _,
-            sourceAndViewRenderers: existingSourceAndViewRenderers,
-            detailSourceAndViewRenderers: existingDetailSourceAndViewRenderers,
             settings: _
         ):
-            selectedVideoSource = sortedSources.first {
-                $0.id == currentlySelectedVideoSource.id
-            } ?? sortedSources[0]
-            sourceAndViewRenderers = existingSourceAndViewRenderers
-            detailSourceAndViewRenderers = existingDetailSourceAndViewRenderers
+            selectedVideoSource = sources.first { $0.id == currentlySelectedVideoSource.id } ?? sortedSources[0]
         }
 
         let selectedAudioSource = audioSelection(from: sortedSources, settings: settings, selectedVideoSource: selectedVideoSource)
@@ -305,20 +300,20 @@ final class StreamViewModel: ObservableObject {
             let listViewModel = ListViewModel(
                 primaryVideoViewModel: VideoRendererViewModel(
                     streamSource: selectedVideoSource,
-                    viewRenderer: sourceAndViewRenderers.primaryRenderer(for: selectedVideoSource),
                     isSelectedVideoSource: true,
                     isSelectedAudioSource: selectedVideoSource.id == selectedAudioSource?.id,
                     showSourceLabel: showSourceLabels,
-                    showAudioIndicator: selectedVideoSource.id == selectedAudioSource?.id
+                    showAudioIndicator: selectedVideoSource.id == selectedAudioSource?.id,
+                    videoQuality: .auto
                 ),
                 secondaryVideoViewModels: secondaryVideoSources.map {
                     VideoRendererViewModel(
                         streamSource: $0,
-                        viewRenderer: sourceAndViewRenderers.secondaryRenderer(for: $0),
                         isSelectedVideoSource: false,
                         isSelectedAudioSource: $0.id == selectedAudioSource?.id,
                         showSourceLabel: showSourceLabels,
-                        showAudioIndicator: $0.id == selectedAudioSource?.id
+                        showAudioIndicator: $0.id == selectedAudioSource?.id,
+                        videoQuality: $0.videoQualityList.contains(.low) ? .low : .auto
                     )
                 }
             )
@@ -329,11 +324,11 @@ final class StreamViewModel: ObservableObject {
                 videoViewModels: sortedSources.map {
                     VideoRendererViewModel(
                         streamSource: $0,
-                        viewRenderer: sourceAndViewRenderers.primaryRenderer(for: $0),
                         isSelectedVideoSource: $0.id == selectedVideoSource.id,
                         isSelectedAudioSource: $0.id == selectedAudioSource?.id,
                         showSourceLabel: false,
-                        showAudioIndicator: false
+                        showAudioIndicator: false,
+                        videoQuality: .auto
                     )
                 },
                 selectedVideoSource: selectedVideoSource
@@ -349,8 +344,6 @@ final class StreamViewModel: ObservableObject {
             sources: sortedSources,
             selectedVideoSource: selectedVideoSource,
             selectedAudioSource: selectedAudioSource,
-            sourceAndViewRenderers: sourceAndViewRenderers,
-            detailSourceAndViewRenderers: detailSourceAndViewRenderers,
             settings: settings
         )
     }
@@ -404,8 +397,6 @@ fileprivate extension StreamViewModel.InternalState {
             sources: _,
             selectedVideoSource: _,
             selectedAudioSource: currentlySelectedAudioSource,
-            sourceAndViewRenderers: _,
-            detailSourceAndViewRenderers: _,
             settings: _
         ):
             return currentlySelectedAudioSource

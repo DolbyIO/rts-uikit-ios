@@ -7,7 +7,7 @@ import Foundation
 import MillicastSDK
 import os
 
-final actor StateMachine {
+final class StateMachine {
     private static let logger = Logger.make(category: String(describing: StateMachine.self))
 
     private(set) var currentState: State {
@@ -40,10 +40,10 @@ final actor StateMachine {
         currentState = .disconnected
     }
 
-    func selectVideoQuality(_ quality: StreamSource.VideoQuality, for source: StreamSource) {
+    func selectVideoQuality(_ quality: VideoQuality, for source: StreamSource) {
         switch currentState {
         case let .subscribed(state):
-            state.updatePreferredVideoQuality(quality, for: source.sourceId.value)
+            state.setSelectedVideoQuality(quality, for: source.sourceId.value)
             currentState = .subscribed(state)
         default:
             Self.logger.error("🛑 Unexpected state on selectVideoQuality - \(self.currentState.description, privacy: .public)")
@@ -162,7 +162,7 @@ final actor StateMachine {
     func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [MCLayerData]) {
         switch currentState {
         case let .subscribed(state):
-            let streamTypes: [StreamSource.VideoQuality]
+            let streamTypes: [StreamSource.LowLevelVideoQuality]
             let filteredActiveLayers = activeLayers.filter({ layer in
                 // For H.264 there are no temporal layers and the id is set to 255. For VP8 use the first temporal layer.
                 return layer.temporalLayerId == 0 || layer.temporalLayerId == 255

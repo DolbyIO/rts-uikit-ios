@@ -7,22 +7,26 @@ import DolbyIOUIKit
 import SwiftUI
 
 struct VideoRendererView: View {
-    private let viewModel: VideoRendererViewModel
+    @ObservedObject private var viewModel: VideoRendererViewModel
+    private let viewRenderer: StreamSourceViewRenderer
     private let maxWidth: CGFloat
     private let maxHeight: CGFloat
     private let contentMode: VideoRendererContentMode
     private let action: ((StreamSource) -> Void)?
+    @State var isViewVisible = false
 
     @ObservedObject private var themeManager = ThemeManager.shared
 
     init(
         viewModel: VideoRendererViewModel,
+        viewRenderer: StreamSourceViewRenderer,
         maxWidth: CGFloat,
         maxHeight: CGFloat,
         contentMode: VideoRendererContentMode,
         action: ((StreamSource) -> Void)? = nil
     ) {
         self.viewModel = viewModel
+        self.viewRenderer = viewRenderer
         self.maxWidth = maxWidth
         self.maxHeight = maxHeight
         self.contentMode = contentMode
@@ -47,9 +51,24 @@ struct VideoRendererView: View {
     }
 
     @ViewBuilder
-    private func showLabel(for source: StreamSource) -> some View {
+    private var sourceLabelView: some View {
         if viewModel.showSourceLabel {
-            SourceLabel(sourceId: source.sourceId.displayLabel)
+            SourceLabel(sourceId: viewModel.streamSource.sourceId.displayLabel)
+                .padding(5)
+        } else {
+            EmptyView()
+        }
+    }
+    
+    @ViewBuilder
+    private var videoQualityIndicatorView: some View {
+        if let videoQualityIndicatorText = viewModel.videoQuality.description.first?.uppercased() {
+            SwiftUI.Text(videoQualityIndicatorText)
+                .foregroundColor(.white)
+                .font(.custom("AvenirNext-Regular", size: FontSize.caption1, relativeTo: .caption))
+                .padding(.horizontal, Layout.spacing1x)
+                .background(Color(uiColor: themeManager.theme.neutral400))
+                .cornerRadius(Layout.cornerRadius4x)
                 .padding(5)
         } else {
             EmptyView()
@@ -57,7 +76,6 @@ struct VideoRendererView: View {
     }
 
     var body: some View {
-        let viewRenderer = viewModel.viewRenderer
         let videoSize: CGSize = {
             switch contentMode {
             case .aspectFit:
@@ -80,7 +98,10 @@ struct VideoRendererView: View {
         VideoRendererViewInteral(viewRenderer: viewRenderer)
             .frame(width: videoSize.width, height: videoSize.height)
             .overlay(alignment: .bottomLeading) {
-                showLabel(for: viewModel.streamSource)
+                sourceLabelView
+            }
+            .overlay(alignment: .bottomTrailing) {
+                videoQualityIndicatorView
             }
             .overlay {
                 audioPlaybackIndicatorView
@@ -89,7 +110,16 @@ struct VideoRendererView: View {
                 action?(viewModel.streamSource)
             }
             .onAppear {
-                viewModel.playVideo(for: viewModel.streamSource)
+                isViewVisible = true
+                viewModel.playVideo(on: viewRenderer)
+            }
+            .onDisappear {
+                isViewVisible = false
+                viewModel.stopVideo(on: viewRenderer)
+            }
+            .onChange(of: viewModel.videoQuality) { newValue in
+                guard isViewVisible else { return }
+                viewModel.playVideo(on: viewRenderer, quality: newValue)
             }
     }
 }

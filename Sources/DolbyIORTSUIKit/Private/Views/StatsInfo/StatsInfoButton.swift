@@ -120,7 +120,7 @@ final class StatisticsViewModel {
     }
     
     var data: [StatData] {
-        guard let stats = streamSource.streamingStats else {
+        guard let stats = streamSource.streamingStatistics else {
             return []
         }
         

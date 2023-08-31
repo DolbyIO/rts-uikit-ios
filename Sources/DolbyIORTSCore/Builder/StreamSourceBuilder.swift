@@ -4,8 +4,10 @@
 
 import Foundation
 import MillicastSDK
+import os
 
 final class StreamSourceBuilder {
+    private static let logger = Logger.make(category: String(describing: StreamSourceBuilder.self))
 
     enum BuildError: Error {
         case missingVideoTrack
@@ -38,11 +40,11 @@ final class StreamSourceBuilder {
     private(set) var supportedTrackItems: [TrackItem]
     private(set) var videoTrack: StreamSource.VideoTrackInfo?
     private(set) var audioTracks: [StreamSource.AudioTrackInfo] = []
-    private(set) var availableVideoQualityList: [StreamSource.VideoQuality] = [.auto]
-    private(set) var preferredVideoQuality: StreamSource.VideoQuality = .auto
+    private(set) var availableVideoQualityList: [StreamSource.LowLevelVideoQuality] = [.auto]
     private(set) var isPlayingAudio = false
     private(set) var isPlayingVideo = false
-    private(set) var streamingStats: StreamingStatistics?
+    private(set) var streamingStatistics: StreamingStatistics? = nil
+    private(set) var selectedVideoQuality: StreamSource.LowLevelVideoQuality = .auto
 
     init(streamId: String, sourceId: String?, tracks: [String]) {
         identifier = UUID()
@@ -51,6 +53,7 @@ final class StreamSourceBuilder {
 
         supportedTrackItems = tracks
             .compactMap { TrackItem(track: $0) }
+        Self.logger.debug("🧱 Supported track items \(self.supportedTrackItems) for \(self.sourceId)")
     }
 
     func addAudioTrack(_ track: MCAudioTrack, mid: String) {
@@ -62,14 +65,14 @@ final class StreamSourceBuilder {
             return
         }
         let trackItem = trackItems[0]
-        audioTracks.append(
-            StreamSource.AudioTrackInfo(
-                mid: mid,
-                trackID: trackItem.trackID,
-                mediaType: trackItem.mediaType,
-                track: track
-            )
+        let audioTrack = StreamSource.AudioTrackInfo(
+            mid: mid,
+            trackID: trackItem.trackID,
+            mediaType: trackItem.mediaType,
+            track: track
         )
+        audioTracks.append(audioTrack)
+        Self.logger.debug("🧱 Add audio track for \(audioTrack) for \(self.sourceId)")
     }
 
     func addVideoTrack(_ track: MCVideoTrack, mid: String) {
@@ -77,37 +80,48 @@ final class StreamSourceBuilder {
             return
         }
 
-        videoTrack = StreamSource.VideoTrackInfo(
+        let videoTrack = StreamSource.VideoTrackInfo(
             mid: mid,
             trackID: trackItem.trackID,
             mediaType: trackItem.mediaType,
             track: track
         )
+        self.videoTrack = videoTrack
+        Self.logger.debug("🧱 Add video track for \(videoTrack) for \(self.sourceId)")
     }
 
-    func updatePreferredVideoQuality(_ videoQuality: StreamSource.VideoQuality) {
-        guard availableVideoQualityList.contains(where: { $0 == videoQuality }) else {
-            preferredVideoQuality = .auto
+    func setAvailableVideoQualityList(_ list: [StreamSource.LowLevelVideoQuality]) {
+        availableVideoQualityList = list
+        Self.logger.debug("🧱 Set available video quality list \(list) for \(self.sourceId)")
+        if let newVideoQuality = availableVideoQualityList.matching(videoQuality: VideoQuality(selectedVideoQuality)) {
+            selectedVideoQuality = newVideoQuality
+        } else {
+            selectedVideoQuality = .auto
+        }
+    }
+    
+    func setSelectedVideoQuality(_ videoQuality: VideoQuality) {
+        guard let videoQualityToSelect = availableVideoQualityList.matching(videoQuality: videoQuality) else {
+            selectedVideoQuality = .auto
             return
         }
 
-        preferredVideoQuality = videoQuality
-    }
-
-    func setAvailableVideoQualityList(_ list: [StreamSource.VideoQuality]) {
-        availableVideoQualityList = list
+        selectedVideoQuality = videoQualityToSelect
+        Self.logger.debug("🧱 Set selected video quality \(videoQualityToSelect) for \(self.sourceId)")
     }
 
     func setPlayingAudio(_ enable: Bool) {
         isPlayingAudio = enable
-    }
-
-    func setPlayingVideo(_ enable: Bool) {
-        isPlayingVideo = enable
+        Self.logger.debug("🧱 Set audio playing state to \(enable) for \(self.sourceId)")
     }
     
-    func setStreamStatistics(_ stats: StreamingStatistics) {
-        streamingStats = stats
+    func setPlayingVideo(_ enable: Bool) {
+        isPlayingVideo = enable
+        Self.logger.debug("🧱 Set video playing state to \(enable) for \(self.sourceId)")
+    }
+    
+    func setStatistics(_ statistics: StreamingStatistics) {
+        streamingStatistics = statistics
     }
 
     func build() throws -> StreamSource {
@@ -123,13 +137,13 @@ final class StreamSourceBuilder {
             id: identifier,
             streamId: streamId,
             sourceId: sourceId,
-            availableVideoQualityList: availableVideoQualityList,
-            preferredVideoQuality: preferredVideoQuality,
             isPlayingAudio: isPlayingAudio,
             isPlayingVideo: isPlayingVideo,
             audioTracks: audioTracks,
             videoTrack: videoTrack,
-            streamingStats: streamingStats
+            lowLevelVideoQualityList: availableVideoQualityList,
+            selectedLowLevelVideoQuality: selectedVideoQuality,
+            streamingStatistics: streamingStatistics
         )
     }
 }
@@ -149,5 +163,19 @@ extension StreamSourceBuilder {
     var hasMissingVideoTrack: Bool {
         let hasVideoTrack = supportedTrackItems.contains { $0.mediaType == .video }
         return hasVideoTrack && videoTrack == nil
+    }
+}
+
+
+extension Array where Self.Element == StreamSource.LowLevelVideoQuality {
+    func matching(videoQuality: VideoQuality) -> Self.Element? {
+        return self.first { internalVideoQuality in
+            switch (internalVideoQuality, videoQuality) {
+            case (.auto, .auto), (.high, .high), (.medium, .medium), (.low, .low):
+                return true
+            default:
+                return false
+            }
+        }
     }
 }

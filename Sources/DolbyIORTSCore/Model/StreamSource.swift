@@ -6,8 +6,8 @@ import Foundation
 import MillicastSDK
 
 public struct StreamSource: Equatable, Hashable, Identifiable {
-
-    public enum SourceId: Equatable, Hashable {
+    
+    public enum SourceId: Equatable, Hashable, CustomStringConvertible {
         case main
         case other(sourceId: String)
 
@@ -28,19 +28,31 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
                 return id
             }
         }
+        
+        public var description: String {
+            "SourceId: \(String(describing: value))"
+        }
     }
 
-    enum MediaType: String, Equatable {
+    enum MediaType: String, Equatable, CustomStringConvertible {
         case audio, video
+        
+        var description: String {
+            "MediaType: \(rawValue)"
+        }
     }
 
-    struct TrackInfo: Equatable, Hashable {
-        public let mid: String
-        public let trackID: String
-        public let mediaType: MediaType
+    struct TrackInfo: Equatable, Hashable, CustomStringConvertible {
+        let mid: String
+        let trackID: String
+        let mediaType: MediaType
+        
+        var description: String {
+            "TrackInfo: Mid - \(mid), trackID - \(trackID), media type - \(mediaType.rawValue)"
+        }
     }
 
-    struct AudioTrackInfo: Equatable, Hashable {
+    struct AudioTrackInfo: Equatable, Hashable, CustomStringConvertible {
         public let trackInfo: TrackInfo
         public let track: MCAudioTrack
         public var trackId: String { track.getId() }
@@ -49,9 +61,13 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
             self.trackInfo = TrackInfo(mid: mid, trackID: trackID, mediaType: mediaType)
             self.track = track
         }
+        
+        public var description: String {
+            "AudioTrackInfo: Remote Track Identifier - \(trackId), track info - \(trackInfo)"
+        }
     }
 
-    struct VideoTrackInfo: Equatable, Hashable {
+    struct VideoTrackInfo: Equatable, Hashable, CustomStringConvertible {
         public let trackInfo: TrackInfo
         public let track: MCVideoTrack
         public var trackId: String { track.getId() }
@@ -60,9 +76,13 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
             self.trackInfo = TrackInfo(mid: mid, trackID: trackID, mediaType: mediaType)
             self.track = track
         }
+        
+        public var description: String {
+            "VideoTrackInfo: Remote Track Identifier - \(trackId), track info - \(trackInfo)"
+        }
     }
-
-    public enum VideoQuality: Equatable, Hashable, CustomStringConvertible {
+    
+    enum LowLevelVideoQuality: Equatable, Hashable, CustomStringConvertible {
         case auto
         case high(layer: MCLayerData)
         case medium(layer: MCLayerData)
@@ -113,13 +133,21 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
     public let id: UUID
     public let streamId: String
     public let sourceId: SourceId
-    public let availableVideoQualityList: [VideoQuality]
-    public let preferredVideoQuality: VideoQuality
     let isPlayingAudio: Bool
     let isPlayingVideo: Bool
     let audioTracks: [AudioTrackInfo]
     let videoTrack: VideoTrackInfo
-    public let streamingStats: StreamingStatistics?
+    let lowLevelVideoQualityList: [LowLevelVideoQuality]
+    let selectedLowLevelVideoQuality: LowLevelVideoQuality
+    public let streamingStatistics: StreamingStatistics?
+
+    public var videoQualityList: [VideoQuality] {
+        lowLevelVideoQualityList.map(VideoQuality.init)
+    }
+    
+    public var selectedVideoQuality: VideoQuality {
+        VideoQuality(selectedLowLevelVideoQuality)
+    }
 }
 
 extension StreamSource: Comparable {
