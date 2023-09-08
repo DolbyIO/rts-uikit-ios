@@ -56,7 +56,7 @@ final class StreamViewModel: ObservableObject {
     var streamDetail: StreamDetail?
 
     @Published private(set) var state: State = .loading
-    private(set) var defaultPrimaryVideoQuality: VideoQuality = .auto
+    private(set) var primaryVideoQuality: VideoQuality = .auto
 
     private var internalState: InternalState = .loading {
         didSet {
@@ -140,8 +140,8 @@ final class StreamViewModel: ObservableObject {
         return sources.filter { $0.id != matchingSource.id }
     }
 
-    func defaultPrimaryVideoQuality(quality: VideoQuality) {
-        defaultPrimaryVideoQuality = quality
+    func primaryVideoQuality(quality: VideoQuality) {
+        primaryVideoQuality = quality
     }
     
     // swiftlint:disable function_body_length
@@ -165,7 +165,7 @@ final class StreamViewModel: ObservableObject {
             case .list:
                 let secondaryVideoSources = secondaryVideoSources(sources, matchingSource)
                 let showSourceLabels = settings.showSourceLabels
-                let primaryVideoQuality = matchingSource.videoQualityList.contains(defaultPrimaryVideoQuality) ? defaultPrimaryVideoQuality : .auto
+                let primaryVideoQuality = matchingSource.videoQualityList.contains(primaryVideoQuality) ? primaryVideoQuality : .auto
 
                 let listViewModel = ListViewModel(
                     primaryVideoViewModel: VideoRendererViewModel(
@@ -303,7 +303,7 @@ final class StreamViewModel: ObservableObject {
         case .list:
             let secondaryVideoSources = sortedSources.filter { $0.id != selectedVideoSource.id }
             let showSourceLabels = settings.showSourceLabels
-            let primaryVideoQuality = selectedVideoSource.videoQualityList.contains(defaultPrimaryVideoQuality) ? defaultPrimaryVideoQuality : .auto
+            let primaryVideoQuality = selectedVideoSource.videoQualityList.contains(primaryVideoQuality) ? primaryVideoQuality : .auto
 
             let listViewModel = ListViewModel(
                 primaryVideoViewModel: VideoRendererViewModel(
