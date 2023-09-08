@@ -56,6 +56,7 @@ final class StreamViewModel: ObservableObject {
     var streamDetail: StreamDetail?
 
     @Published private(set) var state: State = .loading
+    private(set) var primaryVideoQuality: VideoQuality = .auto
 
     private var internalState: InternalState = .loading {
         didSet {
@@ -89,7 +90,8 @@ final class StreamViewModel: ObservableObject {
 
     init(
         streamOrchestrator: StreamOrchestrator = .shared,
-        settingsManager: SettingsManager = .shared
+        settingsManager: SettingsManager = .shared,
+        defaultPrimaryVideoQuality: VideoQuality = .auto
     ) {
         self.streamOrchestrator = streamOrchestrator
         self.settingsManager = settingsManager
@@ -138,6 +140,10 @@ final class StreamViewModel: ObservableObject {
         return sources.filter { $0.id != matchingSource.id }
     }
 
+    func primaryVideoQuality(quality: VideoQuality) {
+        primaryVideoQuality = quality
+    }
+    
     // swiftlint:disable function_body_length
     func selectVideoSource(_ source: StreamSource) {
         switch internalState {
@@ -159,6 +165,7 @@ final class StreamViewModel: ObservableObject {
             case .list:
                 let secondaryVideoSources = secondaryVideoSources(sources, matchingSource)
                 let showSourceLabels = settings.showSourceLabels
+                let primaryVideoQuality = matchingSource.videoQualityList.contains(primaryVideoQuality) ? primaryVideoQuality : .auto
 
                 let listViewModel = ListViewModel(
                     primaryVideoViewModel: VideoRendererViewModel(
@@ -167,7 +174,7 @@ final class StreamViewModel: ObservableObject {
                         isSelectedAudioSource: matchingSource.id == selectedAudioSource?.id,
                         showSourceLabel: showSourceLabels,
                         showAudioIndicator: matchingSource.id == selectedAudioSource?.id,
-                        videoQuality: .auto
+                        videoQuality: primaryVideoQuality
                     ),
                     secondaryVideoViewModels: secondaryVideoSources.map {
                         VideoRendererViewModel(
@@ -296,6 +303,7 @@ final class StreamViewModel: ObservableObject {
         case .list:
             let secondaryVideoSources = sortedSources.filter { $0.id != selectedVideoSource.id }
             let showSourceLabels = settings.showSourceLabels
+            let primaryVideoQuality = selectedVideoSource.videoQualityList.contains(primaryVideoQuality) ? primaryVideoQuality : .auto
 
             let listViewModel = ListViewModel(
                 primaryVideoViewModel: VideoRendererViewModel(
@@ -304,7 +312,7 @@ final class StreamViewModel: ObservableObject {
                     isSelectedAudioSource: selectedVideoSource.id == selectedAudioSource?.id,
                     showSourceLabel: showSourceLabels,
                     showAudioIndicator: selectedVideoSource.id == selectedAudioSource?.id,
-                    videoQuality: .auto
+                    videoQuality: primaryVideoQuality
                 ),
                 secondaryVideoViewModels: secondaryVideoSources.map {
                     VideoRendererViewModel(

@@ -13,10 +13,13 @@ public struct StreamingScreen: View {
     @State private var isShowingSettingsScreen: Bool = false
     @ObservedObject private var themeManager = ThemeManager.shared
     
+    let primaryVideoQuality: VideoQuality
+    
     private var theme: Theme { themeManager.theme }
     
-    public init(isShowingStreamView: Binding<Bool>) {
+    public init(isShowingStreamView: Binding<Bool>, primaryVideoQuality: VideoQuality = .auto) {
         _isShowingStreamView = isShowingStreamView
+        self.primaryVideoQuality = primaryVideoQuality
     }
 
     @ViewBuilder
@@ -82,6 +85,9 @@ public struct StreamingScreen: View {
         }
         .overlay(alignment: .topLeading) {
             liveIndicatorView
+        }
+        .onAppear() {
+            viewModel.primaryVideoQuality(quality: primaryVideoQuality)
         }
     }
     
