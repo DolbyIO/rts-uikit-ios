@@ -33,7 +33,8 @@ public final actor StreamOrchestrator {
         .eraseToAnyPublisher()
     private var activeStreamDetail: StreamDetail?
     private static var configuration: StreamOrchestrator.Configuration = .init()
-    
+    private let logHandler: MillicastLoggerHandler = .init()
+
     private init() {
         self.init(
             subscriptionManager: SubscriptionManager(),
@@ -69,7 +70,7 @@ public final actor StreamOrchestrator {
         Self.logger.debug("👮‍♂️ Start subscribe")
 
         async let startConnectionStateUpdate: Void = stateMachine.startConnection(streamName: streamName, accountID: accountID)
-        async let startConnection = subscriptionManager.connect(streamName: streamName, accountID: accountID)
+        async let startConnection = subscriptionManager.connect(streamName: streamName, accountID: accountID, configuration: .init())
         
         let (_, connectionResult) = await (startConnectionStateUpdate, startConnection)
         if connectionResult {
@@ -257,10 +258,10 @@ private extension StreamOrchestrator {
         return await subscriptionManager.startSubscribe()
     }
     
-    func stopAudio(for sourceId: String) {
+    func stopAudio(for sourceId: String?) {
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
-            if let source = sources.first (where: { $0.sourceId.value == sourceId }), source.isPlayingAudio {
+            if let source = sources.first (where: { $0.sourceId == StreamSource.SourceId(id: sourceId) }), source.isPlayingAudio {
                 subscriptionManager.unprojectAudio(for: source)
             }
         default: break
@@ -367,10 +368,11 @@ extension StreamOrchestrator: SubscriptionManagerDelegate {
             let stateMachineState = self.stateMachine.currentState
             switch stateMachineState {
             case let .subscribed(state):
-                guard let sourceBuilder = state.streamSourceBuilders.first(where: { $0.sourceId.value == sourceId }) else {
+                guard let sourceBuilder = state.streamSourceBuilders.first(where: { $0.sourceId == StreamSource.SourceId(id: sourceId) }) else {
                     return
                 }
                 self.subscriptionManager.addRemoteTrack(sourceBuilder)
+
             default:
                 return
             }
@@ -382,10 +384,8 @@ extension StreamOrchestrator: SubscriptionManagerDelegate {
             guard let self = self else { return }
             
             // Unproject audio whose source is inactive
-            if let sourceId = sourceId {
-                await self.stopAudio(for: sourceId)
-            }
-            
+            await self.stopAudio(for: sourceId)
+
             self.stateMachine.onInactive(streamId, sourceId: sourceId)
         }
     }
