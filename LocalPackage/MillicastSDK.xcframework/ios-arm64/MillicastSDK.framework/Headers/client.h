@@ -72,13 +72,13 @@ MILLICAST_API @interface MCBitrateSettings : NSObject
  * @param reason The reason the connection attempt failed.
  */
 
-- (void)onConnectionError:(int)status withReason:(NSString *)reason;
+- (void)onConnectionError:(int)status withReason:(nonnull NSString *)reason;
 
 /**
  * @brief Called when an error message in received from Millicast in response of a websocket command
  * @param message The recevied error message
  */
-- (void)onSignalingError:(NSString *)message;
+- (void)onSignalingError:(nonnull NSString *)message;
 
 /**
  * @brief onStatsReport is called when a new rtc stats report has been collected.
@@ -86,7 +86,7 @@ MILLICAST_API @interface MCBitrateSettings : NSObject
  * @see enableStats
  */
 
-- (void)onStatsReport:(MCStatsReport *)report;
+- (void)onStatsReport:(nonnull MCStatsReport *)report;
 
 /**
  * @brief Called when a new viewer join the stream or when a viewer quit the stream
@@ -101,11 +101,11 @@ MILLICAST_API @interface MCClientOptions : NSObject
 /* multisource options */
 
 /** @brief The id/name of the sourceyou want to publish (publisher only) */
-@property(nonatomic, retain) NSString *sourceId;
+@property(nonatomic, retain, nullable) NSString *sourceId;
 /** @brief the receiving source you want to pin (subscriber only) */
-@property(nonatomic, retain) NSString *pinnedSourceId;
+@property(nonatomic, retain, nullable) NSString *pinnedSourceId;
 /** @brief the sources you don't want to receive (subscriber only) */
-@property(nonatomic, retain) NSArray *excludedSourceId;
+@property(nonatomic, retain, nullable) NSArray *excludedSourceId;
 /** @brief enable discontinuous transmission on the publishing side, so audio data is only sent when a user’s voice is detected. */
 @property(nonatomic, assign) BOOL dtx;
 /** @brief the number of multiplxed audio tracks you want to receive (subscriber only) */
@@ -113,16 +113,16 @@ MILLICAST_API @interface MCClientOptions : NSObject
 
 /* Codecs options (for the publisher only) */
 /** @brief The video codec to use (publisher only) */
-@property(nonatomic, retain) NSString *videoCodec;
+@property(nonatomic, retain, nullable) NSString *videoCodec;
 /** @brief The audio codec to use (publisher only) */
-@property(nonatomic, retain) NSString *audioCodec;
+@property(nonatomic, retain, nullable) NSString *audioCodec;
 
 /* General connection options */
 /** @brief Which strategy the use in order to limit the bandwidth usage */
 @property(nonatomic, assign) MCDegradationPreferences degradationPreferences;
 
 /** @brief Determines the minimum, maximum and start bitrates */
-@property(nonatomic, retain) MCBitrateSettings *bitrateSettings;
+@property(nonatomic, retain, nullable) MCBitrateSettings *bitrateSettings;
 
 /** @brief Enable / disable stereo */
 @property(nonatomic, assign) BOOL stereo;
@@ -143,7 +143,7 @@ MILLICAST_API @interface MCClientOptions : NSObject
 @property(nonatomic, assign) BOOL disableAudio;
 
 /* @brief Enable logging RTC Event Log into a file. Provide the full path */
-@property(nonatomic, retain) NSString *rtcEventLogOutputPath;
+@property(nonatomic, retain, nullable) NSString *rtcEventLogOutputPath;
 
 @end
 
@@ -154,7 +154,7 @@ MILLICAST_API @interface MCClientOptions : NSObject
 
 @protocol MCClient
 
-- (void)setOptions:(MCClientOptions *)opts;
+- (void)setOptions:(nonnull MCClientOptions *)opts;
 
 /**
  * @brief Connect and open a websocket connection with the Millicast platform.
@@ -176,7 +176,7 @@ MILLICAST_API @interface MCClientOptions : NSObject
  * You are connected when the Listener's method on_connected is called.
  */
 
-- (BOOL)connectWithData:(NSString *)wsUrl jwt:(NSString *)jwt;
+- (BOOL)connectWithData:(nonnull NSString *)wsUrl jwt:(nonnull NSString *)jwt;
 
 /**
  * @brief isConnected
@@ -201,7 +201,7 @@ MILLICAST_API @interface MCClientOptions : NSObject
  * @param listener The Client listener
  */
 
-- (void)setListener:(id<MCListener>)listener;
+- (void)setListener:(nullable id<MCListener>)listener;
 
 /**
  * @brief Enable the rtc stats collecting.

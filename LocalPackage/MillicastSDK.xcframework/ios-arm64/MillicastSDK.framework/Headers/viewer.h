@@ -21,7 +21,7 @@
 MILLICAST_API @interface MCLayerData : NSObject
 
 /** @brief The encoding id of the simulcast/SVC layer */
-@property (nonatomic, strong) NSString* encodingId;
+@property (nonatomic, strong, nonnull) NSString* encodingId;
 /** @brief The spatial layer id*/
 @property int spatialLayerId;
 /** @brief The temporal layer id*/
@@ -37,13 +37,13 @@ MILLICAST_API @interface MCLayerData : NSObject
 MILLICAST_API @interface  MCProjectionData : NSObject
 
 /** @brief The id of the track on the server side */
-@property (nonatomic, strong) NSString* trackId;
+@property (nonatomic, strong, nonnull) NSString* trackId;
 /** @brief Kind of the track. Either "video" or "audio" */
-@property (nonatomic, strong) NSString* media;
+@property (nonatomic, strong, nonnull) NSString* media;
 /** @brief The transceiver mid associated to the track */
-@property (nonatomic, strong) NSString* mid;
+@property (nonatomic, strong, nonnull) NSString* mid;
 /** @brief Optionally choose a simulcast layer. */
-@property (nonatomic, strong) MCLayerData*  layer;
+@property (nonatomic, strong, nullable) MCLayerData*  layer;
 
 @end
 
@@ -66,14 +66,14 @@ MILLICAST_API @interface  MCProjectionData : NSObject
  * @brief Callled when an error occured while establishing the peerconnection
  * @param reason The reason of the error
  */
-- (void) onSubscribedError:(NSString*) reason;
+- (void) onSubscribedError:(nonnull NSString*) reason;
 
 /**
  * @brief onVideoTrack is called when a remote video track has been added.
  * @param track The remote video track.
  */
 
-- (void) onVideoTrack:(MCVideoTrack*) track withMid:(NSString*) mid;
+- (void) onVideoTrack:(nonnull MCVideoTrack*) track withMid:(nonnull NSString*) mid;
 
 /**
  * @brief onAudioTrack is called when a remote audio track has been added.
@@ -81,7 +81,7 @@ MILLICAST_API @interface  MCProjectionData : NSObject
  * @param mid The associated transceiver mid. Can be nil if there is none.
  */
 
-- (void) onAudioTrack:(MCAudioTrack*) track withMid:(NSString*) mid;
+- (void) onAudioTrack:(nonnull MCAudioTrack*) track withMid:(nonnull NSString*) mid;
 
 /**
  * @brief Called when a new source has been publishing within the new stream
@@ -89,14 +89,14 @@ MILLICAST_API @interface  MCProjectionData : NSObject
  * @param tracks All the track ids within the stream
  * @param sourceId The source id if the publisher has set one.
  */
-- (void) onActive: (NSString*) streamId tracks: (NSArray<NSString*> *)tracks sourceId:(NSString*) sourceId;
+- (void) onActive: (nonnull NSString*) streamId tracks: (nonnull NSArray<NSString*> *)tracks sourceId:(nonnull NSString*) sourceId;
 
 /**
  * @brief Called when a source has been unpublished within the stream
  * @param streamId The stream id.
  * @param sourceId The source id set by the publisher if any.
  */
-- (void) onInactive: (NSString*) streamId sourceId:(NSString*) sourceId;
+- (void) onInactive: (nonnull NSString*) streamId sourceId:(nonnull NSString*) sourceId;
 
 /**
  * @brief onStopped callback is not currently used, but is reserved for future usage.
@@ -108,7 +108,7 @@ MILLICAST_API @interface  MCProjectionData : NSObject
  * @param mid The media id.
  * @param sourceId The source id.
  */
-- (void) onVad: (NSString*) mid sourceId:(NSString*) sourceId;
+- (void) onVad: (nonnull NSString*) mid sourceId:(nonnull NSString*) sourceId;
 
 /**
  * @brief Called when simulcast/svc layers are available
@@ -116,7 +116,7 @@ MILLICAST_API @interface  MCProjectionData : NSObject
  * @param activeLayers Active simulcast/SVC layers
  * @param inactiveLayers inactive simulcast/SVC layers
  */
-- (void) onLayers: (NSString*) mid activeLayers:(NSArray<MCLayerData*>*) activeLayers inactiveLayers:(NSArray<MCLayerData*>*) inactiveLayers;
+- (void) onLayers: (nonnull NSString*) mid activeLayers:(nonnull NSArray<MCLayerData*>*) activeLayers inactiveLayers:(nonnull NSArray<MCLayerData*>*) inactiveLayers;
 
 /**
  * @brief Called when a frame is received and not yet decoded
@@ -126,7 +126,8 @@ MILLICAST_API @interface  MCProjectionData : NSObject
  * @param ssrc Synchronization source of the frame
  * @param timestamp Timestamp of the frame
  */
-- (void) onFrameMetadata:(const unsigned char*)data withLength:(int)length withSsrc:(int) ssrc withTimestamp:(int) timestamp;
+@optional
+- (void) onFrameMetadata:(nonnull const unsigned char*)data withLength:(int)length withSsrc:(int) ssrc withTimestamp:(int) timestamp;
 
 @end
 
@@ -138,13 +139,13 @@ MILLICAST_API @interface  MCProjectionData : NSObject
 
 MILLICAST_API @interface MCSubscriberCredentials : NSObject
 /** @brief The name of the stream you want to subscribe */
-@property (nonatomic, strong) NSString* streamName;
+@property (nonatomic, strong, nonnull) NSString* streamName;
 /** @brief The subscribing token as described in the Millicast API (optional) */
-@property (nonatomic, strong) NSString* token;
+@property (nonatomic, strong, nonnull) NSString* token;
 /** @brief Your millicast account ID */
-@property (nonatomic, strong) NSString* accountId;
+@property (nonatomic, strong, nonnull) NSString* accountId;
 /** @brief The subscribe API URL as described in the Millicast API */
-@property (nonatomic, strong) NSString* apiUrl;
+@property (nonatomic, strong, nonnull) NSString* apiUrl;
 
 @end
 
@@ -191,21 +192,21 @@ MILLICAST_API @interface MCSubscriber : NSObject <MCClient>
  * @param projectionData The configuration of the track you want to receive.
  * @return true if success false otherwise.
  */
-- (BOOL) project:(NSString*) sourceId withData:(NSArray<MCProjectionData*>*) projectionData;
+- (BOOL) project:(nullable NSString*) sourceId withData:(nonnull NSArray<MCProjectionData*>*) projectionData;
 
 /**
  * @brief Specify the media you want to stop receving
  * @param mids The list of mids to unproject.
  * @return tru if succes. false otherwise
  */
-- (BOOL) unproject:(NSArray<NSString*>*) mids;
+- (BOOL) unproject:(nonnull NSArray<NSString*>*) mids;
 
 /**
  * @brief Select a specific simulcast/SVC layer for a video track.
  * @param layer The data to select which layer and which track. Send an empty optional to reset to automatic layer selection by the server.
  * @return tru if success, false otherwise.
  */
-- (BOOL) select:(MCLayerData*)layer;
+- (BOOL) select:(nullable MCLayerData*)layer;
 
 /**
  * @brief Dynamically add on new track to the subscriber so you can project another source into it.
@@ -213,14 +214,14 @@ MILLICAST_API @interface MCSubscriber : NSObject <MCClient>
  * @param kind The kind of the track. "video" or "audio"
  * @return true if success, false otherwise.
  */
-- (BOOL) addRemoteTrack: (NSString*) kind;
+- (BOOL) addRemoteTrack: (nonnull NSString*) kind;
 
 /**
  * @brief Get the transceiver mid associated to a track
  * @param trackId The id of the track we want to retrieve the mid
  * @return The transceiver mid. nil if there is no mid found
  */
-- (NSString*) getMid:(NSString*) trackId;
+- (nullable NSString*) getMid:(nonnull NSString*) trackId;
 
 /**
  * @brief Set the viewer credentials.
@@ -228,20 +229,20 @@ MILLICAST_API @interface MCSubscriber : NSObject <MCClient>
  * @return true if the credentials are valid and set correctly, false otherwise.
  */
 
-- (BOOL) setCredentials: (MCSubscriberCredentials*) credentials;
+- (BOOL) setCredentials: (nonnull MCSubscriberCredentials*) credentials;
 
 /**
  * @brief Get the current viewer credentials.
  * @return The current credentials set in the viewer.
  */
 
-- (MCSubscriberCredentials* ) getCredentials;
+- (nonnull MCSubscriberCredentials*) getCredentials;
 
 /**
  * @brief Create a new viewer.
  * @return A new Viewer object.
  	*/
 
-+ (MCSubscriber*) create;
++ (nullable MCSubscriber*) create;
 
 @end

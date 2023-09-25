@@ -126,6 +126,7 @@ typedef enum
  * @param ssrc Synchronization source of the frame
  * @param timestamp Timestamp of the frame
  */
+@optional
 - (void) onTransformableFrame:(NSMutableArray<NSNumber*>*)data withSsrc:(int) ssrc withTimestamp:(int) timestamp;
 
 @end

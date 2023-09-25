@@ -53,4 +53,5 @@ MILLICAST_API @interface MCLogger : NSObject
 
 + (void) setDelegate:(id<MCLoggerDelegate>) delegate;
 + (void) disableWebsocketLogs:(BOOL) disable;
++ (void) setRtcLogsVerbose:(BOOL) enable;
 @end

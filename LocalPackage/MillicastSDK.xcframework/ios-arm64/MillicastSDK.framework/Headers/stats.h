@@ -174,7 +174,7 @@ MILLICAST_API @interface MCInboundRtpStreamStats : MCReceivedRtpStreamStats
 /**
  * @brief Only defined for video.
  */
-@property unsigned long frames_dropped;
+@property unsigned long long frames_dropped;
 /**
  * @brief Only defined for video.
  */
