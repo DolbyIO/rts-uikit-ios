@@ -119,6 +119,8 @@ public final actor StreamOrchestrator {
         let (_, connectionResult) = await (startConnectionStateUpdate, startConnection)
         if connectionResult {
             activeStreamDetail = StreamDetail(streamName: streamName, accountID: accountID)
+        } else {
+            activeStreamDetail = nil
         }
         return connectionResult
     }

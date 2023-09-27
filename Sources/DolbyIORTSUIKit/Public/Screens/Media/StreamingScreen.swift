@@ -71,17 +71,8 @@ public struct StreamingScreen: View {
                     endStream()
                 }
             }
-            ToolbarItem(placement: .principal) {
-                if let streamName = viewModel.streamDetail?.streamName {
-                    Text(
-                        verbatim: streamName,
-                        font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
-                    )
-                }
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                SettingsButton { isShowingSettingsScreen = true }
-            }
+            titleToolBarItem
+            settingsToolbarItem
         }
         .overlay(alignment: .topLeading) {
             liveIndicatorView
@@ -118,6 +109,10 @@ public struct StreamingScreen: View {
         ProgressView()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationBarBackButtonHidden(true)
+            .toolbar {
+                closeToolbarItem
+                titleToolBarItem
+            }
     }
     
     @ViewBuilder
@@ -137,6 +132,31 @@ public struct StreamingScreen: View {
                 .padding(Layout.spacing0_5x)
         } else {
             EmptyView()
+        }
+    }
+    
+    private var titleToolBarItem: ToolbarItem<(), some View> {
+        ToolbarItem(placement: .principal) {
+            if let streamName = viewModel.streamDetail?.streamName {
+                Text(
+                    verbatim: streamName,
+                    font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
+                )
+            }
+        }
+    }
+    
+    private var closeToolbarItem: ToolbarItem<(), some View> {
+        ToolbarItem(placement: .navigationBarLeading) {
+            IconButton(iconAsset: .close) {
+                endStream()
+            }
+        }
+    }
+    
+    private var settingsToolbarItem: ToolbarItem<(), some View> {
+        ToolbarItem(placement: .navigationBarTrailing) {
+            SettingsButton { isShowingSettingsScreen = true }
         }
     }
 
