@@ -75,21 +75,9 @@ public struct StreamingScreen: View {
             liveIndicatorView
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                IconButton(iconAsset: .close) {
-                    endStream()
-                }
-            }
-            ToolbarItem(placement: .principal) {
-                let streamName = viewModel.streamDetail.streamName
-                Text(
-                    verbatim: streamName,
-                    font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
-                )
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                SettingsButton { isShowingSettingsScreen = true }
-            }
+            closeToolbarItem
+            titleToolBarItem
+            settingsToolbarItem
         }
     }
     
@@ -118,6 +106,10 @@ public struct StreamingScreen: View {
     private var progressView: some View {
         ProgressView()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .toolbar {
+                closeToolbarItem
+                titleToolBarItem
+            }
     }
     
     @ViewBuilder
@@ -138,6 +130,30 @@ public struct StreamingScreen: View {
                 .padding(Layout.spacing0_5x)
         } else {
             EmptyView()
+        }
+    }
+    
+    private var titleToolBarItem: ToolbarItem<(), some View> {
+        ToolbarItem(placement: .principal) {
+            let streamName = viewModel.streamDetail.streamName
+            Text(
+                verbatim: streamName,
+                font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
+            )
+        }
+    }
+    
+    private var closeToolbarItem: ToolbarItem<(), some View> {
+        ToolbarItem(placement: .navigationBarLeading) {
+            IconButton(iconAsset: .close) {
+                endStream()
+            }
+        }
+    }
+    
+    private var settingsToolbarItem: ToolbarItem<(), some View> {
+        ToolbarItem(placement: .navigationBarTrailing) {
+            SettingsButton { isShowingSettingsScreen = true }
         }
     }
 
