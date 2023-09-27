@@ -210,7 +210,7 @@ struct ListView: View {
         let viewModel = viewModel.primaryVideoViewModel
         return VideoRendererView(
             viewModel: viewModel,
-            viewRenderer: mainViewRendererProvider.renderer(for: viewModel.streamSource),
+            viewRenderer: mainViewRendererProvider.renderer(for: viewModel.streamSource, isPortait: deviceOrientation.isPortrait),
             maxWidth: maxAllowedMainVideoSize.width,
             maxHeight: maxAllowedMainVideoSize.height,
             contentMode: .aspectFit
@@ -227,7 +227,7 @@ struct ListView: View {
 
             VideoRendererView(
                 viewModel: viewModel,
-                viewRenderer: thumbnailViewRendererProvider.renderer(for: viewModel.streamSource),
+                viewRenderer: thumbnailViewRendererProvider.renderer(for: viewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                 maxWidth: maxAllowedSubVideoWidth,
                 maxHeight: maxAllowedSubVideoHeight,
                 contentMode: .aspectFit
@@ -257,7 +257,7 @@ struct ListView: View {
             ForEach(viewModel.secondaryVideoViewModels, id: \.streamSource.id) { viewModel in
                 VideoRendererView(
                     viewModel: viewModel,
-                    viewRenderer: thumbnailViewRendererProvider.renderer(for: viewModel.streamSource),
+                    viewRenderer: thumbnailViewRendererProvider.renderer(for: viewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                     maxWidth: .infinity,
                     maxHeight: availableHeight,
                     contentMode: .aspectFit
