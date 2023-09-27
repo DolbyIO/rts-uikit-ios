@@ -73,7 +73,7 @@ struct GridView: View {
                     
                     VideoRendererView(
                         viewModel: viewModel,
-                        viewRenderer: viewRendererProvider.renderer(for: viewModel.streamSource),
+                        viewRenderer: viewRendererProvider.renderer(for: viewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                         maxWidth: maxAllowedSubVideoWidth,
                         maxHeight: maxAllowedSubVideoHeight,
                         contentMode: .aspectFit
@@ -96,7 +96,7 @@ struct GridView: View {
                 ForEach(viewModel.allVideoViewModels, id: \.streamSource.id) { viewModel in
                     VideoRendererView(
                         viewModel: viewModel,
-                        viewRenderer: viewRendererProvider.renderer(for: viewModel.streamSource),
+                        viewRenderer: viewRendererProvider.renderer(for: viewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                         maxWidth: .infinity,
                         maxHeight: availableHeight / CGFloat(rowsCount),
                         contentMode: .aspectFit
