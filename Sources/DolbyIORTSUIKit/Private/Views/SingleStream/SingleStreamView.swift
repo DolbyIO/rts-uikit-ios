@@ -22,7 +22,9 @@ struct SingleStreamView: View {
     @State private var showScreenControls = false
     @State private var selectedVideoStreamSourceId: UUID
     @State private var isShowingSettingsScreen: Bool = false
-    @State private var isShowingStatsScreen: Bool = false
+    @State private var isShowingStatsInfoScreen: Bool = false
+    @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
+
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
     @StateObject private var viewRendererProvider: ViewRendererProvider = .init()
 
@@ -62,7 +64,7 @@ struct SingleStreamView: View {
     private var bottomToolBarView: some View {
         let source = viewModel.selectedVideoSource
         HStack {
-            StatsInfoButton(streamSource: source, showingStatsScreen: $isShowingStatsScreen)
+            StatsInfoButton(streamSource: source, showingStatsScreen: $isShowingStatsInfoScreen)
 
             Spacer()
 
@@ -98,7 +100,7 @@ struct SingleStreamView: View {
                         let maxAllowedVideoHeight = proxy.size.height
                         VideoRendererView(
                             viewModel: videoRendererViewModel,
-                            viewRenderer: viewRendererProvider.renderer(for: videoRendererViewModel.streamSource),
+                            viewRenderer: viewRendererProvider.renderer(for: videoRendererViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                             maxWidth: maxAllowedVideoWidth,
                             maxHeight: maxAllowedVideoHeight,
                             contentMode: .aspectFit
@@ -135,7 +137,7 @@ struct SingleStreamView: View {
                         showControlsAndObserveInteractions()
                     }
                 }
-                .fullScreenCover(isPresented: $isShowingStatsScreen) {
+                .fullScreenCover(isPresented: $isShowingStatsInfoScreen) {
                     StatisticsView(streamSource: viewModel.selectedVideoSource)
                 }
                 .onChange(of: selectedVideoStreamSourceId) { newValue in
@@ -146,6 +148,11 @@ struct SingleStreamView: View {
                 }
             }
             .navigationBarHidden(isShowingDetailPresentation)
+        }
+        .onRotate { newOrientation in
+            if !newOrientation.isFlat && newOrientation.isValidInterfaceOrientation {
+                deviceOrientation = newOrientation
+            }
         }
     }
 

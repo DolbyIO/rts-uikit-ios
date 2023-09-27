@@ -167,6 +167,12 @@ public struct StreamingScreen: View {
                 errorView(for: errorViewModel)
             }
         }
+        .onAppear {
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
+        .onDisappear {
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
     }
 }
 
