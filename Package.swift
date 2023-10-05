@@ -49,7 +49,7 @@ let package = Package(
                 "DolbyIORTSCore"
             ],
             path: "Sources/DolbyIORTSUIKit",
-            resources: [.process("Resources")]
+            resources: [.process("Resources"), .process("sample-video.mp4")]
         ),
         .testTarget(
             name: "DolbyIOUIKitTests",
