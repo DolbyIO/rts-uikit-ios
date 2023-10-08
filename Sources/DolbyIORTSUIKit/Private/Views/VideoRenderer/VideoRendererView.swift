@@ -158,14 +158,38 @@ final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView, AVPict
     init() {
         super.init(frame: .zero)
 
-        setupPictureInPicture()
+//        setupPictureInPictureUsingThirdPartyFramework()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupPictureInPicture() {
+    func setupPictureInPictureUsingCustomRenderer() {
+        if AVPictureInPictureController.isPictureInPictureSupported() {
+            guard let childView = childView, pipController == nil else {
+                return
+            }
+            let pipVideoCallViewController = AVPictureInPictureVideoCallViewController()
+            pipVideoCallViewController.view.addSubview(childView)
+            
+            let pipContentSource = AVPictureInPictureController.ContentSource(
+                activeVideoCallSourceView: childView,
+                contentViewController: pipVideoCallViewController
+            )
+            
+            let pipController = AVPictureInPictureController(contentSource: pipContentSource)
+            pipController.canStartPictureInPictureAutomaticallyFromInline = true
+            pipController.delegate = self
+            
+            self.pipController = pipController
+        } else {
+            // PiP isn't supported by the current device. Disable the PiP button.
+            pipButton.isEnabled = false
+        }
+    }
+    
+    func setupPictureInPictureUsingThirdPartyFramework() {
         avplayerLayer = AVPlayerLayer()
         avplayerLayer.frame = CGRect(x: 0, y: 0, width: 0.1, height: 0.1)
 
@@ -210,7 +234,7 @@ final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView, AVPict
             pipButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
         ])
         
-        setupPictureInPicture()
+        setupPictureInPictureUsingCustomRenderer()
         
         setNeedsLayout()
         layoutIfNeeded()

@@ -52,7 +52,7 @@ MILLICAST_API @interface MCStats : NSObject
  * @brief The timestamp in Milliseconds since Unix Epoch (Jan 1, 1970 00:00:00 UTC).
  */
 @property long long         timestamp;
-@property (assign, nonatomic) NSString *  sid; // stats id, id is a reserved keywork in objc
+@property (nonatomic, strong) NSString *  sid; // stats id, id is a reserved keywork in objc
 @property MCStatsType type;
 
 @end
@@ -61,20 +61,20 @@ MILLICAST_API @interface MCCodecsStats : MCStats
 + (MCStatsType) get_type;
 
 @property unsigned long payload_type;
-@property (assign, nonatomic)  NSString * transport_id;
-@property (assign, nonatomic)  NSString * mime_type;
+@property (nonatomic, strong)  NSString * transport_id;
+@property (nonatomic, strong)  NSString * mime_type;
 
 @property MCCodecStatsType codec_type;
 @property unsigned long    clock_rate;
 @property unsigned long    channels;
-@property (assign, nonatomic)  NSString * sdp_fmtp_line;
+@property (nonatomic, strong)  NSString * sdp_fmtp_line;
 @end
 
 MILLICAST_API @interface MCRtpStreamStats :  MCStats
 @property  unsigned long ssrc;
-@property (assign, nonatomic)  NSString * kind;
-@property (assign, nonatomic)  NSString * transport_id;
-@property (assign, nonatomic)  NSString * codec_id;
+@property (nonatomic, strong)  NSString * kind;
+@property (nonatomic, strong)  NSString * transport_id;
+@property (nonatomic, strong)  NSString * codec_id;
 @end
 
 MILLICAST_API @interface MCReceivedRtpStreamStats : MCRtpStreamStats
@@ -90,9 +90,9 @@ MILLICAST_API @interface MCReceivedRtpStreamStats : MCRtpStreamStats
 MILLICAST_API @interface MCInboundRtpStreamStats : MCReceivedRtpStreamStats
 + (MCStatsType) get_type;
 
-@property (assign, nonatomic) NSString * remote_id;
-@property (assign, nonatomic) NSString * track_identifier;
-@property (assign, nonatomic) NSString * mid;
+@property (nonatomic, strong) NSString * remote_id;
+@property (nonatomic, strong) NSString * track_identifier;
+@property (nonatomic, strong) NSString * mid;
 @property unsigned long bytes_received;
 @property unsigned long header_bytes_received;
 @property double        last_packet_received_timestamp;
@@ -202,7 +202,7 @@ MILLICAST_API @interface MCInboundRtpStreamStats : MCReceivedRtpStreamStats
 /**
  * @brief Only defined for video.
  */
-@property (assign, nonatomic) NSString * decoder_implementation;
+@property (nonatomic, strong) NSString * decoder_implementation;
 /**
  * @brief Only defined for video.
  */
@@ -232,8 +232,8 @@ MILLICAST_API @interface MCSentRtpStreamStats : MCRtpStreamStats
 MILLICAST_API @interface MCOutboundRtpStreamStats : MCSentRtpStreamStats
 + (MCStatsType) get_type;
 
-@property (assign, nonatomic) NSString * sender_id;
-@property (assign, nonatomic) NSString *   remote_id;
+@property (nonatomic, strong) NSString * sender_id;
+@property (nonatomic, strong) NSString *   remote_id;
 @property unsigned long long retransmitted_packets_sent;
 @property unsigned long long header_bytes_sent;
 @property unsigned long long retransmitted_bytes_sent;
@@ -275,11 +275,11 @@ MILLICAST_API @interface MCOutboundRtpStreamStats : MCSentRtpStreamStats
 /**
  * @brief Only defined for video.
  */
-@property (assign, nonatomic) NSString *   quality_limitation_reason;
+@property (nonatomic, strong) NSString *   quality_limitation_reason;
 /**
  * @brief Only defined for video.
  */
-@property (assign, nonatomic) NSString *   quality_limitation_durations;
+@property (nonatomic, strong) NSString *   quality_limitation_durations;
 /**
  * @brief Only defined for video.
  */
@@ -287,7 +287,7 @@ MILLICAST_API @interface MCOutboundRtpStreamStats : MCSentRtpStreamStats
 /**
  * @brief Only defined for video.
  */
-@property (assign, nonatomic) NSString *   encoder_implementation;
+@property (nonatomic, strong) NSString *   encoder_implementation;
 /**
  * @brief Only defined for video.
  */
@@ -310,9 +310,9 @@ MILLICAST_API @interface MCOutboundRtpStreamStats : MCSentRtpStreamStats
 
 MILLICAST_API @interface MCRemoteOutboundRtpStreamStats : MCSentRtpStreamStats
 + (MCStatsType) get_type;
-@property (assign, nonatomic) NSString * media_source_id;
-@property (assign, nonatomic) NSString * remote_id;
-@property (assign, nonatomic) NSString * local_id;
+@property (nonatomic, strong) NSString * media_source_id;
+@property (nonatomic, strong) NSString * remote_id;
+@property (nonatomic, strong) NSString * local_id;
 @property long long remote_timestamp;
 @property unsigned long long reports_sent;
 @property unsigned long long round_trip_time_measurements;
@@ -323,7 +323,7 @@ MILLICAST_API @interface MCRemoteOutboundRtpStreamStats : MCSentRtpStreamStats
 
 MILLICAST_API @interface MCRemoteInboundRtpStreamStats : MCReceivedRtpStreamStats
 + (MCStatsType) get_type;
-@property (assign, nonatomic) NSString * local_id;
+@property (nonatomic, strong) NSString * local_id;
 @property double round_trip_time;
 @property double total_round_trip_time;
 @property long long round_trip_time_measurements;
@@ -333,9 +333,9 @@ MILLICAST_API @interface MCRemoteInboundRtpStreamStats : MCReceivedRtpStreamStat
 MILLICAST_API @interface MCMediaStreamTrackStats : MCStats
 + (MCStatsType) get_type;
 
-@property (assign, nonatomic) NSString * track_identifier;
-@property (assign, nonatomic) NSString * kind;
-@property (assign, nonatomic) NSString * media_source_id;
+@property (nonatomic, strong) NSString * track_identifier;
+@property (nonatomic, strong) NSString * kind;
+@property (nonatomic, strong) NSString * media_source_id;
 @end
 
 MILLICAST_API @interface MCVideoStreamTrackStats : MCMediaStreamTrackStats
@@ -356,8 +356,8 @@ MILLICAST_API @interface MCAudioStreamTrackStats : MCMediaStreamTrackStats
 
 MILLICAST_API @interface MCMediaSourceStats : MCStats
 + (MCStatsType) get_type;
-@property (assign, nonatomic) NSString * track_identifier;
-@property (assign, nonatomic) NSString * kind;
+@property (nonatomic, strong) NSString * track_identifier;
+@property (nonatomic, strong) NSString * kind;
 @end
 
 MILLICAST_API @interface MCVideoSourceStats : MCMediaSourceStats
@@ -380,7 +380,7 @@ MILLICAST_API @interface MCAudioSourceStats : MCMediaSourceStats
 
 MILLICAST_API @interface MCStatsReport : NSObject
 
-- (void) addStats:(MCStats*)obj;
+- (void) addStats:(MCStats*) obj; //__attribute((ns_consumed)) obj;
 - (MCStats*) get:(NSString*)statsId;
 
 /**

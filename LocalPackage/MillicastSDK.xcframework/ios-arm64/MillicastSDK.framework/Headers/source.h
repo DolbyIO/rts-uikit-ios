@@ -28,7 +28,7 @@ enum MCSourceType {
   MC_MIC, /**< Microphone devices source */
   MC_NDI, /**< Ndi sources (input and output) */
   MC_DECKLINK, /**< DeckLink devices sources (input and output) */
-  MC_CUSTOM
+  MC_CUSTOM,
 };
 #else
 typedef enum {
