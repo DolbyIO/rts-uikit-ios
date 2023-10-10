@@ -81,7 +81,11 @@ struct VideoRendererView: View {
             }
         }()
 
-        VideoRendererViewInternal(viewRenderer: viewRenderer)
+        VideoRendererViewInternal(
+            viewRenderer: viewRenderer,
+            videoSize: videoSize,
+            isSelectedVideoSource: viewModel.isSelectedVideoSource
+        )
             .allowsHitTesting(true)
             .frame(width: videoSize.width, height: videoSize.height)
             .background(.red)
@@ -111,14 +115,23 @@ struct VideoRendererView: View {
 
 private struct VideoRendererViewInternal: UIViewRepresentable {
     private let viewRenderer: StreamSourceViewRenderer
+    private let videoSize: CGSize
+    private let isSelectedVideoSource: Bool
 
-    init(viewRenderer: StreamSourceViewRenderer) {
+    init(viewRenderer: StreamSourceViewRenderer, videoSize: CGSize, isSelectedVideoSource: Bool) {
         self.viewRenderer = viewRenderer
+        self.videoSize = videoSize
+        self.isSelectedVideoSource = isSelectedVideoSource
     }
 
     func makeUIView(context: Context) -> UIView {
         let containerView = VideoRendererPictureInPictureView<UIView>()
-        containerView.updateChildView(viewRenderer.playbackView)
+        containerView.updateChildView(
+            viewRenderer.playbackView,
+            pipPlaybackView: viewRenderer.pipPlaybackView,
+            videoSize: self.videoSize,
+            isSelectedVideoSource: isSelectedVideoSource
+        )
         return containerView
     }
 
@@ -126,16 +139,20 @@ private struct VideoRendererViewInternal: UIViewRepresentable {
         guard let containerView = uiView as? VideoRendererPictureInPictureView<UIView> else {
             return
         }
-        containerView.updateChildView(viewRenderer.playbackView)
+        containerView.updateChildView(
+            viewRenderer.playbackView,
+            pipPlaybackView: viewRenderer.pipPlaybackView,
+            videoSize: self.videoSize,
+            isSelectedVideoSource: isSelectedVideoSource
+        )
     }
 }
 
 
-final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView, AVPictureInPictureControllerDelegate {
+final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView {
 
     private var childView: ChildView?
-
-    private var avplayerLayer: AVPlayerLayer!
+    private var pipVideoCallViewController: AVPictureInPictureVideoCallViewController?
 
     private lazy var pipButton: UIButton = {
         let button = UIButton()
@@ -150,74 +167,30 @@ final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView, AVPict
         return button
     }()
     
-    var observation: NSKeyValueObservation?
-    var pipPossibleObservation: NSKeyValueObservation?
-
-    var pipController: AVPictureInPictureController!
-    
     init() {
         super.init(frame: .zero)
-
-//        setupPictureInPictureUsingThirdPartyFramework()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupPictureInPictureUsingCustomRenderer() {
+    func setupPictureInPictureUsingCustomRenderer(with view: UIView, for videoSize: CGSize) {
         if AVPictureInPictureController.isPictureInPictureSupported() {
-            guard let childView = childView, pipController == nil else {
-                return
-            }
-            let pipVideoCallViewController = AVPictureInPictureVideoCallViewController()
-            pipVideoCallViewController.view.addSubview(childView)
-            
-            let pipContentSource = AVPictureInPictureController.ContentSource(
-                activeVideoCallSourceView: childView,
-                contentViewController: pipVideoCallViewController
-            )
-            
-            let pipController = AVPictureInPictureController(contentSource: pipContentSource)
-            pipController.canStartPictureInPictureAutomaticallyFromInline = true
-            pipController.delegate = self
-            
-            self.pipController = pipController
-        } else {
-            // PiP isn't supported by the current device. Disable the PiP button.
-            pipButton.isEnabled = false
-        }
-    }
-    
-    func setupPictureInPictureUsingThirdPartyFramework() {
-        avplayerLayer = AVPlayerLayer()
-        avplayerLayer.frame = CGRect(x: 0, y: 0, width: 0.1, height: 0.1)
-
-        let mp4Video = Bundle.module.url(forResource: "sample-video", withExtension: "mp4")
-        let asset = AVAsset.init(url: mp4Video!)
-        let playerItem = AVPlayerItem.init(asset: asset)
-
-        let player = AVPlayer.init(playerItem: playerItem)
-        avplayerLayer.player = player
-        layer.addSublayer(avplayerLayer)
+            if pipVideoCallViewController == nil {
+                let pipVideoCallViewController = AVPictureInPictureVideoCallViewController()
+                pipVideoCallViewController.view.addSubview(view)
                 
-        if AVPictureInPictureController.isPictureInPictureSupported() {
-            // Create a new controller, passing the reference to the AVPlayerLayer.
-            pipController = AVPictureInPictureController(playerLayer: avplayerLayer)
-            
-            pipController.delegate = self
-        } else {
-            // PiP isn't supported by the current device. Disable the PiP button.
-            pipButton.isEnabled = false
+                PictureInPictureWrapped.shared.updatePictureInPictureVideoCallViewController(pipVideoCallViewController, targetView: self)
+                self.pipVideoCallViewController = pipVideoCallViewController
+            }
         }
     }
     
-    func updateChildView(_ view: ChildView) {
+    func updateChildView(_ view: ChildView, pipPlaybackView: UIView, videoSize: CGSize, isSelectedVideoSource: Bool) {
         childView?.removeFromSuperview()
-        pipButton.removeFromSuperview()
-
+        
         view.translatesAutoresizingMaskIntoConstraints = false
-
         insertSubview(view, at: 0)
         NSLayoutConstraint.activate([
             topAnchor.constraint(equalTo: view.topAnchor),
@@ -225,44 +198,89 @@ final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView, AVPict
             view.bottomAnchor.constraint(equalTo: bottomAnchor),
             view.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
+        
+        if !self.subviews.contains(pipButton) && isSelectedVideoSource {
+            addSubview(pipButton)
+            pipButton.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                pipButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+                pipButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
+            ])
+        }
+        
+        if isSelectedVideoSource {
+            setupPictureInPictureUsingCustomRenderer(with: pipPlaybackView, for: videoSize)
+        } else {
+            self.pipButton.removeFromSuperview()
+        }
+        
         childView = view
 
-        addSubview(pipButton)
-        pipButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            pipButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
-            pipButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
-        ])
-        
-        setupPictureInPictureUsingCustomRenderer()
-        
         setNeedsLayout()
         layoutIfNeeded()
     }
     
     @objc func togglePictureInPictureMode(_ sender: UIButton) {
-        if pipController.isPictureInPictureActive {
+        if PictureInPictureWrapped.shared.isPictureInPictureActive {
             print("---> stop pip")
-            pipController.stopPictureInPicture()
+            PictureInPictureWrapped.shared.stopPictureInPicture()
         } else {
             print("---> start pip")
-            pipController.startPictureInPicture()
-            print("---> suspended state \(pipController.isPictureInPictureSuspended)")
+            PictureInPictureWrapped.shared.startPictureInPicture()
         }
+    }
+}
+
+fileprivate class PictureInPictureWrapped: NSObject, AVPictureInPictureControllerDelegate {
+    static var shared = PictureInPictureWrapped()
+    
+    private var pictureInPictureController: AVPictureInPictureController?
+
+    var isPictureInPictureActive: Bool {
+        guard let pictureInPictureController = pictureInPictureController else {
+            return false
+        }
+        
+        return pictureInPictureController.isPictureInPictureActive
+    }
+    
+    func updatePictureInPictureVideoCallViewController(_ videoCallViewController: AVPictureInPictureVideoCallViewController, targetView: UIView) {
+        let contentSource = AVPictureInPictureController.ContentSource(
+            activeVideoCallSourceView: targetView,
+            contentViewController: videoCallViewController
+        )
+        if let pictureInPictureController = pictureInPictureController {
+            pictureInPictureController.contentSource = contentSource
+        } else {
+            let pictureInPictureController = AVPictureInPictureController(contentSource: contentSource)
+            pictureInPictureController.delegate = self
+            pictureInPictureController.canStartPictureInPictureAutomaticallyFromInline = true
+            self.pictureInPictureController = pictureInPictureController
+        }
+    }
+    
+    func startPictureInPicture() {
+        guard 
+            !isPictureInPictureActive,
+            let pipController = pictureInPictureController
+        else {
+            return
+        }
+        pipController.startPictureInPicture()
+    }
+    
+    func stopPictureInPicture() {
+        guard
+            isPictureInPictureActive,
+            let pipController = pictureInPictureController
+        else {
+            return
+        }
+        pipController.stopPictureInPicture()
     }
     
     func pictureInPictureControllerWillStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
         print("---> will start pip")
-        if let window = UIApplication.shared.windows.first {
-            let videoView = childView ?? UIView()
-            window.addSubview(videoView)
-            NSLayoutConstraint.activate([
-                window.rootViewController!.view.topAnchor.constraint(equalTo: videoView.topAnchor),
-                window.rootViewController!.view.leadingAnchor.constraint(equalTo: videoView.leadingAnchor),
-                videoView.bottomAnchor.constraint(equalTo: window.rootViewController!.view.bottomAnchor),
-                videoView.trailingAnchor.constraint(equalTo: window.rootViewController!.view.trailingAnchor)
-            ])
-        }
     }
     
     func pictureInPictureControllerDidStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
@@ -282,7 +300,7 @@ final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView, AVPict
     
     func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: @escaping (Bool) -> Void) {
         print("---> restoreUserInterfaceForPictureInPictureStopWithCompletionHandler")
-        completionHandler(true)
+        //completionHandler(true)
     }
     
     func pictureInPictureControllerWillStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {

@@ -12,20 +12,21 @@ public class StreamSourceViewRenderer: Identifiable {
         static let defaultVideoTileSize = CGSize(width: 533, height: 300)
     }
 
-    private let renderer: MCPIPVideoRenderer
-    
+    private let renderer = MCIosVideoRenderer()
+    private let pipRenderer = MCPIPVideoRenderer()
+
     let videoTrack: MCVideoTrack
 
     public let id = UUID()
 
     public init(_ streamSource: StreamSource) {
         let videoTrack = streamSource.videoTrack.track
-        self.renderer = MCPIPVideoRenderer()
         self.videoTrack = videoTrack
 
         Task {
             await MainActor.run {
                 videoTrack.add(renderer)
+                videoTrack.add(pipRenderer)
             }
         }
     }
@@ -39,7 +40,11 @@ public class StreamSourceViewRenderer: Identifiable {
     }
 
     public var playbackView: UIView {
-        renderer
+        renderer.getView()
+    }
+    
+    public var pipPlaybackView: MCPIPVideoRenderer {
+        pipRenderer
     }
 }
 
