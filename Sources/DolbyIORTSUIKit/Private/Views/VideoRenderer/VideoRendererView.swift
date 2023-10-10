@@ -173,7 +173,7 @@ final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView {
 
     private var childView: ChildView?
     private var pipVideoCallViewController: AVPictureInPictureVideoCallViewController?
-
+    
     private lazy var pipButton: UIButton = {
         let button = UIButton()
         let startImage = AVPictureInPictureController.pictureInPictureButtonStartImage
@@ -200,9 +200,8 @@ final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView {
 
     func setupPictureInPictureUsingCustomRenderer(with view: UIView, for videoSize: CGSize) {
         if AVPictureInPictureController.isPictureInPictureSupported() {
-            if pipVideoCallViewController == nil {
+            if pipVideoCallViewController == nil, let currentLayer = view.layer as? AVSampleBufferDisplayLayer {
                 let pipVideoCallViewController = AVPictureInPictureVideoCallViewController(view, preferredContentSize: videoSize)
-                pipVideoCallViewController.view.addSubview(view)
                 
 //                let previewView = PreviewView(captureSession)
 //                let pipVideoCallViewController = AVPictureInPictureVideoCallViewController(previewView, preferredContentSize: videoSize)
@@ -219,7 +218,9 @@ final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView {
 //                    captureSession.startRunning()
 //                }
                 
-                PictureInPictureWrapped.shared.updatePictureInPictureVideoCallViewController(pipVideoCallViewController, targetView: self)
+//                PictureInPictureWrapped.shared.updatePictureInPictureVideoCallViewController(pipVideoCallViewController, targetView: self)
+                PictureInPictureWrapped.shared.updatePictureInPictureVideoCallViewController(pipVideoCallViewController, layer: currentLayer)
+
                 self.pipVideoCallViewController = pipVideoCallViewController
                 
             }
@@ -270,11 +271,11 @@ final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView {
     }
 }
 
-fileprivate class PictureInPictureWrapped: NSObject, AVPictureInPictureControllerDelegate {
+fileprivate class PictureInPictureWrapped: NSObject, AVPictureInPictureControllerDelegate, AVPictureInPictureSampleBufferPlaybackDelegate {
     static var shared = PictureInPictureWrapped()
     
     private var pictureInPictureController: AVPictureInPictureController?
-
+    
     var isPictureInPictureActive: Bool {
         guard let pictureInPictureController = pictureInPictureController else {
             return false
@@ -283,11 +284,31 @@ fileprivate class PictureInPictureWrapped: NSObject, AVPictureInPictureControlle
         return pictureInPictureController.isPictureInPictureActive
     }
     
+    func updatePictureInPictureVideoCallViewController(_ videoCallViewController: AVPictureInPictureVideoCallViewController, layer: AVSampleBufferDisplayLayer) {
+        let contentSource = AVPictureInPictureController.ContentSource(
+            sampleBufferDisplayLayer: layer,
+            playbackDelegate: self
+        )
+        
+//        if let pictureInPictureController = pictureInPictureController {
+//            pictureInPictureController.contentSource = contentSource
+//        } else {
+        try! AVAudioSession.sharedInstance().setActive(true)
+            let pictureInPictureController = AVPictureInPictureController(contentSource: contentSource)
+            pictureInPictureController.delegate = self
+
+            pictureInPictureController.canStartPictureInPictureAutomaticallyFromInline = true
+            self.pictureInPictureController = pictureInPictureController
+//        }
+    }
+    
+    
     func updatePictureInPictureVideoCallViewController(_ videoCallViewController: AVPictureInPictureVideoCallViewController, targetView: UIView) {
         let contentSource = AVPictureInPictureController.ContentSource(
             activeVideoCallSourceView: targetView,
             contentViewController: videoCallViewController
         )
+        
 //        if let pictureInPictureController = pictureInPictureController {
 //            pictureInPictureController.contentSource = contentSource
 //        } else {
@@ -346,6 +367,26 @@ fileprivate class PictureInPictureWrapped: NSObject, AVPictureInPictureControlle
     
     func pictureInPictureControllerWillStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
         print("---> will stop pip")
+    }
+    
+    func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, setPlaying playing: Bool) {
+        
+    }
+    
+    func pictureInPictureControllerTimeRangeForPlayback(_ pictureInPictureController: AVPictureInPictureController) -> CMTimeRange {
+        return CMTimeRange(start: .negativeInfinity, duration: .positiveInfinity)
+    }
+    
+    func pictureInPictureControllerIsPlaybackPaused(_ pictureInPictureController: AVPictureInPictureController) -> Bool {
+        false
+    }
+    
+    func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, didTransitionToRenderSize newRenderSize: CMVideoDimensions) {
+        
+    }
+    
+    func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, skipByInterval skipInterval: CMTime, completion completionHandler: @escaping () -> Void) {
+        
     }
 }
 
