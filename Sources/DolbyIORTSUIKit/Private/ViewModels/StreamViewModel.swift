@@ -267,9 +267,6 @@ final class StreamViewModel: ObservableObject {
                         self.internalState = .error(ErrorViewModel(error: streamError))
                     case .stopped, .disconnected:
                         self.internalState = .error(.streamOffline)
-                    default:
-                        // Handle's scenario where there is no sources
-                        self.internalState = .error(.genericError)
                     }
                 }
                 .store(in: &self.subscriptions)

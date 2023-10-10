@@ -19,6 +19,8 @@ final class StateMachine {
 
     private let stateSubject: PassthroughSubject<State, Never> = PassthroughSubject()
     lazy var statePublisher: AnyPublisher<State, Never> = stateSubject.eraseToAnyPublisher()
+    private(set) var cachedSourceZeroVideoTrackAndMid: VideoTrackAndMid?
+    private(set) var cachedSourceZeroAudioTrackAndMid: AudioTrackAndMid?
 
     init(initialState: State) {
         currentState = initialState
@@ -69,7 +71,15 @@ final class StateMachine {
     }
 
     func onSubscribed() {
-        currentState = .subscribed(.init())
+        currentState = .subscribed(
+            .init(
+                cachedVideoTrackDetail: cachedSourceZeroVideoTrackAndMid,
+                cachedAudioTrackDetail: cachedSourceZeroAudioTrackAndMid
+            )
+        )
+        cachedSourceZeroAudioTrackAndMid = nil
+        cachedSourceZeroAudioTrackAndMid = nil
+
     }
 
     func onSubscribedError(_ reason: String) {
@@ -115,6 +125,7 @@ final class StateMachine {
             currentState = .subscribed(state)
 
         default:
+            self.cachedSourceZeroVideoTrackAndMid = VideoTrackAndMid(videoTrack: track, mid: mid)
             Self.logger.error("🛑 Unexpected state on onVideoTrack - \(self.currentState.description)")
         }
     }
@@ -125,6 +136,7 @@ final class StateMachine {
             state.addAudioTrack(track, mid: mid)
             currentState = .subscribed(state)
         default:
+            self.cachedSourceZeroAudioTrackAndMid = AudioTrackAndMid(audioTrack: track, mid: mid)
             Self.logger.error("🛑 Unexpected state on onAudioTrack - \(self.currentState.description)")
         }
     }

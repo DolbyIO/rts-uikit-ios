@@ -13,7 +13,7 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
 
         init(id: String?) {
             switch id {
-            case .none:
+            case .none, .some(""):
                 self = .main
             case let .some(id):
                 self = .other(sourceId: id)
