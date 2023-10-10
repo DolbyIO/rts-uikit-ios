@@ -7,6 +7,26 @@ import DolbyIORTSCore
 import DolbyIOUIKit
 import SwiftUI
 
+class PreviewView: UIView {
+    override class var layerClass: AnyClass {
+        AVCaptureVideoPreviewLayer.self
+    }
+    
+    var previewLayer: AVCaptureVideoPreviewLayer {
+        layer as! AVCaptureVideoPreviewLayer
+    }
+    
+    init(_ session: AVCaptureSession) {
+        super.init(frame: .zero)
+        
+        previewLayer.session = session
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 struct VideoRendererView: View {
     @ObservedObject private var viewModel: VideoRendererViewModel
     private let viewRenderer: StreamSourceViewRenderer
@@ -175,14 +195,33 @@ final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    let captureSession = AVCaptureSession()
+    let captureSessionQueue = DispatchQueue(label: "Capture Session Queue")
+
     func setupPictureInPictureUsingCustomRenderer(with view: UIView, for videoSize: CGSize) {
         if AVPictureInPictureController.isPictureInPictureSupported() {
             if pipVideoCallViewController == nil {
-                let pipVideoCallViewController = AVPictureInPictureVideoCallViewController()
+                let pipVideoCallViewController = AVPictureInPictureVideoCallViewController(view, preferredContentSize: videoSize)
                 pipVideoCallViewController.view.addSubview(view)
+                
+//                let previewView = PreviewView(captureSession)
+//                let pipVideoCallViewController = AVPictureInPictureVideoCallViewController(previewView, preferredContentSize: videoSize)
+//                captureSessionQueue.async { [unowned self] in
+//                    let device = AVCaptureDevice.default(for: .video)!
+//
+//                    captureSession.addInput(try! AVCaptureDeviceInput(device: device))
+//                    captureSession.sessionPreset = .hd1920x1080
+//                    if #available(iOS 16.0, *) {
+//                        captureSession.isMultitaskingCameraAccessEnabled = captureSession.isMultitaskingCameraAccessSupported
+//                    } else {
+//                        // Fallback on earlier versions
+//                    }
+//                    captureSession.startRunning()
+//                }
                 
                 PictureInPictureWrapped.shared.updatePictureInPictureVideoCallViewController(pipVideoCallViewController, targetView: self)
                 self.pipVideoCallViewController = pipVideoCallViewController
+                
             }
         }
     }
@@ -190,13 +229,13 @@ final class VideoRendererPictureInPictureView<ChildView: UIView>: UIView {
     func updateChildView(_ view: ChildView, pipPlaybackView: UIView, videoSize: CGSize, isSelectedVideoSource: Bool) {
         childView?.removeFromSuperview()
         
-        view.translatesAutoresizingMaskIntoConstraints = false
-        insertSubview(view, at: 0)
+        pipPlaybackView.translatesAutoresizingMaskIntoConstraints = false
+        insertSubview(pipPlaybackView, at: 0)
         NSLayoutConstraint.activate([
-            topAnchor.constraint(equalTo: view.topAnchor),
-            leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            view.bottomAnchor.constraint(equalTo: bottomAnchor),
-            view.trailingAnchor.constraint(equalTo: trailingAnchor)
+            topAnchor.constraint(equalTo: pipPlaybackView.topAnchor),
+            leadingAnchor.constraint(equalTo: pipPlaybackView.leadingAnchor),
+            pipPlaybackView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            pipPlaybackView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
         
         if !self.subviews.contains(pipButton) && isSelectedVideoSource {
@@ -249,14 +288,16 @@ fileprivate class PictureInPictureWrapped: NSObject, AVPictureInPictureControlle
             activeVideoCallSourceView: targetView,
             contentViewController: videoCallViewController
         )
-        if let pictureInPictureController = pictureInPictureController {
-            pictureInPictureController.contentSource = contentSource
-        } else {
+//        if let pictureInPictureController = pictureInPictureController {
+//            pictureInPictureController.contentSource = contentSource
+//        } else {
+        try! AVAudioSession.sharedInstance().setActive(true)
             let pictureInPictureController = AVPictureInPictureController(contentSource: contentSource)
             pictureInPictureController.delegate = self
+
             pictureInPictureController.canStartPictureInPictureAutomaticallyFromInline = true
             self.pictureInPictureController = pictureInPictureController
-        }
+//        }
     }
     
     func startPictureInPicture() {
@@ -306,4 +347,30 @@ fileprivate class PictureInPictureWrapped: NSObject, AVPictureInPictureControlle
     func pictureInPictureControllerWillStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
         print("---> will stop pip")
     }
+}
+
+extension AVPictureInPictureVideoCallViewController {
+    
+    convenience init(_ videoView: UIView, preferredContentSize: CGSize) {
+        
+        // Initialize.
+        self.init()
+        
+        // Set the preferredContentSize.
+        self.preferredContentSize = preferredContentSize
+        
+        // Configure the PreviewView.
+        videoView.translatesAutoresizingMaskIntoConstraints = false
+        videoView.frame = self.view.frame
+        
+        self.view.addSubview(videoView)
+        
+        NSLayoutConstraint.activate([
+            videoView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            videoView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            videoView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            videoView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ])
+    }
+    
 }
