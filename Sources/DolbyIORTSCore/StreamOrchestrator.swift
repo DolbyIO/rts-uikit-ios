@@ -237,13 +237,17 @@ private extension StreamOrchestrator {
     }
     
     func scheduleReconnection() {
-        guard Self.configuration.retryOnConnectionError, let streamDetail = self.activeStreamDetail else {
+        guard Self.configuration.retryOnConnectionError else {
             return
         }
         Self.logger.debug("👮‍♂️ Scheduling a reconnect")
         taskScheduler.scheduleTask(timeInterval: Defaults.retryConnectionTimeInterval) { [weak self] in
             guard let self = self else { return }
             Task {
+                guard let streamDetail = await self.activeStreamDetail else {
+                    return
+                }
+
                 self.taskScheduler.invalidate()
                 _ = await self.connect(
                     streamName: streamDetail.streamName,
