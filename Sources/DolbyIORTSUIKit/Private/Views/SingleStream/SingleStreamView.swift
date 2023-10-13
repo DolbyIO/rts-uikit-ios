@@ -5,6 +5,7 @@
 import SwiftUI
 import DolbyIORTSCore
 import DolbyIOUIKit
+import AVFoundation
 
 struct SingleStreamView: View {
 
@@ -23,6 +24,7 @@ struct SingleStreamView: View {
     @State private var selectedVideoStreamSourceId: UUID
     @State private var isShowingSettingsScreen: Bool = false
     @State private var isShowingStatsInfoScreen: Bool = false
+    @State private var isLive: Bool = true
     @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
 
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
@@ -63,7 +65,7 @@ struct SingleStreamView: View {
     @ViewBuilder
     private var bottomToolBarView: some View {
         HStack {
-            StatsInfoButton { isShowingStatsInfoScreen.toggle() }
+            StatsInfoButton { isLive.toggle() }
 
             Spacer()
 
@@ -100,18 +102,22 @@ struct SingleStreamView: View {
                     ForEach(viewModel.videoViewModels, id: \.streamSource.id) { videoRendererViewModel in
                         let maxAllowedVideoWidth = proxy.size.width
                         let maxAllowedVideoHeight = proxy.size.height
-                        VideoRendererView(
-                            viewModel: videoRendererViewModel,
-                            viewRenderer: viewRendererProvider.renderer(for: videoRendererViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
-                            maxWidth: maxAllowedVideoWidth,
-                            maxHeight: maxAllowedVideoHeight,
-                            contentMode: .aspectFit
-                        )
-                        .sheet(isPresented: $isShowingStatsInfoScreen) {
-                            statisticsView()
+                        if(isLive){
+                            VideoRendererView(
+                                viewModel: videoRendererViewModel,
+                                viewRenderer: viewRendererProvider.renderer(for: videoRendererViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
+                                maxWidth: maxAllowedVideoWidth,
+                                maxHeight: maxAllowedVideoHeight,
+                                contentMode: .aspectFit
+                            )
+                            .sheet(isPresented: $isShowingStatsInfoScreen) {
+                                statisticsView()
+                            }
+                            .tag(videoRendererViewModel.streamSource.id)
+                            .frame(width: proxy.size.width, height: proxy.size.height)
+                        }else {
+                            PlayerView().frame(width: proxy.size.width, height: proxy.size.height)
                         }
-                        .tag(videoRendererViewModel.streamSource.id)
-                        .frame(width: proxy.size.width, height: proxy.size.height)
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -183,4 +189,33 @@ struct SingleStreamView: View {
         }
         userInteractionViewModel.stopInteractivityTimer()
     }
+}
+
+struct PlayerView: UIViewRepresentable {
+  func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<PlayerView>) {
+  }
+  func makeUIView(context: Context) -> UIView {
+    return PlayerUIView(frame: .zero)
+  }
+}
+
+class PlayerUIView: UIView {
+  private let playerLayer = AVPlayerLayer()
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    
+    let url = URL(string: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8")!
+    let player = AVPlayer(url: url)
+    player.play()
+    
+    playerLayer.player = player
+    layer.addSublayer(playerLayer)
+  }
+  required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+  }
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    playerLayer.frame = bounds
+  }
 }
