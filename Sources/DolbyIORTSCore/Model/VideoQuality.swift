@@ -4,7 +4,8 @@
 
 import Foundation
 
-public enum VideoQuality: Equatable {
+public enum VideoQuality: String, Equatable, CaseIterable, Identifiable {
+    
     case auto
     case high
     case medium
@@ -34,5 +35,9 @@ public enum VideoQuality: Equatable {
         case .low:
             return "Low"
         }
+    }
+    
+    public var id: String {
+        return rawValue
     }
 }

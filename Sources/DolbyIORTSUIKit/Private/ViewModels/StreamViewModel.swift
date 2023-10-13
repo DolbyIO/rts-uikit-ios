@@ -238,23 +238,24 @@ final class StreamViewModel: ObservableObject {
     }
 
     func playAudio(for source: StreamSource) {
-        Task {
+        Task { @StreamOrchestrator [weak self] in
+            guard let self = self else { return }
             await self.streamOrchestrator.playAudio(for: source)
         }
     }
 
     func stopAudio(for source: StreamSource) {
-        Task {
+        Task { @StreamOrchestrator [weak self] in
+            guard let self = self else { return }
             await self.streamOrchestrator.stopAudio(for: source)
         }
     }
 
     private func startObservers() {
         let settingsPublisher = settingsManager.publisher(for: settingsMode)
-
-        Task { [weak self] in
+        Task { @StreamOrchestrator [weak self] in
             guard let self = self else { return }
-            await streamOrchestrator.statePublisher
+            await self.streamOrchestrator.statePublisher
                 .combineLatest(settingsPublisher)
                 .receive(on: DispatchQueue.main)
                 .sink { state, settings in

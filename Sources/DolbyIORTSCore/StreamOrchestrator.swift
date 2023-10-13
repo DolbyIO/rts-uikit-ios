@@ -9,10 +9,7 @@ import os
 
 @globalActor
 public final actor StreamOrchestrator {
-    public struct Configuration {
-        let retryOnConnectionError = true
-    }
-    
+
     private static let logger = Logger.make(category: String(describing: StreamOrchestrator.self))
 
     private enum Defaults {
@@ -32,7 +29,6 @@ public final actor StreamOrchestrator {
         .removeDuplicates()
         .eraseToAnyPublisher()
     private var activeStreamDetail: StreamDetail?
-    private static var configuration: StreamOrchestrator.Configuration = .init()
     private let logHandler: MillicastLoggerHandler = .init()
 
     private init() {
@@ -41,10 +37,6 @@ public final actor StreamOrchestrator {
             taskScheduler: TaskScheduler(),
             rendererRegistry: RendererRegistry()
         )
-    }
-
-    static func setStreamOrchestratorConfiguration(_ configuration: StreamOrchestrator.Configuration) {
-        Self.configuration = configuration
     }
     
     init(
@@ -66,11 +58,11 @@ public final actor StreamOrchestrator {
         }
     }
 
-    public func connect(streamName: String, accountID: String) async -> Bool {
+    public func connect(streamName: String, accountID: String, configuration: SubscriptionConfiguration = .init()) async -> Bool {
         Self.logger.debug("👮‍♂️ Start subscribe")
-
+        logHandler.setLogFilePath(filePath: configuration.sdkLogPath)
         async let startConnectionStateUpdate: Void = stateMachine.startConnection(streamName: streamName, accountID: accountID)
-        async let startConnection = subscriptionManager.connect(streamName: streamName, accountID: accountID, configuration: .init())
+        async let startConnection = subscriptionManager.connect(streamName: streamName, accountID: accountID, configuration: configuration)
         
         let (_, connectionResult) = await (startConnectionStateUpdate, startConnection)
         if connectionResult {
@@ -84,6 +76,7 @@ public final actor StreamOrchestrator {
     public func stopConnection() async -> Bool {
         Self.logger.debug("👮‍♂️ Stop subscribe")
         activeStreamDetail = nil
+        logHandler.setLogFilePath(filePath: nil)
         async let stopSubscribeOnStateMachine: Void = stateMachine.stopSubscribe()
         async let resetRegistry: Void = rendererRegistry.reset()
         async let stopSubscription: Bool = await subscriptionManager.stopSubscribe()
@@ -237,9 +230,6 @@ private extension StreamOrchestrator {
     }
     
     func scheduleReconnection() {
-        guard Self.configuration.retryOnConnectionError else {
-            return
-        }
         Self.logger.debug("👮‍♂️ Scheduling a reconnect")
         taskScheduler.scheduleTask(timeInterval: Defaults.retryConnectionTimeInterval) { [weak self] in
             guard let self = self else { return }
