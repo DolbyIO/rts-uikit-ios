@@ -84,12 +84,15 @@ struct SelectionsGroup_Previews: PreviewProvider {
 
     static var previews: some View {
         VStack {
-            SelectionsGroup(settings: [
-                .init(key: "testA.localized.key", bundle: .module, selected: true),
-                .init(key: "testB.localized.key", bundle: .module, selected: false),
-                .init(key: "testC.localized.key", bundle: .module, selected: false)
-            ], footer: "testD.localized.key", bundle: .module) { index in
-                print("index: \(index)")
+            SelectionsGroup(
+                settings: [
+                    .init(key: "Key 1", selected: true),
+                    .init(key: "Key 2", selected: false),
+                    .init(key: "Key 3", selected: false)
+                ],
+                footer: "testD.localized.key"
+            ) { _ in
+                // No-op
             }
         }
     }

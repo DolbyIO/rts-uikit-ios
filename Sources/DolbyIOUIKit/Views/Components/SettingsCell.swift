@@ -70,19 +70,12 @@ struct SettingsCell_Previews: PreviewProvider {
     static var previews: some View {
         List {
             Section {
-                SettingsCell(text: "testA.localized.key",
-                             value: "Connection order",
-                             image: .arrowRight,
-                             bundle: .module,
-                             action: {}
-                )
-                .listRowSeparator(.visible)
-
                 SettingsCell(text: "Audio selection",
                              value: "First source",
                              image: .textLink,
                              action: {}
-                ).listRowSeparator(.visible)
+                )
+                .listRowSeparator(.visible)
             }
             .listRowBackground(Color.gray)
         }

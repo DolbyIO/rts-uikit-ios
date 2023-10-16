@@ -332,7 +332,7 @@ extension StreamOrchestrator: SubscriptionManagerDelegate {
     }
 
     nonisolated public func onStatsReport(_ report: MCStatsReport) {
-        guard let streamingStats = AllStreamingStatistics(report) else {
+        guard let streamingStats = AllStreamStatistics(report) else {
             return
         }
         Task { @StreamOrchestrator [weak self] in

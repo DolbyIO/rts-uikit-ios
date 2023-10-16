@@ -185,7 +185,7 @@ final class StateMachine {
         }
     }
 
-    func onStatsReport(_ streamingStats: AllStreamingStatistics) {
+    func onStatsReport(_ streamingStats: AllStreamStatistics) {
         switch currentState {
         case var .subscribed(state):
             state.updateStreamingStatistics(streamingStats)
