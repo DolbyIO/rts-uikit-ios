@@ -40,7 +40,7 @@ public struct SettingsCell: View {
                     Text(
                         text,
                         bundle: bundle,
-                        font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body),
+                        font: .custom("AvenirNext-Regular", size: FontSize.body),
                         textColor: textColor
                     )
                 }
@@ -51,7 +51,7 @@ public struct SettingsCell: View {
                     Text(
                         value,
                         bundle: bundle,
-                        font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body),
+                        font: .custom("AvenirNext-Regular", size: FontSize.body),
                         textColor: valueColor
                     )
                 }

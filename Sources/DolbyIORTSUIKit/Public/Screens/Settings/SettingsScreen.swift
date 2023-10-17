@@ -5,7 +5,7 @@
 import SwiftUI
 import DolbyIOUIKit
 
-public struct SettingsScreen: View {
+public struct SettingsScreen<Content: View>: View {
 
     @Environment(\.presentationMode) var presentationMode
     @StateObject private var viewModel: SettingsViewModel
@@ -14,8 +14,17 @@ public struct SettingsScreen: View {
     @State private var isShowingStreamSortOrderScreen: Bool = false
     @State private var isShowingAudioSelectionScreen: Bool = false
 
-    public init(mode: SettingsMode) {
+    @ViewBuilder private let moreSettings: Content
+
+    public init(mode: SettingsMode, @ViewBuilder moreSettings: () -> Content) {
         _viewModel = StateObject(wrappedValue: SettingsViewModel(mode: mode))
+        self.moreSettings = moreSettings()
+    }
+    
+    public init(mode: SettingsMode) where Content == EmptyView {
+        self.init(mode: mode) {
+            EmptyView()
+        }
     }
 
     public var body: some View {
@@ -42,6 +51,8 @@ public struct SettingsScreen: View {
                 .hidden()
 
             List {
+                moreSettings
+                
                 Toggle(isOn: Binding<Bool>(
                     get: { viewModel.showSourceLabels },
                     set: { viewModel.setShowSourceLabels($0) })
@@ -50,7 +61,7 @@ public struct SettingsScreen: View {
                         "settings.show-source-labels.label",
                         bundle: .module,
                         style: .titleMedium,
-                        font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body)
+                        font: .custom("AvenirNext-Regular", size: FontSize.body)
                     )
                 }
 
@@ -79,6 +90,7 @@ public struct SettingsScreen: View {
                              action: { isShowingAudioSelectionScreen = true }
                 )
             }
+            .environment(\.defaultMinListRowHeight, Layout.spacing6x)
             .navigationBarBackButtonHidden()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
