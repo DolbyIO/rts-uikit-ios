@@ -220,9 +220,7 @@ private extension SubscriptionManager {
 
     func makeSubscriber(with configuration: SubscriptionConfiguration) -> MCSubscriber? {
         let subscriber = MCSubscriber.create()
-        
-        subscriber?.enableStats(true)
-        
+                
         let options = MCClientOptions()
         options.autoReconnect = configuration.autoReconnect
         options.videoJitterMinimumDelayMs = Int32(configuration.videoJitterMinimumDelayInMs)
@@ -234,7 +232,7 @@ private extension SubscriptionManager {
         options.forcePlayoutDelay = configuration.noPlayoutDelay
 
         subscriber?.setOptions(options)
-        subscriber?.enableStats(true)
+        subscriber?.enableStats(configuration.enableStats)
 
         return subscriber
     }

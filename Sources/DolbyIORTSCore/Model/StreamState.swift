@@ -25,10 +25,15 @@ public enum StreamState: Equatable {
             self = .connected
 
         case let .subscribed(state):
-            self = .subscribed(
-                sources: state.sources,
-                numberOfStreamViewers: state.numberOfStreamViewers
-            )
+            let streamSources = state.sources
+            if !streamSources.isEmpty {
+                self = .subscribed(
+                    sources: streamSources,
+                    numberOfStreamViewers: state.numberOfStreamViewers
+                )
+            } else {
+                self = .error(.connectFailed(reason: ""))
+            }
 
         case .stopped:
             self = .stopped
