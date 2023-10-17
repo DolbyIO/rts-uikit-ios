@@ -48,7 +48,7 @@ struct SubscribedState {
 
     private(set) var streamSourceBuilders: [StreamSourceBuilder]
     private(set) var numberOfStreamViewers: Int
-    private(set) var streamingStats: AllStreamingStatistics?
+    private(set) var streamingStats: AllStreamStatistics?
     private(set) var cachedSourceZeroVideoTrackAndMid: VideoTrackAndMid?
     private(set) var cachedSourceZeroAudioTrackAndMid: AudioTrackAndMid?
 
@@ -131,15 +131,19 @@ struct SubscribedState {
         numberOfStreamViewers = count
     }
 
-    mutating func updateStreamingStatistics(_ stats: AllStreamingStatistics) {
+    mutating func updateStreamingStatistics(_ stats: AllStreamStatistics) {
         streamingStats = stats
-        stats.videoStatsInboundRtpList?.forEach { eachVideoStats in
+        stats.videoStatsInboundRtpList.forEach { videoStats in
             guard let builder = streamSourceBuilders.first(
-                where: { $0.videoTrack?.trackInfo.mid == eachVideoStats.mid }
+                where: { $0.videoTrack?.trackInfo.mid == videoStats.mid }
             ) else {
                 return
             }
-            let sourceStatistics = StreamingStatistics(roundTripTime: stats.roundTripTime, audioStatsInboundRtp: stats.audioStatsInboundRtpList?.first, videoStatsInboundRtp: eachVideoStats)
+            let sourceStatistics = StreamingStatistics(
+                roundTripTime: stats.roundTripTime,
+                videoStatsInboundRtp: videoStats,
+                audioStatsInboundRtp: stats.audioStatsInboundRtpList.first
+            )
             builder.setStatistics(sourceStatistics)
         }
     }

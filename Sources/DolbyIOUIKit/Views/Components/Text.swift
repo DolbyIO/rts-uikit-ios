@@ -85,13 +85,6 @@ struct Text_Previews: PreviewProvider {
         Group {
             VStack {
                 Text(
-                    "testA.localized.key",
-                    bundle: .module,
-                    style: .titleMedium,
-                    font: .custom("AvenirNext-Regular", size: FontSize.title1, relativeTo: .title)
-                )
-
-                Text(
                     verbatim: "This is a regular text",
                     style: .titleMedium,
                     font: .custom("AvenirNext-Regular", size: FontSize.title1, relativeTo: .title)

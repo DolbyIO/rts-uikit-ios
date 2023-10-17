@@ -16,6 +16,7 @@ struct VideoRendererView: View {
     @State var isViewVisible = false
 
     @ObservedObject private var themeManager = ThemeManager.shared
+    @AppConfiguration(\.showDebugFeatures) var showDebugFeatures
 
     init(
         viewModel: VideoRendererViewModel,
@@ -51,10 +52,27 @@ struct VideoRendererView: View {
     }
 
     @ViewBuilder
-    private func showLabel(for source: StreamSource) -> some View {
+    private var sourceLabelView: some View {
         if viewModel.showSourceLabel {
-            SourceLabel(sourceId: source.sourceId.displayLabel)
-                .padding(5)
+            SourceLabel(sourceId: viewModel.streamSource.sourceId.displayLabel)
+                .padding(Layout.spacing0_5x)
+        } else {
+            EmptyView()
+        }
+    }
+    
+    @ViewBuilder
+    private var videoQualityIndicatorView: some View {
+        if showDebugFeatures, let videoQualityIndicatorText = viewModel.videoQuality.description.first?.uppercased() {
+            Text(
+                verbatim: videoQualityIndicatorText,
+                font: .custom("AvenirNext-Regular", size: FontSize.caption1, relativeTo: .caption)
+            )
+            .foregroundColor(Color(uiColor: themeManager.theme.onPrimary))
+            .padding(.horizontal, Layout.spacing1x)
+            .background(Color(uiColor: themeManager.theme.neutral400))
+            .cornerRadius(Layout.cornerRadius4x)
+            .padding(Layout.spacing0_5x)
         } else {
             EmptyView()
         }
@@ -83,7 +101,10 @@ struct VideoRendererView: View {
         VideoRendererViewInteral(viewRenderer: viewRenderer)
             .frame(width: videoSize.width, height: videoSize.height)
             .overlay(alignment: .bottomLeading) {
-                showLabel(for: viewModel.streamSource)
+                sourceLabelView
+            }
+            .overlay(alignment: .bottomTrailing) {
+                videoQualityIndicatorView
             }
             .overlay {
                 audioPlaybackIndicatorView

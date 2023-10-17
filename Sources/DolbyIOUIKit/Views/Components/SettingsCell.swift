@@ -40,7 +40,7 @@ public struct SettingsCell: View {
                     Text(
                         text,
                         bundle: bundle,
-                        font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body),
+                        font: .custom("AvenirNext-Regular", size: FontSize.body),
                         textColor: textColor
                     )
                 }
@@ -51,7 +51,7 @@ public struct SettingsCell: View {
                     Text(
                         value,
                         bundle: bundle,
-                        font: .custom("AvenirNext-Regular", size: CGFloat(14.0), relativeTo: .body),
+                        font: .custom("AvenirNext-Regular", size: FontSize.body),
                         textColor: valueColor
                     )
                 }
@@ -70,19 +70,12 @@ struct SettingsCell_Previews: PreviewProvider {
     static var previews: some View {
         List {
             Section {
-                SettingsCell(text: "testA.localized.key",
-                             value: "Connection order",
-                             image: .arrowRight,
-                             bundle: .module,
-                             action: {}
-                )
-                .listRowSeparator(.visible)
-
                 SettingsCell(text: "Audio selection",
                              value: "First source",
                              image: .textLink,
                              action: {}
-                ).listRowSeparator(.visible)
+                )
+                .listRowSeparator(.visible)
             }
             .listRowBackground(Color.gray)
         }

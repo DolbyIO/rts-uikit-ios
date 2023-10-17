@@ -24,34 +24,70 @@ struct StatisticsInfoView: View {
     private var theme: Theme {
         themeManager.theme
     }
+    
+    private var pullDownIndicatorView: some View {
+        RoundedRectangle(cornerRadius: Layout.cornerRadius4x)
+            .fill(Color.gray)
+            .frame(width: Layout.spacing6x, height: Layout.spacing1x)
+            .padding([.top], Layout.spacing0_5x)
+    }
+    
+    private var titleView: some View {
+        Text("stream.media-stats.label", bundle: .module, font: fontTitle)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding([.top, .bottom], Layout.spacing3x)
+    }
 
     var body: some View {
         ScrollView {
             VStack {
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(Color.gray)
-                    .frame(width: 48, height: 5)
-                    .padding([.top], 5)
-                Text("stream.media-stats.label", font: fontTitle)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding([.top], 20)
-                    .padding([.bottom], 25)
+                pullDownIndicatorView
+                
+                titleView
 
                 HStack {
-                    Text("stream.stats.name.label", font: fontCaption).frame(width: 170, alignment: .leading)
-                    Text("stream.stats.value.label", font: fontCaption).frame(width: 170, alignment: .leading)
+                    Text("stream.stats.name.label", bundle: .module, font: fontCaption)
+                        .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
+
+                    Text("stream.stats.value.label", bundle: .module, font: fontCaption)
+                        .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
                 }
                 
                 ForEach(viewModel.data) { item in
                     HStack {
-                        Text(item.key).font(fontTable).foregroundColor(Color(theme.neutral200)).frame(width: 170, alignment: .leading)
-                        Text(item.value).font(fontTableValue).foregroundColor(Color(theme.onBackground)).frame(width: 170, alignment: .leading)
+                        Text(verbatim: item.key, font: fontTable)
+                            .foregroundColor(Color(theme.neutral200))
+                            .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
+
+                        Text(verbatim: item.value, font: fontTableValue)
+                            .foregroundColor(Color(theme.onBackground))
+                            .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
                     }
-                    .padding([.top], 5)
+                    .padding([.top], Layout.spacing0_5x)
                 }
             }
-            .padding([.leading, .trailing], 15)
-            .padding([.bottom], 10)
+            .padding([.leading, .trailing], Layout.spacing2x)
+            .padding(.bottom, Layout.spacing3x)
         }
+        .contextMenu {
+            Button(action: {
+                copyToPasteboard(text: formattedStatisticsText())
+            }) {
+                Text("stream.stats.copy.label", bundle: .module)
+                Image(systemName: "doc.on.doc")
+            }
+        }
+    }
+    
+    private func formattedStatisticsText() -> String {
+        var text = ""
+        viewModel.data.forEach  { item in
+            text += "\(item.key): \(item.value)\n"
+        }
+        return text
+    }
+    
+    private func copyToPasteboard(text: String) {
+        UIPasteboard.general.string = text
     }
 }

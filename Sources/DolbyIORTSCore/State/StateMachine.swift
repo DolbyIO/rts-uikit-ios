@@ -71,6 +71,9 @@ final class StateMachine {
     }
 
     func onSubscribed() {
+        if case .subscribed = currentState {
+            return
+        }
         currentState = .subscribed(
             .init(
                 cachedVideoTrackDetail: cachedSourceZeroVideoTrackAndMid,
@@ -79,7 +82,6 @@ final class StateMachine {
         )
         cachedSourceZeroAudioTrackAndMid = nil
         cachedSourceZeroAudioTrackAndMid = nil
-
     }
 
     func onSubscribedError(_ reason: String) {
@@ -91,10 +93,17 @@ final class StateMachine {
     }
 
     func onActive(_ streamId: String, tracks: [String], sourceId: String?) {
+        // This is a workaround for an SDK behaviour where the some `onActive` callbacks arrive even before the `onSubscribed`
+        // In this case it's safe to assume a state change to `.subscribed` provided the current state is `.subscribing`
+        if case .subscribing = currentState {
+            // Mimic an `onSubscribed` callback
+            onSubscribed()
+        }
+
         switch currentState {
         case var .subscribed(state):
             state.add(streamId: streamId, sourceId: sourceId, tracks: tracks)
-            currentState = .subscribed(state)
+            self.currentState = .subscribed(state)
         default:
             Self.logger.error("🛑 Unexpected state on onActive - \(self.currentState.description)")
         }
@@ -104,15 +113,7 @@ final class StateMachine {
         switch currentState {
         case var .subscribed(state):
             state.remove(streamId: streamId, sourceId: sourceId)
-            
-            // FIXME: Currently SDK does not have a callback for Publisher stopping the publishing
-            // What we get instead is `onInactive` callbacks for all the video sources - ie, `onInactive` is called `n` times if we have `n` sources
-            // This workaround checks for active `source` count to decide the expected `state` transition
-            if state.sources.isEmpty {
-                currentState = .stopped
-            } else {
-                currentState = .subscribed(state)
-            }
+            currentState = .subscribed(state)
         default:
             Self.logger.error("🛑 Unexpected state on onInactive - \(self.currentState.description)")
         }
@@ -185,7 +186,7 @@ final class StateMachine {
         }
     }
 
-    func onStatsReport(_ streamingStats: AllStreamingStatistics) {
+    func onStatsReport(_ streamingStats: AllStreamStatistics) {
         switch currentState {
         case var .subscribed(state):
             state.updateStreamingStatistics(streamingStats)

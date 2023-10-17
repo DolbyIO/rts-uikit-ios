@@ -50,19 +50,13 @@ protocol SubscriptionManagerProtocol: AnyObject {
     func unprojectAudio(for source: StreamSource)
 }
 
-struct SubscriptionConfiguration {
-    let autoReconnect = false
-    let videoJitterMinimumDelayMs: UInt = 20
-    let statsDelayMs: UInt = 1000
-    let forcePlayoutDelay = false
-    let disableAudio = false
-    let rtcEventLogOutputPath: String? = nil
-}
-
 final class SubscriptionManager: SubscriptionManagerProtocol {
+    
     private enum Defaults {
-        static let subscribeURL = "https://director.millicast.com/api/director/subscribe"
+        static let productionSubscribeURL = "https://director.millicast.com/api/director/subscribe"
+        static let developmentSubscribeURL = "https://director-dev.millicast.com/api/director/subscribe"
     }
+    
     private static let logger = Logger.make(category: String(describing: SubscriptionManager.self))
 
     private var subscriber: MCSubscriber!
@@ -99,7 +93,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
                 return false
             }
 
-            let credentials = self.makeCredentials(streamName: streamName, accountID: accountID)
+            let credentials = self.makeCredentials(streamName: streamName, accountID: accountID, useDevelopmentServer: configuration.useDevelopmentServer)
 
             self.subscriber.setCredentials(credentials)
 
@@ -226,31 +220,29 @@ private extension SubscriptionManager {
 
     func makeSubscriber(with configuration: SubscriptionConfiguration) -> MCSubscriber? {
         let subscriber = MCSubscriber.create()
-        
-        subscriber?.enableStats(true)
-        
+                
         let options = MCClientOptions()
         options.autoReconnect = configuration.autoReconnect
-        options.videoJitterMinimumDelayMs = Int32(configuration.videoJitterMinimumDelayMs)
+        options.videoJitterMinimumDelayMs = Int32(configuration.videoJitterMinimumDelayInMs)
         options.statsDelayMs = Int32(configuration.statsDelayMs)
-        if let rtcEventLogOutputPath = configuration.rtcEventLogOutputPath {
+        if let rtcEventLogOutputPath = configuration.rtcEventLogPath {
             options.rtcEventLogOutputPath = rtcEventLogOutputPath
         }
         options.disableAudio = configuration.disableAudio
-        options.forcePlayoutDelay = configuration.forcePlayoutDelay
+        options.forcePlayoutDelay = configuration.noPlayoutDelay
 
         subscriber?.setOptions(options)
-        subscriber?.enableStats(true)
+        subscriber?.enableStats(configuration.enableStats)
 
         return subscriber
     }
 
-    func makeCredentials(streamName: String, accountID: String) -> MCSubscriberCredentials {
+    func makeCredentials(streamName: String, accountID: String, useDevelopmentServer: Bool) -> MCSubscriberCredentials {
         let credentials = MCSubscriberCredentials()
         credentials.accountId = accountID
         credentials.streamName = streamName
         credentials.token = ""
-        credentials.apiUrl = Defaults.subscribeURL
+        credentials.apiUrl = useDevelopmentServer ? Defaults.developmentSubscribeURL : Defaults.productionSubscribeURL
 
         return credentials
     }
