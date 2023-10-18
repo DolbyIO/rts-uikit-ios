@@ -64,10 +64,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     weak var delegate: SubscriptionManagerDelegate?
 
     func connect(streamName: String, accountID: String, configuration: SubscriptionConfiguration) async -> Bool {
-        if subscriber != nil {
-            _ = await stopSubscribe()
-        }
-        
         guard let subscriber = makeSubscriber(with: configuration) else {
             Self.logger.error("💼 Failed to initialise subscriber")
             return false
@@ -145,19 +141,22 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
                 return false
             }
 
-            guard subscriber.unsubscribe() else {
+            defer {
+                self.subscriber.setListener(nil)
+                self.subscriber = nil
+            }
+            
+            let unsubscribeResult = subscriber.unsubscribe()
+            if !unsubscribeResult {
                 Self.logger.error("💼 Failed to unsubscribe")
-                return false
             }
-
-            guard subscriber.disconnect() else {
+            
+            let disconnectResult = subscriber.disconnect()
+            if !disconnectResult {
                 Self.logger.error("💼 Failed to disconnect")
-                return false
             }
-
-            self.subscriber = nil
-
-            return true
+            
+            return disconnectResult && unsubscribeResult
         }
         return await task.value
     }
