@@ -7,6 +7,18 @@ import DolbyIORTSCore
 import DolbyIOUIKit
 
 public struct StreamingScreen: View {
+    
+    public struct Context: Identifiable {
+        public let id = UUID()
+        public let streamDetail: StreamDetail
+        public let listViewPrimaryVideoQuality: VideoQuality
+        
+        public init(streamName: String, accountID: String, listViewPrimaryVideoQuality: VideoQuality) {
+            self.streamDetail = StreamDetail(streamName: streamName, accountID: accountID)
+            self.listViewPrimaryVideoQuality = listViewPrimaryVideoQuality
+        }
+    }
+    
     @StateObject private var viewModel: StreamViewModel
     @State private var isShowingSingleViewScreen: Bool = false
     @State private var isShowingSettingsScreen: Bool = false
@@ -15,9 +27,18 @@ public struct StreamingScreen: View {
     private let onClose: () -> Void
     
     private var theme: Theme { themeManager.theme }
-    
-    public init(streamDetail: StreamDetail, onClose: @escaping () -> Void) {
-        _viewModel = StateObject(wrappedValue: .init(streamDetail: streamDetail))
+
+    public init(
+        context: Context,
+        listViewPrimaryVideoQuality: VideoQuality = .auto,
+        onClose: @escaping () -> Void
+    ) {
+        _viewModel = StateObject(
+            wrappedValue: .init(
+                context: context,
+                listViewPrimaryVideoQuality: listViewPrimaryVideoQuality
+            )
+        )
         self.onClose = onClose
     }
 
