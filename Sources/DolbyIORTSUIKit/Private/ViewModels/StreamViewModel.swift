@@ -309,7 +309,7 @@ final class StreamViewModel: ObservableObject {
             selectedVideoSource = sources.first { $0.id == currentlySelectedVideoSource.id } ?? sortedSources[0]
         }
 
-        let selectedAudioSource = audioSelection(from: sortedSources, settings: settings, selectedVideoSource: selectedVideoSource)
+        let selectedAudioSource = audioSelection(from: sources, settings: settings, selectedVideoSource: selectedVideoSource)
 
         let displayMode: DisplayMode
         switch settings.multiviewLayout {
