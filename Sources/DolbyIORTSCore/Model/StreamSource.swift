@@ -11,7 +11,7 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
         case main
         case other(sourceId: String)
 
-        init(id: String?) {
+        public init(id: String?) {
             switch id {
             case .none, .some(""):
                 self = .main

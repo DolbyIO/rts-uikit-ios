@@ -75,7 +75,7 @@ struct SubscribedState {
     }
 
     mutating func remove(streamId: String, sourceId: String?) {
-        streamSourceBuilders.removeAll { $0.streamId == streamId && $0.sourceId.value == sourceId }
+        streamSourceBuilders.removeAll { $0.streamId == streamId && $0.sourceId == StreamSource.SourceId(id: sourceId) }
     }
 
     func addAudioTrack(_ track: MCAudioTrack, mid: String) {
@@ -95,23 +95,23 @@ struct SubscribedState {
         builder.addVideoTrack(track, mid: mid)
     }
 
-    mutating func removeBuilder(with sourceId: String?) {
-        guard let indexToRemove = streamSourceBuilders.firstIndex(where: { $0.sourceId.value == sourceId }) else {
+    mutating func removeBuilder(with sourceId: StreamSource.SourceId) {
+        guard let indexToRemove = streamSourceBuilders.firstIndex(where: { $0.sourceId == sourceId }) else {
             return
         }
 
         streamSourceBuilders.remove(at: indexToRemove)
     }
 
-    func setPlayingAudio(_ enable: Bool, for sourceId: String?) {
-        guard let builder = streamSourceBuilders.first(where: { $0.sourceId.value == sourceId }) else {
+    func setPlayingAudio(_ enable: Bool, for sourceId: StreamSource.SourceId) {
+        guard let builder = streamSourceBuilders.first(where: { $0.sourceId == sourceId }) else {
             return
         }
         builder.setPlayingAudio(enable)
     }
 
-    func setPlayingVideo(_ enable: Bool, for sourceId: String?) {
-        guard let builder = streamSourceBuilders.first(where: { $0.sourceId.value == sourceId }) else {
+    func setPlayingVideo(_ enable: Bool, for sourceId: StreamSource.SourceId) {
+        guard let builder = streamSourceBuilders.first(where: { $0.sourceId == sourceId }) else {
             return
         }
         builder.setPlayingVideo(enable)
@@ -125,8 +125,8 @@ struct SubscribedState {
         builder.setAvailableVideoQualityList(list)
     }
     
-    func setSelectedVideoQuality(_ videoQuality: VideoQuality, for sourceId: String?) {
-        guard let builder = streamSourceBuilders.first(where: { $0.sourceId.value == sourceId }) else {
+    func setSelectedVideoQuality(_ videoQuality: VideoQuality, for sourceId: StreamSource.SourceId) {
+        guard let builder = streamSourceBuilders.first(where: { $0.sourceId == sourceId }) else {
             return
         }
         builder.setSelectedVideoQuality(videoQuality)

@@ -44,7 +44,7 @@ final class StateMachine {
     func setPlayingAudio(_ enable: Bool, for source: StreamSource) {
         switch currentState {
         case let .subscribed(state):
-            state.setPlayingAudio(enable, for: source.sourceId.value)
+            state.setPlayingAudio(enable, for: source.sourceId)
             currentState = .subscribed(state)
         default:
             Self.logger.error("🛑 Unexpected state on setPlayingAudio - \(self.currentState.description)")
@@ -54,7 +54,7 @@ final class StateMachine {
     func setPlayingVideo(_ enable: Bool, for source: StreamSource) {
         switch currentState {
         case let .subscribed(state):
-            state.setPlayingVideo(enable, for: source.sourceId.value)
+            state.setPlayingVideo(enable, for: source.sourceId)
             currentState = .subscribed(state)
         default:
             Self.logger.error("🛑 Unexpected state on setPlayingVideo - \(self.currentState.description)")
@@ -183,7 +183,7 @@ final class StateMachine {
     func selectVideoQuality(_ quality: VideoQuality, for source: StreamSource) {
         switch currentState {
         case let .subscribed(state):
-            state.setSelectedVideoQuality(quality, for: source.sourceId.value)
+            state.setSelectedVideoQuality(quality, for: source.sourceId)
             currentState = .subscribed(state)
         default:
             Self.logger.error("🛑 Unexpected state on selectVideoQuality - \(self.currentState.description)")
