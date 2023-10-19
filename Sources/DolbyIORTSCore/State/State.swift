@@ -51,16 +51,18 @@ struct SubscribedState {
     private(set) var streamingStats: AllStreamStatistics?
     private(set) var cachedSourceZeroVideoTrackAndMid: VideoTrackAndMid?
     private(set) var cachedSourceZeroAudioTrackAndMid: AudioTrackAndMid?
+    private(set) var configuration: SubscriptionConfiguration
 
-    init(cachedVideoTrackDetail: VideoTrackAndMid?, cachedAudioTrackDetail: AudioTrackAndMid?) {
+    init(cachedVideoTrackDetail: VideoTrackAndMid?, cachedAudioTrackDetail: AudioTrackAndMid?, configuration: SubscriptionConfiguration) {
         cachedSourceZeroVideoTrackAndMid = cachedVideoTrackDetail
         cachedSourceZeroAudioTrackAndMid = cachedAudioTrackDetail
+        self.configuration = configuration
         streamSourceBuilders = []
         numberOfStreamViewers = 0
     }
 
     mutating func add(streamId: String, sourceId: String?, tracks: [String]) {
-        let streamSourceBuilder = StreamSourceBuilder.init(streamId: streamId, sourceId: sourceId, tracks: tracks)
+        let streamSourceBuilder = StreamSourceBuilder(streamId: streamId, sourceId: sourceId, tracks: tracks)
         if let videoTrackAndMid = cachedSourceZeroVideoTrackAndMid {
             streamSourceBuilder.addVideoTrack(videoTrackAndMid.videoTrack, mid: videoTrackAndMid.mid)
             cachedSourceZeroVideoTrackAndMid = nil
@@ -77,6 +79,9 @@ struct SubscribedState {
     }
 
     func addAudioTrack(_ track: MCAudioTrack, mid: String) {
+        guard !configuration.disableAudio else {
+            return
+        }
         guard let builder = streamSourceBuilders.first(where: { $0.hasMissingAudioTrack}) else {
             return
         }
@@ -151,7 +156,7 @@ struct SubscribedState {
     var sources: [StreamSource] {
         streamSourceBuilders.compactMap {
             do {
-                return try $0.build()
+                return try $0.build(isAudioEnabled: !configuration.disableAudio)
             } catch {
                 return nil
             }

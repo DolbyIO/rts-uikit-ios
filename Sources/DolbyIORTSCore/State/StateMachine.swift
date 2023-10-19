@@ -21,12 +21,15 @@ final class StateMachine {
     lazy var statePublisher: AnyPublisher<State, Never> = stateSubject.eraseToAnyPublisher()
     private(set) var cachedSourceZeroVideoTrackAndMid: VideoTrackAndMid?
     private(set) var cachedSourceZeroAudioTrackAndMid: AudioTrackAndMid?
+    private(set) var configuration: SubscriptionConfiguration
 
     init(initialState: State) {
         currentState = initialState
+        configuration = .init()
     }
 
-    func startConnection(streamName: String, accountID: String) {
+    func startConnection(streamName: String, accountID: String, configuration: SubscriptionConfiguration) {
+        self.configuration = configuration
         currentState = .connecting
     }
 
@@ -77,7 +80,8 @@ final class StateMachine {
         currentState = .subscribed(
             .init(
                 cachedVideoTrackDetail: cachedSourceZeroVideoTrackAndMid,
-                cachedAudioTrackDetail: cachedSourceZeroAudioTrackAndMid
+                cachedAudioTrackDetail: cachedSourceZeroAudioTrackAndMid,
+                configuration: configuration
             )
         )
         cachedSourceZeroAudioTrackAndMid = nil
