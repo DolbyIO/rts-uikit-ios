@@ -25,6 +25,9 @@ final class ErrorViewModel {
         switch error {
         case let streamError as StreamError:
             switch streamError {
+            case .connectFailed(reason: _, status: 0):
+                // Status code `0` represents a `no network` error code
+                return (.noInternetErrorTitle, nil)
             case .connectFailed:
                 return (.offlineErrorTitle, .offlineErrorSubtitle)
             default:

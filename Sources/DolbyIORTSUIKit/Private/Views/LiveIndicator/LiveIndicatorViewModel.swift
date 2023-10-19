@@ -18,7 +18,7 @@ final class LiveIndicatorViewModel: ObservableObject {
     }
 
     private func setupStateObservers() {
-        Task { [weak self] in
+        Task { @StreamOrchestrator [weak self] in
             guard let self = self else { return }
 
             await self.streamOrchestrator.statePublisher

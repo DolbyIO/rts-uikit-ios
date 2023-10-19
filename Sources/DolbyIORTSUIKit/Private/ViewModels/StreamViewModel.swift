@@ -270,8 +270,10 @@ final class StreamViewModel: ObservableObject {
                         self.internalState = .loading
                     case let .error(streamError):
                         self.internalState = .error(ErrorViewModel(error: streamError))
-                    case .stopped, .disconnected:
+                    case .stopped:
                         self.internalState = .error(.streamOffline)
+                    case .disconnected:
+                        self.internalState = .error(.noInternet)
                     }
                 }
                 .store(in: &self.subscriptions)

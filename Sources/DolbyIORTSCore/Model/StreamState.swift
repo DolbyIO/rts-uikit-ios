@@ -32,7 +32,7 @@ public enum StreamState: Equatable {
                     numberOfStreamViewers: state.numberOfStreamViewers
                 )
             } else {
-                self = .error(.connectFailed(reason: ""))
+                self = .stopped
             }
 
         case .stopped:
