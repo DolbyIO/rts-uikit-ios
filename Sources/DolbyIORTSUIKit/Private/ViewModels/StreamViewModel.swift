@@ -309,7 +309,7 @@ final class StreamViewModel: ObservableObject {
             selectedVideoSource = sources.first { $0.id == currentlySelectedVideoSource.id } ?? sortedSources[0]
         }
 
-        let selectedAudioSource = audioSelection(from: sortedSources, settings: settings, selectedVideoSource: selectedVideoSource)
+        let selectedAudioSource = audioSelection(from: sources, settings: settings, selectedVideoSource: selectedVideoSource)
 
         let displayMode: DisplayMode
         switch settings.multiviewLayout {
@@ -426,7 +426,7 @@ final class StreamViewModel: ObservableObject {
             // Use audio from the video source, if no audio track uses the last one used or just the 1st one
             selectedAudioSource = selectedVideoSource.audioTracksCount > 0 ? selectedVideoSource : internalState.selectedAudioSource
         case let .source(sourceId: sourceId):
-            selectedAudioSource = sourcesWithAudio.first(where: { $0.sourceId.value == sourceId }) ?? sourcesWithAudio[0]
+            selectedAudioSource = sourcesWithAudio.first(where: { $0.sourceId == StreamSource.SourceId(id: sourceId) }) ?? sourcesWithAudio[0]
         }
         return selectedAudioSource
     }

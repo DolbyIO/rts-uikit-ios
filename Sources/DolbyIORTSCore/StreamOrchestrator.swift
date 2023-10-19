@@ -58,7 +58,11 @@ public final actor StreamOrchestrator {
         Self.logger.debug("👮‍♂️ Start subscribe")
         logHandler.setLogFilePath(filePath: configuration.sdkLogPath)
         
-        async let startConnectionStateUpdate: Void = stateMachine.startConnection(streamName: streamName, accountID: accountID)
+        async let startConnectionStateUpdate: Void = stateMachine.startConnection(
+            streamName: streamName,
+            accountID: accountID,
+            configuration: configuration
+        )
         async let startConnection = subscriptionManager.connect(streamName: streamName, accountID: accountID, configuration: configuration)
         
         let (_, connectionResult) = await (startConnectionStateUpdate, startConnection)

@@ -124,7 +124,11 @@ final class StreamSourceBuilder {
         streamingStatistics = statistics
     }
 
-    func build() throws -> StreamSource {
+    func build(isAudioEnabled: Bool) throws -> StreamSource {
+        if isAudioEnabled, hasMissingAudioTrack {
+            throw BuildError.missingAudioTrack
+        }
+
         guard !hasMissingVideoTrack, let videoTrack = videoTrack else {
             throw BuildError.missingVideoTrack
         }
