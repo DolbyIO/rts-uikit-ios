@@ -66,7 +66,7 @@ final class StateMachine {
     }
 
     func onConnectionError(_ status: Int32, withReason reason: String) {
-        currentState = .error(.init(error: .connectFailed(reason: reason)))
+        currentState = .error(.init(error: .connectFailed(reason: reason, status: status)))
     }
     
     func onDisconnected() {
