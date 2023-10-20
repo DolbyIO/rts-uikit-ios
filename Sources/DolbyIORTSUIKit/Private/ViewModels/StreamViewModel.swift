@@ -426,7 +426,8 @@ final class StreamViewModel: ObservableObject {
             selectedAudioSource = sourcesWithAudio.first(where: { $0.sourceId == StreamSource.SourceId.main }) ?? sourcesWithAudio[0]
         case .followVideo:
             // Use audio from the video source, if no audio track uses the last one used or just the 1st one
-            selectedAudioSource = selectedVideoSource.audioTracksCount > 0 ? selectedVideoSource : internalState.selectedAudioSource
+            let fallbackAudioSource = internalState.selectedAudioSource != nil ? internalState.selectedAudioSource : sourcesWithAudio[0]
+            selectedAudioSource = selectedVideoSource.audioTracksCount > 0 ? selectedVideoSource : fallbackAudioSource
         case let .source(sourceId: sourceId):
             selectedAudioSource = sourcesWithAudio.first(where: { $0.sourceId == StreamSource.SourceId(id: sourceId) }) ?? sourcesWithAudio[0]
         }
