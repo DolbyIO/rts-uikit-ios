@@ -134,7 +134,7 @@ final class StatsInfoViewModel: ObservableObject {
             result.append(
                 StatData(
                     key: String(localized: "stream.stats.audio-jitter.label", bundle: .module),
-                    value: "\(Int(audioJitter * 1000)) ms"
+                    value: "\(audioJitter) ms"
                 )
             )
         }
