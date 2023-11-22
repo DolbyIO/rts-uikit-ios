@@ -239,6 +239,7 @@ final class StreamViewModel: ObservableObject {
 
     func endStream() async {
         _ = await streamOrchestrator.stopConnection()
+        subscriptions.removeAll()
     }
 
     func playAudio(for source: StreamSource) {
