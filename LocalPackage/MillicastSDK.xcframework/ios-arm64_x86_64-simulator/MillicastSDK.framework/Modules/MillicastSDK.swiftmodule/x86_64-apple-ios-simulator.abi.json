@@ -1,0 +1,2137 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "TopLevel",
+    "printedName": "TopLevel",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "MillicastSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "UIKit",
+        "printedName": "UIKit",
+        "declKind": "Import",
+        "moduleName": "MillicastSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "SwiftUI",
+        "printedName": "SwiftUI",
+        "declKind": "Import",
+        "moduleName": "MillicastSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "UIKit",
+        "printedName": "UIKit",
+        "declKind": "Import",
+        "moduleName": "MillicastSDK"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "MCVideoSwiftUIView",
+        "printedName": "MCVideoSwiftUIView",
+        "children": [
+          {
+            "kind": "TypeDecl",
+            "name": "RendererType",
+            "printedName": "RendererType",
+            "children": [
+              {
+                "kind": "Var",
+                "name": "openGL",
+                "printedName": "openGL",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(MillicastSDK.MCVideoSwiftUIView.RendererType.Type) -> MillicastSDK.MCVideoSwiftUIView.RendererType",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "RendererType",
+                        "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType",
+                        "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "RendererType",
+                            "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType",
+                            "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "EnumElement",
+                "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO6openGLyA2EmF",
+                "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO6openGLyA2EmF",
+                "moduleName": "MillicastSDK"
+              },
+              {
+                "kind": "Var",
+                "name": "metal",
+                "printedName": "metal",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(MillicastSDK.MCVideoSwiftUIView.RendererType.Type) -> MillicastSDK.MCVideoSwiftUIView.RendererType",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "RendererType",
+                        "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType",
+                        "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "RendererType",
+                            "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType",
+                            "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "EnumElement",
+                "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO5metalyA2EmF",
+                "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO5metalyA2EmF",
+                "moduleName": "MillicastSDK",
+                "declAttributes": [
+                  "RawDocComment"
+                ]
+              },
+              {
+                "kind": "Var",
+                "name": "sampleBuffer",
+                "printedName": "sampleBuffer",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(MillicastSDK.MCVideoSwiftUIView.RendererType.Type) -> MillicastSDK.MCVideoSwiftUIView.RendererType",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "RendererType",
+                        "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType",
+                        "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "RendererType",
+                            "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType",
+                            "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "EnumElement",
+                "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO12sampleBufferyA2EmF",
+                "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO12sampleBufferyA2EmF",
+                "moduleName": "MillicastSDK",
+                "declAttributes": [
+                  "RawDocComment"
+                ]
+              },
+              {
+                "kind": "Function",
+                "name": "==",
+                "printedName": "==(_:_:)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "RendererType",
+                    "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType",
+                    "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "RendererType",
+                    "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType",
+                    "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO"
+                  }
+                ],
+                "declKind": "Func",
+                "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO2eeoiySbAE_AEtFZ",
+                "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO2eeoiySbAE_AEtFZ",
+                "moduleName": "MillicastSDK",
+                "static": true,
+                "implicit": true,
+                "funcSelfKind": "NonMutating"
+              },
+              {
+                "kind": "Var",
+                "name": "hashValue",
+                "printedName": "hashValue",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO9hashValueSivp",
+                "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO9hashValueSivp",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Int",
+                        "printedName": "Swift.Int",
+                        "usr": "s:Si"
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO9hashValueSivg",
+                    "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO9hashValueSivg",
+                    "moduleName": "MillicastSDK",
+                    "implicit": true,
+                    "accessorKind": "get"
+                  }
+                ]
+              },
+              {
+                "kind": "Function",
+                "name": "hash",
+                "printedName": "hash(into:)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Hasher",
+                    "printedName": "Swift.Hasher",
+                    "paramValueOwnership": "InOut",
+                    "usr": "s:s6HasherV"
+                  }
+                ],
+                "declKind": "Func",
+                "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO4hash4intoys6HasherVz_tF",
+                "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO4hash4intoys6HasherVz_tF",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "funcSelfKind": "NonMutating"
+              }
+            ],
+            "declKind": "Enum",
+            "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO",
+            "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "conformances": [
+              {
+                "kind": "Conformance",
+                "name": "Equatable",
+                "printedName": "Equatable",
+                "usr": "s:SQ",
+                "mangledName": "$sSQ"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Hashable",
+                "printedName": "Hashable",
+                "usr": "s:SH",
+                "mangledName": "$sSH"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(videoTrack:scalingMode:mirror:rendererType:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "MCVideoSwiftUIView",
+                "printedName": "MillicastSDK.MCVideoSwiftUIView",
+                "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "MCVideoTrack",
+                "printedName": "MillicastSDK.MCVideoTrack",
+                "usr": "c:objc(cs)MCVideoTrack"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "MCVideoViewScalingMode",
+                "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                "hasDefaultArg": true,
+                "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "hasDefaultArg": true,
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "RendererType",
+                "printedName": "MillicastSDK.MCVideoSwiftUIView.RendererType",
+                "hasDefaultArg": true,
+                "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV12RendererTypeO"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV10videoTrack11scalingMode6mirror12rendererTypeACSo0cG0C_AA0c11ViewScalingI0OSbAC08RendererL0Otcfc",
+            "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV10videoTrack11scalingMode6mirror12rendererTypeACSo0cG0C_AA0c11ViewScalingI0OSbAC08RendererL0Otcfc",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Var",
+            "name": "body",
+            "printedName": "body",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "OpaqueTypeArchetype",
+                "printedName": "some SwiftUI.View",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "View",
+                    "printedName": "SwiftUI.View",
+                    "usr": "s:7SwiftUI4ViewP"
+                  }
+                ]
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV4bodyQrvp",
+            "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV4bodyQrvp",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "Custom",
+              "AccessControl"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "OpaqueTypeArchetype",
+                    "printedName": "some SwiftUI.View",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "View",
+                        "printedName": "SwiftUI.View",
+                        "usr": "s:7SwiftUI4ViewP"
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV4bodyQrvg",
+                "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV4bodyQrvg",
+                "moduleName": "MillicastSDK",
+                "accessorKind": "get"
+              }
+            ]
+          }
+        ],
+        "declKind": "Struct",
+        "usr": "s:12MillicastSDK18MCVideoSwiftUIViewV",
+        "mangledName": "$s12MillicastSDK18MCVideoSwiftUIViewV",
+        "moduleName": "MillicastSDK",
+        "declAttributes": [
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "View",
+            "printedName": "View",
+            "children": [
+              {
+                "kind": "TypeWitness",
+                "name": "Body",
+                "printedName": "Body",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "OpaqueTypeArchetype",
+                    "printedName": "some SwiftUI.View",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "View",
+                        "printedName": "SwiftUI.View",
+                        "usr": "s:7SwiftUI4ViewP"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "usr": "s:7SwiftUI4ViewP",
+            "mangledName": "$s7SwiftUI4ViewP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "UIKit",
+        "printedName": "UIKit",
+        "declKind": "Import",
+        "moduleName": "MillicastSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "AVFoundation",
+        "printedName": "AVFoundation",
+        "declKind": "Import",
+        "moduleName": "MillicastSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "CoreGraphics",
+        "printedName": "CoreGraphics",
+        "declKind": "Import",
+        "moduleName": "MillicastSDK"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "MCVideoViewScalingMode",
+        "printedName": "MCVideoViewScalingMode",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "aspectFit",
+            "printedName": "aspectFit",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(MillicastSDK.MCVideoViewScalingMode.Type) -> MillicastSDK.MCVideoViewScalingMode",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCVideoViewScalingMode",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                    "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "MCVideoViewScalingMode",
+                        "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                        "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:12MillicastSDK22MCVideoViewScalingModeO9aspectFityA2CmF",
+            "mangledName": "$s12MillicastSDK22MCVideoViewScalingModeO9aspectFityA2CmF",
+            "moduleName": "MillicastSDK"
+          },
+          {
+            "kind": "Var",
+            "name": "aspectFill",
+            "printedName": "aspectFill",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(MillicastSDK.MCVideoViewScalingMode.Type) -> MillicastSDK.MCVideoViewScalingMode",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCVideoViewScalingMode",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                    "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "MCVideoViewScalingMode",
+                        "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                        "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:12MillicastSDK22MCVideoViewScalingModeO10aspectFillyA2CmF",
+            "mangledName": "$s12MillicastSDK22MCVideoViewScalingModeO10aspectFillyA2CmF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "resize",
+            "printedName": "resize",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(MillicastSDK.MCVideoViewScalingMode.Type) -> MillicastSDK.MCVideoViewScalingMode",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCVideoViewScalingMode",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                    "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "MCVideoViewScalingMode",
+                        "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                        "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:12MillicastSDK22MCVideoViewScalingModeO6resizeyA2CmF",
+            "mangledName": "$s12MillicastSDK22MCVideoViewScalingModeO6resizeyA2CmF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(rawValue:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "MillicastSDK.MCVideoViewScalingMode?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCVideoViewScalingMode",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                    "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:12MillicastSDK22MCVideoViewScalingModeO8rawValueACSgSi_tcfc",
+            "mangledName": "$s12MillicastSDK22MCVideoViewScalingModeO8rawValueACSgSi_tcfc",
+            "moduleName": "MillicastSDK",
+            "implicit": true,
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Var",
+            "name": "rawValue",
+            "printedName": "rawValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:12MillicastSDK22MCVideoViewScalingModeO8rawValueSivp",
+            "mangledName": "$s12MillicastSDK22MCVideoViewScalingModeO8rawValueSivp",
+            "moduleName": "MillicastSDK",
+            "implicit": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK22MCVideoViewScalingModeO8rawValueSivg",
+                "mangledName": "$s12MillicastSDK22MCVideoViewScalingModeO8rawValueSivg",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          }
+        ],
+        "declKind": "Enum",
+        "usr": "s:12MillicastSDK22MCVideoViewScalingModeO",
+        "mangledName": "$s12MillicastSDK22MCVideoViewScalingModeO",
+        "moduleName": "MillicastSDK",
+        "declAttributes": [
+          "AccessControl"
+        ],
+        "enumRawTypeName": "Int",
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "RawRepresentable",
+            "printedName": "RawRepresentable",
+            "children": [
+              {
+                "kind": "TypeWitness",
+                "name": "RawValue",
+                "printedName": "RawValue",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ]
+              }
+            ],
+            "usr": "s:SY",
+            "mangledName": "$sSY"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "MCVideoUIViewType",
+        "printedName": "MCVideoUIViewType",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "scalingMode",
+            "printedName": "scalingMode",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "MCVideoViewScalingMode",
+                "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:12MillicastSDK17MCVideoUIViewTypeP11scalingModeAA0c11ViewScalingG0Ovp",
+            "mangledName": "$s12MillicastSDK17MCVideoUIViewTypeP11scalingModeAA0c11ViewScalingG0Ovp",
+            "moduleName": "MillicastSDK",
+            "protocolReq": true,
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCVideoViewScalingMode",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                    "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK17MCVideoUIViewTypeP11scalingModeAA0c11ViewScalingG0Ovg",
+                "mangledName": "$s12MillicastSDK17MCVideoUIViewTypeP11scalingModeAA0c11ViewScalingG0Ovg",
+                "moduleName": "MillicastSDK",
+                "genericSig": "<τ_0_0 where τ_0_0 : MillicastSDK.MCVideoUIViewType>",
+                "sugared_genericSig": "<Self where Self : MillicastSDK.MCVideoUIViewType>",
+                "protocolReq": true,
+                "reqNewWitnessTableEntry": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCVideoViewScalingMode",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                    "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK17MCVideoUIViewTypeP11scalingModeAA0c11ViewScalingG0Ovs",
+                "mangledName": "$s12MillicastSDK17MCVideoUIViewTypeP11scalingModeAA0c11ViewScalingG0Ovs",
+                "moduleName": "MillicastSDK",
+                "genericSig": "<τ_0_0 where τ_0_0 : MillicastSDK.MCVideoUIViewType>",
+                "sugared_genericSig": "<Self where Self : MillicastSDK.MCVideoUIViewType>",
+                "protocolReq": true,
+                "reqNewWitnessTableEntry": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK17MCVideoUIViewTypeP11scalingModeAA0c11ViewScalingG0OvM",
+                "mangledName": "$s12MillicastSDK17MCVideoUIViewTypeP11scalingModeAA0c11ViewScalingG0OvM",
+                "moduleName": "MillicastSDK",
+                "genericSig": "<τ_0_0 where τ_0_0 : MillicastSDK.MCVideoUIViewType>",
+                "sugared_genericSig": "<Self where Self : MillicastSDK.MCVideoUIViewType>",
+                "protocolReq": true,
+                "implicit": true,
+                "reqNewWitnessTableEntry": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Function",
+            "name": "attach",
+            "printedName": "attach(videoTrack:mirrored:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "MCVideoTrack",
+                "printedName": "MillicastSDK.MCVideoTrack",
+                "usr": "c:objc(cs)MCVideoTrack"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:12MillicastSDK17MCVideoUIViewTypeP6attach10videoTrack8mirroredySo0cH0C_SbtF",
+            "mangledName": "$s12MillicastSDK17MCVideoUIViewTypeP6attach10videoTrack8mirroredySo0cH0C_SbtF",
+            "moduleName": "MillicastSDK",
+            "genericSig": "<τ_0_0 where τ_0_0 : MillicastSDK.MCVideoUIViewType>",
+            "sugared_genericSig": "<Self where Self : MillicastSDK.MCVideoUIViewType>",
+            "protocolReq": true,
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "attach",
+            "printedName": "attach(videoTrack:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "MCVideoTrack",
+                "printedName": "MillicastSDK.MCVideoTrack",
+                "usr": "c:objc(cs)MCVideoTrack"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:12MillicastSDK17MCVideoUIViewTypePAAE6attach10videoTrackySo0cH0C_tF",
+            "mangledName": "$s12MillicastSDK17MCVideoUIViewTypePAAE6attach10videoTrackySo0cH0C_tF",
+            "moduleName": "MillicastSDK",
+            "genericSig": "<τ_0_0 where τ_0_0 : MillicastSDK.MCVideoUIViewType>",
+            "sugared_genericSig": "<Self where Self : MillicastSDK.MCVideoUIViewType>",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Protocol",
+        "usr": "s:12MillicastSDK17MCVideoUIViewTypeP",
+        "mangledName": "$s12MillicastSDK17MCVideoUIViewTypeP",
+        "moduleName": "MillicastSDK",
+        "declAttributes": [
+          "AccessControl"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "MCSampleBufferVideoUIView",
+        "printedName": "MCSampleBufferVideoUIView",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "layerClass",
+            "printedName": "layerClass",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "ExistentialMetatype",
+                "printedName": "AnyObject.Type",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ProtocolComposition",
+                    "printedName": "AnyObject"
+                  }
+                ]
+              }
+            ],
+            "declKind": "Var",
+            "usr": "c:@M@MillicastSDK@objc(cs)MCSampleBufferVideoUIView(cpy)layerClass",
+            "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC10layerClassyXlXpvpZ",
+            "moduleName": "MillicastSDK",
+            "static": true,
+            "overriding": true,
+            "objc_name": "layerClass",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "Override",
+              "AccessControl"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ExistentialMetatype",
+                    "printedName": "AnyObject.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ProtocolComposition",
+                        "printedName": "AnyObject"
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@MillicastSDK@objc(cs)MCSampleBufferVideoUIView(cm)layerClass",
+                "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC10layerClassyXlXpvgZ",
+                "moduleName": "MillicastSDK",
+                "static": true,
+                "overriding": true,
+                "objc_name": "layerClass",
+                "declAttributes": [
+                  "Dynamic",
+                  "ObjC"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "mirror",
+            "printedName": "mirror",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:12MillicastSDK25MCSampleBufferVideoUIViewC6mirrorSbvp",
+            "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC6mirrorSbvp",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "HasInitialValue",
+              "Custom",
+              "HasStorage",
+              "SetterAccess",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK25MCSampleBufferVideoUIViewC6mirrorSbvg",
+                "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC6mirrorSbvg",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "scalingMode",
+            "printedName": "scalingMode",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "MCVideoViewScalingMode",
+                "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:12MillicastSDK25MCSampleBufferVideoUIViewC11scalingModeAA018MCVideoViewScalingH0Ovp",
+            "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC11scalingModeAA018MCVideoViewScalingH0Ovp",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "HasInitialValue",
+              "Custom",
+              "HasStorage",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCVideoViewScalingMode",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                    "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK25MCSampleBufferVideoUIViewC11scalingModeAA018MCVideoViewScalingH0Ovg",
+                "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC11scalingModeAA018MCVideoViewScalingH0Ovg",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCVideoViewScalingMode",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                    "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK25MCSampleBufferVideoUIViewC11scalingModeAA018MCVideoViewScalingH0Ovs",
+                "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC11scalingModeAA018MCVideoViewScalingH0Ovs",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK25MCSampleBufferVideoUIViewC11scalingModeAA018MCVideoViewScalingH0OvM",
+                "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC11scalingModeAA018MCVideoViewScalingH0OvM",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "sampleBufferDisplayLayer",
+            "printedName": "sampleBufferDisplayLayer",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AVSampleBufferDisplayLayer",
+                "printedName": "AVFoundation.AVSampleBufferDisplayLayer",
+                "usr": "c:objc(cs)AVSampleBufferDisplayLayer"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:12MillicastSDK25MCSampleBufferVideoUIViewC06sampleD12DisplayLayerSo08AVSampledhI0Cvp",
+            "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC06sampleD12DisplayLayerSo08AVSampledhI0Cvp",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "Custom",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "AVSampleBufferDisplayLayer",
+                    "printedName": "AVFoundation.AVSampleBufferDisplayLayer",
+                    "usr": "c:objc(cs)AVSampleBufferDisplayLayer"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK25MCSampleBufferVideoUIViewC06sampleD12DisplayLayerSo08AVSampledhI0Cvg",
+                "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC06sampleD12DisplayLayerSo08AVSampledhI0Cvg",
+                "moduleName": "MillicastSDK",
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(coder:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "MillicastSDK.MCSampleBufferVideoUIView?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCSampleBufferVideoUIView",
+                    "printedName": "MillicastSDK.MCSampleBufferVideoUIView",
+                    "usr": "c:@M@MillicastSDK@objc(cs)MCSampleBufferVideoUIView"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSCoder",
+                "printedName": "Foundation.NSCoder",
+                "usr": "c:objc(cs)NSCoder"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@MillicastSDK@objc(cs)MCSampleBufferVideoUIView(im)initWithCoder:",
+            "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC5coderACSgSo7NSCoderC_tcfc",
+            "moduleName": "MillicastSDK",
+            "overriding": true,
+            "objc_name": "initWithCoder:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "Required",
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(frame:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "MCSampleBufferVideoUIView",
+                "printedName": "MillicastSDK.MCSampleBufferVideoUIView",
+                "usr": "c:@M@MillicastSDK@objc(cs)MCSampleBufferVideoUIView"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CGRect",
+                "printedName": "CoreFoundation.CGRect",
+                "usr": "c:@S@CGRect"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@MillicastSDK@objc(cs)MCSampleBufferVideoUIView(im)initWithFrame:",
+            "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC5frameACSo6CGRectV_tcfc",
+            "moduleName": "MillicastSDK",
+            "overriding": true,
+            "objc_name": "initWithFrame:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "Override",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "attach",
+            "printedName": "attach(videoTrack:mirrored:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "MCVideoTrack",
+                "printedName": "MillicastSDK.MCVideoTrack",
+                "usr": "c:objc(cs)MCVideoTrack"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:12MillicastSDK25MCSampleBufferVideoUIViewC6attach10videoTrack8mirroredySo07MCVideoI0C_SbtF",
+            "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC6attach10videoTrack8mirroredySo07MCVideoI0C_SbtF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "Custom",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "didChange",
+            "printedName": "didChange(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CGSize",
+                "printedName": "CoreFoundation.CGSize",
+                "usr": "c:@S@CGSize"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@MillicastSDK@objc(cs)MCSampleBufferVideoUIView(im)didChangeSize:",
+            "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC9didChangeyySo6CGSizeVF",
+            "moduleName": "MillicastSDK",
+            "objc_name": "didChangeSize:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "canHandleMoreFrames",
+            "printedName": "canHandleMoreFrames()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@MillicastSDK@objc(cs)MCSampleBufferVideoUIView(im)canHandleMoreFrames",
+            "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC19canHandleMoreFramesSbyF",
+            "moduleName": "MillicastSDK",
+            "objc_name": "canHandleMoreFrames",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "didReceive",
+            "printedName": "didReceive(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ImplicitlyUnwrappedOptional",
+                "printedName": "CoreMedia.CMSampleBuffer?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CMSampleBuffer",
+                    "printedName": "CoreMedia.CMSampleBuffer",
+                    "usr": "c:@T@CMSampleBufferRef"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@MillicastSDK@objc(cs)MCSampleBufferVideoUIView(im)didReceiveSampleBuffer:",
+            "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC10didReceiveyySo08CMSampleD3RefaSgF",
+            "moduleName": "MillicastSDK",
+            "objc_name": "didReceiveSampleBuffer:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@MillicastSDK@objc(cs)MCSampleBufferVideoUIView",
+        "mangledName": "$s12MillicastSDK25MCSampleBufferVideoUIViewC",
+        "moduleName": "MillicastSDK",
+        "declAttributes": [
+          "Custom",
+          "AccessControl",
+          "RawDocComment",
+          "ObjC"
+        ],
+        "superclassUsr": "c:objc(cs)UIView",
+        "inheritsConvenienceInitializers": true,
+        "superclassNames": [
+          "UIKit.UIView",
+          "UIKit.UIResponder",
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "MCVideoUIViewType",
+            "printedName": "MCVideoUIViewType",
+            "usr": "s:12MillicastSDK17MCVideoUIViewTypeP",
+            "mangledName": "$s12MillicastSDK17MCVideoUIViewTypeP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "__DefaultCustomPlaygroundQuickLookable",
+            "printedName": "__DefaultCustomPlaygroundQuickLookable",
+            "usr": "s:s38__DefaultCustomPlaygroundQuickLookableP",
+            "mangledName": "$ss38__DefaultCustomPlaygroundQuickLookableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "MCAcceleratedVideoUIView",
+        "printedName": "MCAcceleratedVideoUIView",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "scalingMode",
+            "printedName": "scalingMode",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "MCVideoViewScalingMode",
+                "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:12MillicastSDK24MCAcceleratedVideoUIViewC11scalingModeAA018MCVideoViewScalingG0Ovp",
+            "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC11scalingModeAA018MCVideoViewScalingG0Ovp",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "HasInitialValue",
+              "Custom",
+              "HasStorage",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCVideoViewScalingMode",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                    "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK24MCAcceleratedVideoUIViewC11scalingModeAA018MCVideoViewScalingG0Ovg",
+                "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC11scalingModeAA018MCVideoViewScalingG0Ovg",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCVideoViewScalingMode",
+                    "printedName": "MillicastSDK.MCVideoViewScalingMode",
+                    "usr": "s:12MillicastSDK22MCVideoViewScalingModeO"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK24MCAcceleratedVideoUIViewC11scalingModeAA018MCVideoViewScalingG0Ovs",
+                "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC11scalingModeAA018MCVideoViewScalingG0Ovs",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK24MCAcceleratedVideoUIViewC11scalingModeAA018MCVideoViewScalingG0OvM",
+                "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC11scalingModeAA018MCVideoViewScalingG0OvM",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "mirror",
+            "printedName": "mirror",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:12MillicastSDK24MCAcceleratedVideoUIViewC6mirrorSbvp",
+            "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC6mirrorSbvp",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "HasInitialValue",
+              "Custom",
+              "HasStorage",
+              "SetterAccess",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK24MCAcceleratedVideoUIViewC6mirrorSbvg",
+                "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC6mirrorSbvg",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "videoSize",
+            "printedName": "videoSize",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "CGSize",
+                "printedName": "CoreFoundation.CGSize",
+                "usr": "c:@S@CGSize"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:12MillicastSDK24MCAcceleratedVideoUIViewC9videoSizeSo6CGSizeVvp",
+            "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC9videoSizeSo6CGSizeVvp",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "HasInitialValue",
+              "Custom",
+              "HasStorage",
+              "SetterAccess",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CGSize",
+                    "printedName": "CoreFoundation.CGSize",
+                    "usr": "c:@S@CGSize"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK24MCAcceleratedVideoUIViewC9videoSizeSo6CGSizeVvg",
+                "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC9videoSizeSo6CGSizeVvg",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(frame:useOpenGL:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "MCAcceleratedVideoUIView",
+                "printedName": "MillicastSDK.MCAcceleratedVideoUIView",
+                "usr": "c:@M@MillicastSDK@objc(cs)MCAcceleratedVideoUIView"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CGRect",
+                "printedName": "CoreFoundation.CGRect",
+                "usr": "c:@S@CGRect"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "hasDefaultArg": true,
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:12MillicastSDK24MCAcceleratedVideoUIViewC5frame9useOpenGLACSo6CGRectV_Sbtcfc",
+            "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC5frame9useOpenGLACSo6CGRectV_Sbtcfc",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "Custom",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(coder:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "MillicastSDK.MCAcceleratedVideoUIView?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MCAcceleratedVideoUIView",
+                    "printedName": "MillicastSDK.MCAcceleratedVideoUIView",
+                    "usr": "c:@M@MillicastSDK@objc(cs)MCAcceleratedVideoUIView"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSCoder",
+                "printedName": "Foundation.NSCoder",
+                "usr": "c:objc(cs)NSCoder"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@MillicastSDK@objc(cs)MCAcceleratedVideoUIView(im)initWithCoder:",
+            "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC5coderACSgSo7NSCoderC_tcfc",
+            "moduleName": "MillicastSDK",
+            "overriding": true,
+            "objc_name": "initWithCoder:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "Required",
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "attach",
+            "printedName": "attach(videoTrack:mirrored:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "MCVideoTrack",
+                "printedName": "MillicastSDK.MCVideoTrack",
+                "usr": "c:objc(cs)MCVideoTrack"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:12MillicastSDK24MCAcceleratedVideoUIViewC6attach10videoTrack8mirroredySo07MCVideoH0C_SbtF",
+            "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC6attach10videoTrack8mirroredySo07MCVideoH0C_SbtF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "Custom",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "layoutSubviews",
+            "printedName": "layoutSubviews()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@MillicastSDK@objc(cs)MCAcceleratedVideoUIView(im)layoutSubviews",
+            "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC14layoutSubviewsyyF",
+            "moduleName": "MillicastSDK",
+            "overriding": true,
+            "objc_name": "layoutSubviews",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "Override",
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(frame:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "MCAcceleratedVideoUIView",
+                "printedName": "MillicastSDK.MCAcceleratedVideoUIView",
+                "usr": "c:@M@MillicastSDK@objc(cs)MCAcceleratedVideoUIView"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CGRect",
+                "printedName": "CoreFoundation.CGRect",
+                "usr": "c:@S@CGRect"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@MillicastSDK@objc(cs)MCAcceleratedVideoUIView(im)initWithFrame:",
+            "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC5frameACSo6CGRectV_tcfc",
+            "moduleName": "MillicastSDK",
+            "overriding": true,
+            "implicit": true,
+            "objc_name": "initWithFrame:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "Override"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "didChangeVideoSize",
+            "printedName": "didChangeVideoSize(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CGSize",
+                "printedName": "CoreFoundation.CGSize",
+                "usr": "c:@S@CGSize"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@MillicastSDK@objc(cs)MCAcceleratedVideoUIView(im)didChangeVideoSize:",
+            "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC09didChangeD4SizeyySo6CGSizeVF",
+            "moduleName": "MillicastSDK",
+            "objc_name": "didChangeVideoSize:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Custom",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@MillicastSDK@objc(cs)MCAcceleratedVideoUIView",
+        "mangledName": "$s12MillicastSDK24MCAcceleratedVideoUIViewC",
+        "moduleName": "MillicastSDK",
+        "declAttributes": [
+          "Custom",
+          "AccessControl",
+          "RawDocComment",
+          "ObjC"
+        ],
+        "superclassUsr": "c:objc(cs)UIView",
+        "superclassNames": [
+          "UIKit.UIView",
+          "UIKit.UIResponder",
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "MCVideoUIViewType",
+            "printedName": "MCVideoUIViewType",
+            "usr": "s:12MillicastSDK17MCVideoUIViewTypeP",
+            "mangledName": "$s12MillicastSDK17MCVideoUIViewTypeP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "__DefaultCustomPlaygroundQuickLookable",
+            "printedName": "__DefaultCustomPlaygroundQuickLookable",
+            "usr": "s:s38__DefaultCustomPlaygroundQuickLookableP",
+            "mangledName": "$ss38__DefaultCustomPlaygroundQuickLookableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "MillicastSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "UIKit",
+        "printedName": "UIKit",
+        "declKind": "Import",
+        "moduleName": "MillicastSDK"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "UIImage",
+        "printedName": "UIImage",
+        "children": [
+          {
+            "kind": "Function",
+            "name": "convertToBuffer",
+            "printedName": "convertToBuffer()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "CoreVideo.CVBuffer?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "CVBuffer",
+                    "printedName": "CoreVideo.CVBuffer",
+                    "usr": "c:@T@CVBufferRef"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:So7UIImageC12MillicastSDKE15convertToBufferSo11CVBufferRefaSgyF",
+            "mangledName": "$sSo7UIImageC12MillicastSDKE15convertToBufferSo11CVBufferRefaSgyF",
+            "moduleName": "MillicastSDK",
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:objc(cs)UIImage",
+        "moduleName": "UIKit",
+        "isOpen": true,
+        "intro_iOS": "2.0",
+        "objc_name": "UIImage",
+        "declAttributes": [
+          "Available",
+          "ObjC",
+          "SynthesizedProtocol",
+          "NonSendable",
+          "Sendable",
+          "Dynamic"
+        ],
+        "superclassUsr": "c:objc(cs)NSObject",
+        "isExternal": true,
+        "inheritsConvenienceInitializers": true,
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_ExpressibleByImageLiteral",
+            "printedName": "_ExpressibleByImageLiteral",
+            "usr": "s:s26_ExpressibleByImageLiteralP",
+            "mangledName": "$ss26_ExpressibleByImageLiteralP"
+          }
+        ]
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": [
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCUIImageFrame.swift",
+      "kind": "StringLiteral",
+      "offset": 39,
+      "length": 14,
+      "value": "\"MillicastSDK.MCUIImageFrame\""
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoSwiftUIView_iOS.swift",
+      "kind": "BooleanLiteral",
+      "offset": 1163,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoSwiftUIView_iOS.swift",
+      "kind": "StringLiteral",
+      "offset": 2554,
+      "length": 15,
+      "value": "\"MillicastSDK.ContainerUIView\""
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 115,
+      "length": 1,
+      "value": "1"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 207,
+      "length": 1,
+      "value": "2"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 279,
+      "length": 1,
+      "value": "3"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 115,
+      "length": 1,
+      "value": "1"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 207,
+      "length": 1,
+      "value": "2"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 279,
+      "length": 1,
+      "value": "3"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 115,
+      "length": 1,
+      "value": "1"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 207,
+      "length": 1,
+      "value": "2"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 279,
+      "length": 1,
+      "value": "3"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "BooleanLiteral",
+      "offset": 1624,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "BooleanLiteral",
+      "offset": 4845,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "BooleanLiteral",
+      "offset": 5498,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/sapi\/wro-sapi-macos-02-millisdk-02\/_work\/csmMillicastNativeSdk\/csmMillicastNativeSdk\/src\/swift\/MCVideoUIView.swift",
+      "kind": "StringLiteral",
+      "offset": 4421,
+      "length": 24,
+      "value": "\"MillicastSDK.MCAcceleratedVideoUIView\""
+    }
+  ]
+}

@@ -19,7 +19,7 @@ let package = Package(
             targets: ["DolbyIORTSUIKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/millicast/millicast-sdk-swift-package", from: "1.5.1")
+//        .package(url: "https://github.com/millicast/millicast-sdk-swift-package", from: "1.5.1")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -30,10 +30,16 @@ let package = Package(
             path: "Sources/DolbyIOUIKit",
             resources: [.process("Resources")]
             ),
+        .binaryTarget(
+                    name: "MillicastSDK",
+                    path: "LocalPackage/MillicastSDK.xcframework"
+        ),
         .target(
             name: "DolbyIORTSCore",
             dependencies: [
-                .product(name: "MillicastSDK", package: "millicast-sdk-swift-package")
+                .byName(name: "MillicastSDK")
+//                .product(name: "MillicastSDK")
+                
             ],
             path: "Sources/DolbyIORTSCore"
         ),
