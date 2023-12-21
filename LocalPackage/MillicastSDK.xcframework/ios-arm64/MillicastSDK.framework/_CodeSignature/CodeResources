@@ -78,7 +78,7 @@
 		</data>
 		<key>Modules/MillicastSDK.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
 		<data>
-		GJjq9nNzKhR2oKnuaSP0Tdk63Kk=
+		ZruOGDYi/nG99zw85PjKMDR0RQc=
 		</data>
 		<key>Modules/MillicastSDK.swiftmodule/arm64-apple-ios.abi.json</key>
 		<data>
@@ -98,7 +98,7 @@
 		</data>
 		<key>Modules/MillicastSDK.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		cliFwdUipCQjPFHSStxM1RXjaLo=
+		8XCY1tZRHV8rZR8c60MEpEGlZfo=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -226,11 +226,18 @@
 			gmr/38dp+zDo1GGW80IMsGUX/qVsknfSWcV8RRLcHMc=
 			</data>
 		</dict>
+		<key>MillicastSDK.cstemp</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			n0uZcmOHTuRWwdRshtDA35WTMM6C/k2zsxWxyLgq9t0=
+			</data>
+		</dict>
 		<key>Modules/MillicastSDK.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			rATzRfiBnKBSVnfPA5H8j8XVSDIyuDwpMsLKcbyaTu0=
+			rQ1NFZIE3FBIA81/1V4qW/pr3uO37gXio48t3Jt+b0k=
 			</data>
 		</dict>
 		<key>Modules/MillicastSDK.swiftmodule/arm64-apple-ios.abi.json</key>
@@ -265,7 +272,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			tvFbhdYdC4sjUhLAb72Em7KDnI/qDAeIZlrkgk8zLYQ=
+			GvvPIXyOVho3g4fg8TshJq/HJ21j5INivY47IEqWC2Y=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

@@ -76,13 +76,9 @@
 		<data>
 		KLDaO28K3YVRG2foV2UErNlpuMA=
 		</data>
-		<key>MillicastSDK.cstemp</key>
-		<data>
-		MEhEVvEFvdsRlzM8RKbwPcdkkVc=
-		</data>
 		<key>Modules/MillicastSDK.swiftmodule/Project/x86_64-apple-tvos-simulator.swiftsourceinfo</key>
 		<data>
-		6IEJwY/6t4zEM1B3wUdKlde3r74=
+		YbY3zrMHQnDwc7LPjf0mu6CrJCU=
 		</data>
 		<key>Modules/MillicastSDK.swiftmodule/x86_64-apple-tvos-simulator.abi.json</key>
 		<data>
@@ -102,7 +98,7 @@
 		</data>
 		<key>Modules/MillicastSDK.swiftmodule/x86_64-apple-tvos-simulator.swiftmodule</key>
 		<data>
-		lqmcB9HfHkZa7GgclqID57kyo1E=
+		21MrKy7eEZ5OCfGt2pJn4ZTLupo=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -234,14 +230,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			rjv6kPLo9/HS54D1cxDRynqc7VnvJmHsSpbGLq3saOk=
+			qmmtj/OmlYozrCvUmax7vETkkxfEAPvWHkTuZ26LlO0=
 			</data>
 		</dict>
 		<key>Modules/MillicastSDK.swiftmodule/Project/x86_64-apple-tvos-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			OPPVeLMZ6VAMGyf5fccF5IQpYfL85fNJRhpvI9Z05Xs=
+			IoXuIcv/3i/eKDjSwbHcwysngv7sJ5CK5v66jkQCEN0=
 			</data>
 		</dict>
 		<key>Modules/MillicastSDK.swiftmodule/x86_64-apple-tvos-simulator.abi.json</key>
@@ -276,7 +272,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			MmDFn66yxBJLklYv5tkPvt2tWRr0jARV1YClDtU7mq0=
+			B8FpEhYKzUDm5hdIOwm8/edVLhHGNycApoPolGgyOL4=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

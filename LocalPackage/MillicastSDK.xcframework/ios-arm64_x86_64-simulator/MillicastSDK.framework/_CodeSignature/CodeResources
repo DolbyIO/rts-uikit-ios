@@ -76,9 +76,13 @@
 		<data>
 		T83FLOpYqKGh/yL5m09rIj1gGrE=
 		</data>
+		<key>MillicastSDK.cstemp</key>
+		<data>
+		vCMMAOhmEbPbY+vepVts37/QMno=
+		</data>
 		<key>Modules/MillicastSDK.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		TId23fgKrcjcH5+1RjqozYXAzPU=
+		sHkiRkQcGXeU/ZfXDaRiZrD0QHw=
 		</data>
 		<key>Modules/MillicastSDK.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -98,7 +102,7 @@
 		</data>
 		<key>Modules/MillicastSDK.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		N0bYhE4lTW5a4aTetID0TSpqSYg=
+		Xdz0MkwF1wE1rW0O/cDeMQdYMdk=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -230,14 +234,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			55+pBlryfIR+qz7uLmVtMjVyLAbHuw2gWmNkXNGxmgM=
+			cCSEb8t/jxRFoGxL9cpXw96BAg+zoUVhTJ6r9+iU6Ks=
 			</data>
 		</dict>
 		<key>Modules/MillicastSDK.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			GjStl6DfQsbjK2q3FjQ5rfLBcrotnZLpV7iEeLNHxfk=
+			fSj50yUsPgCF8gEINbpK9XHet8ECP5PDluaUiWI9cXI=
 			</data>
 		</dict>
 		<key>Modules/MillicastSDK.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
@@ -272,7 +276,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			+BhPiy4HkEVCTs9jeLUCeqU3izPDefw4hES7w66tMN8=
+			y4n8VFKk7m2TbwWOXH2cjxkE+VySsb7lzq46VAGpxJI=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

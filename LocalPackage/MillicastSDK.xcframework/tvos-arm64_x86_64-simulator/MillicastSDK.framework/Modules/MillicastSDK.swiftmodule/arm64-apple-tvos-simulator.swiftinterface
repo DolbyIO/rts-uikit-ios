@@ -1,0 +1,100 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target arm64-apple-tvos14.5-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name MillicastSDK
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import AVFoundation
+import CoreGraphics
+import Foundation
+@_exported import MillicastSDK
+import Swift
+import SwiftUI
+import UIKit
+import _Concurrency
+import _StringProcessing
+public struct MCVideoSwiftUIView : SwiftUI.View {
+  public enum RendererType {
+    case openGL
+    case metal
+    case sampleBuffer
+    public static func == (a: MillicastSDK.MCVideoSwiftUIView.RendererType, b: MillicastSDK.MCVideoSwiftUIView.RendererType) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public init(videoTrack: MillicastSDK.MCVideoTrack, scalingMode: MillicastSDK.MCVideoViewScalingMode = .aspectFit, mirror: Swift.Bool = false, rendererType: MillicastSDK.MCVideoSwiftUIView.RendererType = .metal)
+  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+    get
+  }
+  public typealias Body = @_opaqueReturnTypeOf("$s12MillicastSDK18MCVideoSwiftUIViewV4bodyQrvp", 0) __
+}
+public enum MCVideoViewScalingMode : Swift.Int {
+  case aspectFit
+  case aspectFill
+  case resize
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public protocol MCVideoUIViewType {
+  var scalingMode: MillicastSDK.MCVideoViewScalingMode { get set }
+  func attach(videoTrack: MillicastSDK.MCVideoTrack, mirrored: Swift.Bool)
+}
+extension MillicastSDK.MCVideoUIViewType {
+  public func attach(videoTrack: MillicastSDK.MCVideoTrack)
+}
+public typealias MCVideoUIView = UIKit.UIView & MillicastSDK.MCVideoUIViewType
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class MCSampleBufferVideoUIView : UIKit.UIView, MillicastSDK.MCVideoUIViewType {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public class var layerClass: Swift.AnyClass {
+    @objc get
+  }
+  @_Concurrency.MainActor(unsafe) public var mirror: Swift.Bool {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var scalingMode: MillicastSDK.MCVideoViewScalingMode {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var sampleBufferDisplayLayer: AVFoundation.AVSampleBufferDisplayLayer {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame frameRect: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) public func attach(videoTrack: MillicastSDK.MCVideoTrack, mirrored: Swift.Bool)
+  @objc deinit
+}
+extension MillicastSDK.MCSampleBufferVideoUIView : MillicastSDK.MCCMSampleBufferVideoRendererDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func didChange(_ size: CoreFoundation.CGSize)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func canHandleMoreFrames() -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func didReceive(_ buffer: CoreMedia.CMSampleBuffer!)
+}
+@objc @_Concurrency.MainActor(unsafe) public class MCAcceleratedVideoUIView : UIKit.UIView, MillicastSDK.MCVideoUIViewType {
+  @_Concurrency.MainActor(unsafe) public var scalingMode: MillicastSDK.MCVideoViewScalingMode {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var mirror: Swift.Bool {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var videoSize: CoreFoundation.CGSize {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public init(frame: CoreFoundation.CGRect, useOpenGL: Swift.Bool = false)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) public func attach(videoTrack: MillicastSDK.MCVideoTrack, mirrored: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func layoutSubviews()
+  @objc deinit
+}
+extension MillicastSDK.MCAcceleratedVideoUIView : MillicastSDK.MCIosVideoRendererDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func didChangeVideoSize(_ size: CoreFoundation.CGSize)
+}
+extension UIKit.UIImage {
+  public func convertToBuffer() -> CoreVideo.CVPixelBuffer?
+}
+extension MillicastSDK.MCVideoSwiftUIView.RendererType : Swift.Equatable {}
+extension MillicastSDK.MCVideoSwiftUIView.RendererType : Swift.Hashable {}
+extension MillicastSDK.MCVideoViewScalingMode : Swift.Equatable {}
+extension MillicastSDK.MCVideoViewScalingMode : Swift.Hashable {}
+extension MillicastSDK.MCVideoViewScalingMode : Swift.RawRepresentable {}

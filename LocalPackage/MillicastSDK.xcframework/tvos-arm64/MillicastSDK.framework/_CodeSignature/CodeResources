@@ -76,9 +76,13 @@
 		<data>
 		frRcGa1VXkRvx+t38CrhOpb9CgA=
 		</data>
+		<key>MillicastSDK.cstemp</key>
+		<data>
+		kFjG5KK8tVKErNyH1qm894+SpmA=
+		</data>
 		<key>Modules/MillicastSDK.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo</key>
 		<data>
-		jpOzsC/rMTKluF4UlAn2+GEyoU8=
+		h7r44ZCzbbb4sBwc4Ovt7ZAlWNE=
 		</data>
 		<key>Modules/MillicastSDK.swiftmodule/arm64-apple-tvos.abi.json</key>
 		<data>
@@ -98,7 +102,7 @@
 		</data>
 		<key>Modules/MillicastSDK.swiftmodule/arm64-apple-tvos.swiftmodule</key>
 		<data>
-		dbD3CxyBsjWXF1ubk5skhaxOW50=
+		hZV8f+bLDsnfRWLPP1o19u1WvgU=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -226,11 +230,18 @@
 			gmr/38dp+zDo1GGW80IMsGUX/qVsknfSWcV8RRLcHMc=
 			</data>
 		</dict>
+		<key>MillicastSDK.cstemp</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			J6BTo3VceFmKR2FfXIXWJbvhEarFPeLvK3+kUPLFhPY=
+			</data>
+		</dict>
 		<key>Modules/MillicastSDK.swiftmodule/Project/arm64-apple-tvos.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			nb4gSA98T8KchM/j01YVcKk0td8TlME2RhhS4utldjU=
+			1Om6zM+VHo1XNRAoEqJig3LuG3D7/1ncFKXnMViSuwA=
 			</data>
 		</dict>
 		<key>Modules/MillicastSDK.swiftmodule/arm64-apple-tvos.abi.json</key>
@@ -265,7 +276,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			aZ8DIhodTRqH2E9ZfelKAjJySSitIfFgiY769eiW62o=
+			d5c7S+VwRSwKOuMpxevAXDgSksVQnZpzNGhMrjLBnxQ=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
