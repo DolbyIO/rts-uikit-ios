@@ -31,7 +31,6 @@ struct GridView: View {
     private let layout: GridViewLayout
     private let onVideoSelection: (StreamSource) -> Void
     @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
-    @StateObject private var viewRendererProvider: ViewRendererProvider = .init()
 
     init(
         viewModel: GridViewModel,
@@ -67,20 +66,20 @@ struct GridView: View {
         let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: columnsCount)
         return ScrollView {
             LazyVGrid(columns: columns, alignment: .leading) {
-                ForEach(viewModel.allVideoViewModels, id: \.streamSource.id) { viewModel in
+                ForEach(viewModel.allVideoViewModels, id: \.streamSource.id) { videoViewModel in
                     let maxAllowedSubVideoWidth = screenSize.width * thumbnailSizeRatio
                     let maxAllowedSubVideoHeight = screenSize.height * thumbnailSizeRatio
                     
                     VideoRendererView(
-                        viewModel: viewModel,
-                        viewRenderer: viewRendererProvider.renderer(for: viewModel.streamSource, isPortait: deviceOrientation.isPortrait),
+                        viewModel: videoViewModel,
+                        viewRenderer: viewModel.viewRendererProvider.renderer(for: videoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                         maxWidth: maxAllowedSubVideoWidth,
                         maxHeight: maxAllowedSubVideoHeight,
                         contentMode: .aspectFit
                     ) { source in
                         onVideoSelection(source)
                     }
-                    .id(viewModel.streamSource.id)
+                    .id(videoViewModel.streamSource.id)
                     .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
                 }
             }
@@ -93,17 +92,17 @@ struct GridView: View {
 
         return ScrollView(.horizontal) {
             LazyHGrid(rows: rows, alignment: .top, spacing: Layout.spacing1x) {
-                ForEach(viewModel.allVideoViewModels, id: \.streamSource.id) { viewModel in
+                ForEach(viewModel.allVideoViewModels, id: \.streamSource.id) { videoViewModel in
                     VideoRendererView(
-                        viewModel: viewModel,
-                        viewRenderer: viewRendererProvider.renderer(for: viewModel.streamSource, isPortait: deviceOrientation.isPortrait),
+                        viewModel: videoViewModel,
+                        viewRenderer: viewModel.viewRendererProvider.renderer(for: videoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                         maxWidth: .infinity,
                         maxHeight: availableHeight / CGFloat(rowsCount),
                         contentMode: .aspectFit
                     ) { source in
                         onVideoSelection(source)
                     }
-                    .id(viewModel.streamSource.id)
+                    .id(videoViewModel.streamSource.id)
                 }
             }.frame(height: availableHeight)
         }

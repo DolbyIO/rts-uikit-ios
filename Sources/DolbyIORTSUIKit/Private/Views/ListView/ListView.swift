@@ -38,9 +38,8 @@ struct ListView: View {
     private let layout: ListViewLayout
     private let onPrimaryVideoSelection: (StreamSource) -> Void
     private let onSecondaryVideoSelection: (StreamSource) -> Void
+    
     @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
-    @StateObject private var mainViewRendererProvider: ViewRendererProvider = .init()
-    @StateObject private var thumbnailViewRendererProvider: ViewRendererProvider = .init()
 
     init(
         viewModel: ListViewModel,
@@ -207,34 +206,34 @@ struct ListView: View {
     }
 
     private func mainView(_ maxAllowedMainVideoSize: CGSize) -> some View {
-        let viewModel = viewModel.primaryVideoViewModel
+        let primaryVideoViewModel = viewModel.primaryVideoViewModel
         return VideoRendererView(
-            viewModel: viewModel,
-            viewRenderer: mainViewRendererProvider.renderer(for: viewModel.streamSource, isPortait: deviceOrientation.isPortrait),
+            viewModel: primaryVideoViewModel,
+            viewRenderer: viewModel.mainViewRendererProvider.renderer(for: primaryVideoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
             maxWidth: maxAllowedMainVideoSize.width,
             maxHeight: maxAllowedMainVideoSize.height,
             contentMode: .aspectFit
         ) { source in
             onPrimaryVideoSelection(source)
         }
-        .id(viewModel.streamSource.id)
+        .id(primaryVideoViewModel.streamSource.id)
     }
 
     private func gridVertical(_ screenSize: CGSize, _ thumbnailSizeRatio: CGFloat) -> some View {
-        return ForEach(viewModel.secondaryVideoViewModels, id: \.streamSource.id) { viewModel in
+        return ForEach(viewModel.secondaryVideoViewModels, id: \.streamSource.id) { secondaryVideoViewModel in
             let maxAllowedSubVideoWidth = screenSize.width * thumbnailSizeRatio
             let maxAllowedSubVideoHeight = screenSize.height * thumbnailSizeRatio
 
             VideoRendererView(
-                viewModel: viewModel,
-                viewRenderer: thumbnailViewRendererProvider.renderer(for: viewModel.streamSource, isPortait: deviceOrientation.isPortrait),
+                viewModel: secondaryVideoViewModel,
+                viewRenderer: viewModel.thumbnailViewRendererProvider.renderer(for: secondaryVideoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                 maxWidth: maxAllowedSubVideoWidth,
                 maxHeight: maxAllowedSubVideoHeight,
                 contentMode: .aspectFit
             ) { source in
                 onSecondaryVideoSelection(source)
             }
-            .id(viewModel.streamSource.id)
+            .id(secondaryVideoViewModel.streamSource.id)
         }
     }
 
@@ -254,17 +253,17 @@ struct ListView: View {
         let rows = [GridItem](repeating: GridItem(.fixed(CGFloat(availableHeight)), spacing: Layout.spacing1x), count: rowsCount)
 
         return LazyHGrid(rows: rows, alignment: .top, spacing: Layout.spacing1x) {
-            ForEach(viewModel.secondaryVideoViewModels, id: \.streamSource.id) { viewModel in
+            ForEach(viewModel.secondaryVideoViewModels, id: \.streamSource.id) { secondaryVideoViewModel in
                 VideoRendererView(
-                    viewModel: viewModel,
-                    viewRenderer: thumbnailViewRendererProvider.renderer(for: viewModel.streamSource, isPortait: deviceOrientation.isPortrait),
+                    viewModel: secondaryVideoViewModel,
+                    viewRenderer: viewModel.thumbnailViewRendererProvider.renderer(for: secondaryVideoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                     maxWidth: .infinity,
                     maxHeight: availableHeight,
                     contentMode: .aspectFit
                 ) { source in
                     onSecondaryVideoSelection(source)
                 }
-                .id(viewModel.streamSource.id)
+                .id(secondaryVideoViewModel.streamSource.id)
             }
         }
     }

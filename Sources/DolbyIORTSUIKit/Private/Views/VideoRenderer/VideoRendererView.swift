@@ -4,6 +4,7 @@
 
 import DolbyIORTSCore
 import DolbyIOUIKit
+import MillicastSDK
 import SwiftUI
 
 struct VideoRendererView: View {
@@ -98,7 +99,7 @@ struct VideoRendererView: View {
             }
         }()
 
-        VideoRendererViewInteral(viewRenderer: viewRenderer)
+        VideoRendererViewInternal(viewRenderer: viewRenderer)
             .frame(width: videoSize.width, height: videoSize.height)
             .overlay(alignment: .bottomLeading) {
                 sourceLabelView
@@ -127,7 +128,7 @@ struct VideoRendererView: View {
     }
 }
 
-private struct VideoRendererViewInteral: UIViewRepresentable {
+private struct VideoRendererViewInternal: UIViewRepresentable {
     private let viewRenderer: StreamSourceViewRenderer
 
     init(viewRenderer: StreamSourceViewRenderer) {
@@ -135,46 +136,8 @@ private struct VideoRendererViewInteral: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> UIView {
-        let containerView = ContainerView<UIView>()
-        containerView.updateChildView(viewRenderer.playbackView)
-        return containerView
+        viewRenderer.playbackView
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {
-        guard let containerView = uiView as? ContainerView<UIView> else {
-            return
-        }
-        containerView.updateChildView(viewRenderer.playbackView)
-    }
-}
-
-private final class ContainerView<ChildView: UIView>: UIView {
-
-    private var childView: ChildView?
-
-    init() {
-        super.init(frame: CGRect(x: 0, y: 0, width: .zero, height: .zero))
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func updateChildView(_ view: ChildView) {
-        childView?.removeFromSuperview()
-
-        view.translatesAutoresizingMaskIntoConstraints = false
-
-        addSubview(view)
-        NSLayoutConstraint.activate([
-            topAnchor.constraint(equalTo: view.topAnchor),
-            leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            view.bottomAnchor.constraint(equalTo: bottomAnchor),
-            view.trailingAnchor.constraint(equalTo: trailingAnchor)
-        ])
-        childView = view
-
-        setNeedsLayout()
-        layoutIfNeeded()
-    }
+    func updateUIView(_ uiView: UIView, context: Context) {}
 }
