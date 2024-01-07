@@ -22,6 +22,9 @@ public final class AppConfigurations {
     
     @UserDefault("show_debug_features")
     public var showDebugFeatures: Bool = false
+    
+    @UserDefault("enable_pip")
+    public var enablePiP: Bool = false
 }
 
 @propertyWrapper

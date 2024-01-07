@@ -5,6 +5,9 @@
 import Combine
 import DolbyIORTSCore
 import Foundation
+import MillicastSDK
+import SwiftUI
+import UIKit
 
 // swiftlint:disable type_body_length
 final class StreamViewModel: ObservableObject {
@@ -23,7 +26,8 @@ final class StreamViewModel: ObservableObject {
                 sources: _,
                 selectedVideoSource: _,
                 selectedAudioSource: _,
-                settings: _
+                settings: _,
+                detailSingleStreamViewModel: _
             ):
                 self = .success(displayMode: displayMode)
             case let .error(errorViewModel):
@@ -39,12 +43,22 @@ final class StreamViewModel: ObservableObject {
             sources: [StreamSource],
             selectedVideoSource: StreamSource,
             selectedAudioSource: StreamSource?,
-            settings: StreamSettings
+            settings: StreamSettings,
+            detailSingleStreamViewModel: SingleStreamViewModel?
         )
         case error(ErrorViewModel)
     }
 
-    enum DisplayMode {
+    enum DisplayMode: Equatable {
+        static func == (lhs: StreamViewModel.DisplayMode, rhs: StreamViewModel.DisplayMode) -> Bool {
+            switch (lhs, rhs) {
+            case (.grid, .grid), (.list, .list), (.single, .single):
+                return true
+            default:
+                return false
+            }
+        }
+        
         case single(SingleStreamViewModel)
         case list(ListViewModel)
         case grid(GridViewModel)
@@ -53,12 +67,30 @@ final class StreamViewModel: ObservableObject {
     private let settingsManager: SettingsManager
     private let streamOrchestrator: StreamOrchestrator
     private var subscriptions: [AnyCancellable] = []
+    private var timer: Timer?
 
     let streamDetail: StreamDetail
     let settingsMode: SettingsMode
     let listViewPrimaryVideoQuality: VideoQuality
+    
+    private let singleViewRendererProvider: ViewRendererProvider = .init()
+    private let gridViewRendererProvider: ViewRendererProvider = .init()
+    private let listViewMainRendererProvider: ViewRendererProvider = .init()
+    private let listViewThumbnailRendererProvider: ViewRendererProvider = .init()
 
     @Published private(set) var state: State = .loading
+    @Published var isShowingDetailSingleViewScreen: Bool = false {
+        didSet {
+            guard
+                isShowingDetailSingleViewScreen != oldValue,
+                let selectedVideoSource = internalState.selectedVideoSource
+            else {
+                return
+            }
+            
+            selectVideoSource(selectedVideoSource)
+        }
+    }
 
     private var internalState: InternalState = .loading {
         didSet {
@@ -68,6 +100,11 @@ final class StreamViewModel: ObservableObject {
             if let newlySelectedAudioSource = internalState.selectedAudioSource,
                newlySelectedAudioSource.id != oldValue.selectedAudioSource?.id {
                 playAudio(for: newlySelectedAudioSource)
+            }
+            
+            // Stop PiP when there is no video streams
+            if !internalState.isShowingVideoStreams {
+                stopPiP()
             }
         }
     }
@@ -79,7 +116,8 @@ final class StreamViewModel: ObservableObject {
             sources: existingSources,
             selectedVideoSource: _,
             selectedAudioSource: _,
-            settings: _
+            settings: _,
+            detailSingleStreamViewModel: _
         ):
             return existingSources
         default:
@@ -106,25 +144,13 @@ final class StreamViewModel: ObservableObject {
         switch internalState {
         case let .success(
             displayMode: _,
-            sources: sources,
-            selectedVideoSource: selectedVideoSource,
-            selectedAudioSource: selectedAudioSource,
-            settings: _
+            sources: _,
+            selectedVideoSource: _,
+            selectedAudioSource: _,
+            settings: _,
+            detailSingleStreamViewModel: viewModel
         ):
-            return SingleStreamViewModel(
-                videoViewModels: sources.map {
-                    VideoRendererViewModel(
-                        streamSource: $0,
-                        isSelectedVideoSource: $0 == selectedVideoSource,
-                        isSelectedAudioSource: $0 == selectedAudioSource,
-                        showSourceLabel: false,
-                        showAudioIndicator: false,
-                        videoQuality: .auto
-                    )
-                },
-                selectedVideoSource: selectedVideoSource,
-                streamDetail: streamDetail
-            )
+            return viewModel
 
         default:
             return nil
@@ -143,7 +169,8 @@ final class StreamViewModel: ObservableObject {
             sources: sources,
             selectedVideoSource: _,
             selectedAudioSource: _,
-            settings: settings
+            settings: settings,
+            detailSingleStreamViewModel: _
         ):
             guard let matchingSource = sources.first(where: { $0.id == source.id }) else {
                 fatalError("Cannot select source thats not part of the current source list")
@@ -161,7 +188,8 @@ final class StreamViewModel: ObservableObject {
                     primaryVideoViewModel: VideoRendererViewModel(
                         streamSource: matchingSource,
                         isSelectedVideoSource: true,
-                        isSelectedAudioSource: matchingSource.id == selectedAudioSource?.id,
+                        isSelectedAudioSource: matchingSource.id == selectedAudioSource?.id, 
+                        isPiPView: !isShowingDetailSingleViewScreen,
                         showSourceLabel: showSourceLabels,
                         showAudioIndicator: matchingSource.id == selectedAudioSource?.id,
                         videoQuality: .auto
@@ -170,14 +198,16 @@ final class StreamViewModel: ObservableObject {
                         VideoRendererViewModel(
                             streamSource: $0,
                             isSelectedVideoSource: false,
-                            isSelectedAudioSource: $0.id == selectedAudioSource?.id,
+                            isSelectedAudioSource: $0.id == selectedAudioSource?.id, 
+                            isPiPView: false,
                             showSourceLabel: showSourceLabels,
                             showAudioIndicator: $0.id == selectedAudioSource?.id,
                             videoQuality: $0.videoQualityList.contains(.low) ? .low : .auto
                         )
-                    }
+                    }, 
+                    viewRendererProvider: gridViewRendererProvider
                 )
-
+                
                 updatedDisplayMode = .grid(gridViewModel)
             case .list:
                 let secondaryVideoSources = secondaryVideoSources(sources, matchingSource)
@@ -188,7 +218,8 @@ final class StreamViewModel: ObservableObject {
                     primaryVideoViewModel: VideoRendererViewModel(
                         streamSource: matchingSource,
                         isSelectedVideoSource: true,
-                        isSelectedAudioSource: matchingSource.id == selectedAudioSource?.id,
+                        isSelectedAudioSource: matchingSource.id == selectedAudioSource?.id, 
+                        isPiPView: !isShowingDetailSingleViewScreen,
                         showSourceLabel: showSourceLabels,
                         showAudioIndicator: matchingSource.id == selectedAudioSource?.id,
                         videoQuality: primaryVideoQuality
@@ -197,14 +228,17 @@ final class StreamViewModel: ObservableObject {
                         VideoRendererViewModel(
                             streamSource: $0,
                             isSelectedVideoSource: false,
-                            isSelectedAudioSource: $0.id == selectedAudioSource?.id,
+                            isSelectedAudioSource: $0.id == selectedAudioSource?.id, 
+                            isPiPView: false,
                             showSourceLabel: showSourceLabels,
                             showAudioIndicator: $0.id == selectedAudioSource?.id,
                             videoQuality: $0.videoQualityList.contains(.low) ? .low : .auto
                         )
-                    }
+                    },
+                    mainViewRendererProvider: listViewMainRendererProvider,
+                    thumbnailViewRendererProvider: listViewThumbnailRendererProvider
                 )
-
+                
                 updatedDisplayMode = .list(listViewModel)
             case .single:
                 let singleStreamViewModel = SingleStreamViewModel(
@@ -212,24 +246,43 @@ final class StreamViewModel: ObservableObject {
                         VideoRendererViewModel(
                             streamSource: $0,
                             isSelectedVideoSource: $0.id == matchingSource.id,
-                            isSelectedAudioSource: $0.id == selectedAudioSource?.id,
+                            isSelectedAudioSource: $0.id == selectedAudioSource?.id, 
+                            isPiPView: !isShowingDetailSingleViewScreen && $0.id == matchingSource.id,
                             showSourceLabel: false,
                             showAudioIndicator: false,
                             videoQuality: .auto
                         )
                     },
                     selectedVideoSource: matchingSource,
-                    streamDetail: streamDetail
+                    streamDetail: streamDetail, 
+                    viewRendererProvider: singleViewRendererProvider
                 )
                 updatedDisplayMode = .single(singleStreamViewModel)
             }
 
+            let detailSingleStreamViewModel = SingleStreamViewModel(
+                videoViewModels: sources.map {
+                    VideoRendererViewModel(
+                        streamSource: $0,
+                        isSelectedVideoSource: $0.id == matchingSource.id,
+                        isSelectedAudioSource: $0.id == selectedAudioSource?.id, 
+                        isPiPView: isShowingDetailSingleViewScreen && $0.id == matchingSource.id,
+                        showSourceLabel: false,
+                        showAudioIndicator: false,
+                        videoQuality: .auto
+                    )
+                },
+                selectedVideoSource: matchingSource,
+                streamDetail: streamDetail,
+                viewRendererProvider: singleViewRendererProvider
+            )
             internalState = .success(
                 displayMode: updatedDisplayMode,
                 sources: sources,
                 selectedVideoSource: matchingSource,
                 selectedAudioSource: selectedAudioSource,
-                settings: settings
+                settings: settings,
+                detailSingleStreamViewModel: detailSingleStreamViewModel
             )
         default:
             fatalError("Cannot select source when the state is not `.success`")
@@ -277,10 +330,10 @@ final class StreamViewModel: ObservableObject {
                         self.internalState = .error(.noInternet)
                     }
                 }
-                .store(in: &self.subscriptions)
+                .store(in: &subscriptions)
         }
     }
-
+    
     // swiftlint:disable cyclomatic_complexity function_body_length
     private func updateState(from sources: [StreamSource], settings: StreamSettings) {
         guard !sources.isEmpty else {
@@ -297,7 +350,7 @@ final class StreamViewModel: ObservableObject {
         }
 
         let selectedVideoSource: StreamSource
-
+        
         switch internalState {
         case .error, .loading:
             selectedVideoSource = sortedSources[0]
@@ -307,7 +360,8 @@ final class StreamViewModel: ObservableObject {
             sources: _,
             selectedVideoSource: currentlySelectedVideoSource,
             selectedAudioSource: _,
-            settings: _
+            settings: _,
+            detailSingleStreamViewModel: _
         ):
             selectedVideoSource = sources.first { $0.id == currentlySelectedVideoSource.id } ?? sortedSources[0]
         }
@@ -325,7 +379,8 @@ final class StreamViewModel: ObservableObject {
                 primaryVideoViewModel: VideoRendererViewModel(
                     streamSource: selectedVideoSource,
                     isSelectedVideoSource: true,
-                    isSelectedAudioSource: selectedVideoSource.id == selectedAudioSource?.id,
+                    isSelectedAudioSource: selectedVideoSource.id == selectedAudioSource?.id, 
+                    isPiPView: !isShowingDetailSingleViewScreen,
                     showSourceLabel: showSourceLabels,
                     showAudioIndicator: selectedVideoSource.id == selectedAudioSource?.id,
                     videoQuality: primaryVideoQuality
@@ -334,14 +389,17 @@ final class StreamViewModel: ObservableObject {
                     VideoRendererViewModel(
                         streamSource: $0,
                         isSelectedVideoSource: false,
-                        isSelectedAudioSource: $0.id == selectedAudioSource?.id,
+                        isSelectedAudioSource: $0.id == selectedAudioSource?.id, 
+                        isPiPView: false,
                         showSourceLabel: showSourceLabels,
                         showAudioIndicator: $0.id == selectedAudioSource?.id,
                         videoQuality: $0.videoQualityList.contains(.low) ? .low : .auto
                     )
-                }
+                },
+                mainViewRendererProvider: listViewMainRendererProvider,
+                thumbnailViewRendererProvider: listViewThumbnailRendererProvider
             )
-
+            
             displayMode = .list(listViewModel)
         case .grid:
             let secondaryVideoSources = sortedSources.filter { $0.id != selectedVideoSource.id }
@@ -351,7 +409,8 @@ final class StreamViewModel: ObservableObject {
                 primaryVideoViewModel: VideoRendererViewModel(
                     streamSource: selectedVideoSource,
                     isSelectedVideoSource: true,
-                    isSelectedAudioSource: selectedVideoSource.id == selectedAudioSource?.id,
+                    isSelectedAudioSource: selectedVideoSource.id == selectedAudioSource?.id, 
+                    isPiPView: !isShowingDetailSingleViewScreen,
                     showSourceLabel: showSourceLabels,
                     showAudioIndicator: selectedVideoSource.id == selectedAudioSource?.id,
                     videoQuality: .auto
@@ -360,14 +419,16 @@ final class StreamViewModel: ObservableObject {
                     VideoRendererViewModel(
                         streamSource: $0,
                         isSelectedVideoSource: false,
-                        isSelectedAudioSource: $0.id == selectedAudioSource?.id,
+                        isSelectedAudioSource: $0.id == selectedAudioSource?.id, 
+                        isPiPView: false,
                         showSourceLabel: showSourceLabels,
                         showAudioIndicator: $0.id == selectedAudioSource?.id,
                         videoQuality: $0.videoQualityList.contains(.low) ? .low : .auto
                     )
-                }
+                }, 
+                viewRendererProvider: gridViewRendererProvider
             )
-
+            
             displayMode = .grid(gridViewModel)
         case .single:
             let singleStreamViewModel = SingleStreamViewModel(
@@ -375,26 +436,46 @@ final class StreamViewModel: ObservableObject {
                     VideoRendererViewModel(
                         streamSource: $0,
                         isSelectedVideoSource: $0.id == selectedVideoSource.id,
-                        isSelectedAudioSource: $0.id == selectedAudioSource?.id,
+                        isSelectedAudioSource: $0.id == selectedAudioSource?.id, 
+                        isPiPView: !isShowingDetailSingleViewScreen && $0.id == selectedVideoSource.id,
                         showSourceLabel: false,
                         showAudioIndicator: false,
                         videoQuality: .auto
                     )
                 },
                 selectedVideoSource: selectedVideoSource,
-                streamDetail: streamDetail
+                streamDetail: streamDetail, 
+                viewRendererProvider: singleViewRendererProvider
             )
             displayMode = .single(singleStreamViewModel)
         }
 
+        let detailSingleStreamViewModel = SingleStreamViewModel(
+            videoViewModels: sortedSources.map {
+                VideoRendererViewModel(
+                    streamSource: $0,
+                    isSelectedVideoSource: $0.id == selectedVideoSource.id,
+                    isSelectedAudioSource: $0.id == selectedAudioSource?.id, 
+                    isPiPView: isShowingDetailSingleViewScreen && $0.id == selectedVideoSource.id,
+                    showSourceLabel: false,
+                    showAudioIndicator: false,
+                    videoQuality: .auto
+                )
+            },
+            selectedVideoSource: selectedVideoSource,
+            streamDetail: streamDetail,
+            viewRendererProvider: singleViewRendererProvider
+        )
         self.internalState = .success(
             displayMode: displayMode,
             sources: sortedSources,
             selectedVideoSource: selectedVideoSource,
             selectedAudioSource: selectedAudioSource,
-            settings: settings
+            settings: settings, 
+            detailSingleStreamViewModel: detailSingleStreamViewModel
         )
     }
+    // swiftlint:enable cyclomatic_complexity function_body_length
 
     private func updateStreamSettings(from sources: [StreamSource], settings: StreamSettings) {
         // Only update the settings when the sources change, only sources with at least one audio track
@@ -434,10 +515,11 @@ final class StreamViewModel: ObservableObject {
         }
         return selectedAudioSource
     }
-    // swiftlint:enable cyclomatic_complexity function_body_length
+    
+    private func stopPiP() {
+        PiPManager.shared.stopPiP()
+    }
 }
-
-// swiftlint:enable type_body_length
 
 fileprivate extension StreamViewModel.InternalState {
     var selectedAudioSource: StreamSource? {
@@ -447,11 +529,61 @@ fileprivate extension StreamViewModel.InternalState {
             sources: _,
             selectedVideoSource: _,
             selectedAudioSource: currentlySelectedAudioSource,
-            settings: _
+            settings: _,
+            detailSingleStreamViewModel: _
         ):
             return currentlySelectedAudioSource
         default:
             return nil
         }
     }
+    
+    var selectedVideoSource: StreamSource? {
+        switch self {
+        case let .success(
+            displayMode: _,
+            sources: _,
+            selectedVideoSource: currentlySelectedVideoSource,
+            selectedAudioSource: _,
+            settings: _,
+            detailSingleStreamViewModel: _
+        ):
+            return currentlySelectedVideoSource
+        default:
+            return nil
+        }
+    }
+    
+    var displayMode: StreamViewModel.DisplayMode? {
+        switch self {
+        case let .success(
+            displayMode: currentDisplayMode,
+            sources: _,
+            selectedVideoSource: _,
+            selectedAudioSource: _,
+            settings: _,
+            detailSingleStreamViewModel: _
+        ):
+            return currentDisplayMode
+        default:
+            return nil
+        }
+    }
+    
+    var isShowingVideoStreams: Bool {
+        switch self {
+        case let .success(
+            displayMode: _,
+            sources: sources,
+            selectedVideoSource: _,
+            selectedAudioSource: _,
+            settings: _,
+            detailSingleStreamViewModel: _
+        ):
+            return !sources.isEmpty
+        default:
+            return false
+        }
+    }
 }
+// swiftlint:enable type_body_length

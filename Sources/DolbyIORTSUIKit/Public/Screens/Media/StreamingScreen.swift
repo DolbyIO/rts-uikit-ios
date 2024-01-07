@@ -20,7 +20,6 @@ public struct StreamingScreen: View {
     }
     
     @StateObject private var viewModel: StreamViewModel
-    @State private var isShowingSingleViewScreen: Bool = false
     @State private var isShowingSettingsScreen: Bool = false
     @ObservedObject private var themeManager = ThemeManager.shared
     
@@ -47,12 +46,12 @@ public struct StreamingScreen: View {
         if let singleStreamUiState = viewModel.detailSingleStreamViewModel {
             SingleStreamView(
                 viewModel: singleStreamUiState,
-                isShowingDetailPresentation: true,
+                isShowingDetailPresentation: true, 
                 onSelect: {
                     viewModel.selectVideoSource($0)
                 },
                 onClose: {
-                    isShowingSingleViewScreen = false
+                    viewModel.isShowingDetailSingleViewScreen = false
                 }
             )
         } else {
@@ -68,7 +67,7 @@ public struct StreamingScreen: View {
                 ListView(
                     viewModel: listViewModel,
                     onPrimaryVideoSelection: { _ in
-                        isShowingSingleViewScreen = true
+                        viewModel.isShowingDetailSingleViewScreen = true
                     },
                     onSecondaryVideoSelection: {
                         viewModel.selectVideoSource($0)
@@ -77,7 +76,7 @@ public struct StreamingScreen: View {
             case let .single(SingleStreamViewModel):
                 SingleStreamView(
                     viewModel: SingleStreamViewModel,
-                    isShowingDetailPresentation: false,
+                    isShowingDetailPresentation: false, 
                     onSelect: {
                         viewModel.selectVideoSource($0)
                     }
@@ -87,7 +86,7 @@ public struct StreamingScreen: View {
                     viewModel: gridViewModel,
                     onVideoSelection: {
                         viewModel.selectVideoSource($0)
-                        isShowingSingleViewScreen = true
+                        viewModel.isShowingDetailSingleViewScreen = true
                     }
                 )
             }
@@ -185,7 +184,7 @@ public struct StreamingScreen: View {
                     destination: LazyNavigationDestinationView(
                         singleStreamDetailView
                     ),
-                    isActive: $isShowingSingleViewScreen
+                    isActive: $viewModel.isShowingDetailSingleViewScreen
                 ) {
                     EmptyView()
                 }
