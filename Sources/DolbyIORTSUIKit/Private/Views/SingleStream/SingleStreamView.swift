@@ -26,7 +26,6 @@ struct SingleStreamView: View {
     @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
 
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
-    @StateObject private var viewRendererProvider: ViewRendererProvider = .init()
 
     @ObservedObject private var themeManager = ThemeManager.shared
 
@@ -102,7 +101,7 @@ struct SingleStreamView: View {
                         let maxAllowedVideoHeight = proxy.size.height
                         VideoRendererView(
                             viewModel: videoRendererViewModel,
-                            viewRenderer: viewRendererProvider.renderer(for: videoRendererViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
+                            viewRenderer: viewModel.viewRendererProvider.renderer(for: videoRendererViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                             maxWidth: maxAllowedVideoWidth,
                             maxHeight: maxAllowedVideoHeight,
                             contentMode: .aspectFit

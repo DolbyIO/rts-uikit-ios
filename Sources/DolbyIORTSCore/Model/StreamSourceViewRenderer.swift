@@ -12,16 +12,29 @@ public class StreamSourceViewRenderer: Identifiable {
         static let defaultVideoTileSize = CGSize(width: 533, height: 300)
     }
 
-    private let renderer: MCIosVideoRenderer
-    
-    let videoTrack: MCVideoTrack
-
+    public let streamSource: StreamSource
+    public let videoTrack: MCVideoTrack
+    public let playbackView: MCSampleBufferVideoUIView
+    public let pipView: MCSampleBufferVideoUIView
     public let id = UUID()
 
+    private let renderer: MCIosVideoRenderer
+    
     public init(_ streamSource: StreamSource) {
+        self.streamSource = streamSource
         let videoTrack = streamSource.videoTrack.track
         self.renderer = MCIosVideoRenderer()
         self.videoTrack = videoTrack
+        
+        let playbackView = MCSampleBufferVideoUIView()
+        playbackView.scalingMode = .aspectFit
+        playbackView.attach(videoTrack: videoTrack, mirrored: false)
+        self.playbackView = playbackView
+        
+        let pipView = MCSampleBufferVideoUIView()
+        pipView.scalingMode = .aspectFit
+        pipView.attach(videoTrack: videoTrack, mirrored: false)
+        self.pipView = pipView
 
         Task {
             await MainActor.run {
@@ -36,10 +49,6 @@ public class StreamSourceViewRenderer: Identifiable {
 
     public var frameHeight: CGFloat {
         hasValidDimensions ? CGFloat(renderer.getHeight()) : Constants.defaultVideoTileSize.height
-    }
-
-    public var playbackView: UIView {
-        renderer.getView()
     }
 }
 
