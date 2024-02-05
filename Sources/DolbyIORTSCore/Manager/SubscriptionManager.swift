@@ -41,7 +41,7 @@ protocol SubscriptionManagerProtocol: AnyObject {
     var delegate: SubscriptionManagerDelegate? { get set }
 
     func connect(streamName: String, accountID: String, configuration: SubscriptionConfiguration) async -> Bool
-    func startSubscribe() async -> Bool
+    func startSubscribe(configuration: SubscriptionConfiguration) async -> Bool
     func stopSubscribe() async -> Bool
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder)
     func projectVideo(for source: StreamSource, withQuality quality: VideoQuality)
@@ -107,7 +107,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         return await task.value
     }
 
-    func startSubscribe() async -> Bool {
+    func startSubscribe(configuration: SubscriptionConfiguration) async -> Bool {
         let task = Task { [weak self] () -> Bool in
             Self.logger.debug("💼 Start subscribe")
 
@@ -125,7 +125,16 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
                 return false
             }
 
-            guard self.subscriber.subscribe() else {
+            let options = MCClientOptions()
+            options.videoJitterMinimumDelayMs = Int32(configuration.videoJitterMinimumDelayInMs)
+            options.statsDelayMs = Int32(configuration.statsDelayMs)
+            if let rtcEventLogOutputPath = configuration.rtcEventLogPath {
+                options.rtcEventLogOutputPath = rtcEventLogOutputPath
+            }
+            options.disableAudio = configuration.disableAudio
+            options.forcePlayoutDelay = configuration.noPlayoutDelay
+
+            guard self.subscriber.subscribe(with: options) else {
                 Self.logger.error("💼 Subscribe call has failed")
                 return false
             }
@@ -222,17 +231,6 @@ private extension SubscriptionManager {
 
     func makeSubscriber(with configuration: SubscriptionConfiguration) -> MCSubscriber? {
         let subscriber = MCSubscriber.create()
-                
-        let options = MCClientOptions()
-        options.videoJitterMinimumDelayMs = Int32(configuration.videoJitterMinimumDelayInMs)
-        options.statsDelayMs = Int32(configuration.statsDelayMs)
-        if let rtcEventLogOutputPath = configuration.rtcEventLogPath {
-            options.rtcEventLogOutputPath = rtcEventLogOutputPath
-        }
-        options.disableAudio = configuration.disableAudio
-        options.forcePlayoutDelay = configuration.noPlayoutDelay
-
-        subscriber?.setOptions(options)
         subscriber?.enableStats(configuration.enableStats)
 
         return subscriber
