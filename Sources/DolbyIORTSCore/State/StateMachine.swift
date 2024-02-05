@@ -146,7 +146,7 @@ final class StateMachine {
         }
     }
 
-    func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [MCLayerData]) {
+    func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [String]) {
         switch currentState {
         case let .subscribed(state):
             let streamTypes: [StreamSource.LowLevelVideoQuality]

@@ -22,7 +22,7 @@ protocol SubscriptionManagerDelegate: AnyObject {
 
     func onStopped()
 
-    func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [MCLayerData])
+    func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [String])
 
     func onConnected()
 
@@ -93,7 +93,10 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
 
             self.subscriber.setCredentials(credentials)
 
-            guard self.subscriber.connect() else {
+            let connectionOptions = MCConnectionOptions()
+            connectionOptions.autoReconnect = configuration.autoReconnect
+            
+            guard self.subscriber.connect(with: connectionOptions) else {
                 Self.logger.error("💼 Subscriber has failed to connect")
                 return false
             }
@@ -221,7 +224,6 @@ private extension SubscriptionManager {
         let subscriber = MCSubscriber.create()
                 
         let options = MCClientOptions()
-        options.autoReconnect = configuration.autoReconnect
         options.videoJitterMinimumDelayMs = Int32(configuration.videoJitterMinimumDelayInMs)
         options.statsDelayMs = Int32(configuration.statsDelayMs)
         if let rtcEventLogOutputPath = configuration.rtcEventLogPath {
@@ -294,7 +296,7 @@ extension SubscriptionManager: MCSubscriberListener {
         Self.logger.debug("💼 Delegate - onVad with mid \(mid), sourceId \(sourceId)")
     }
 
-    func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [MCLayerData]) {
+    func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [String]) {
         Self.logger.debug("💼 Delegate - onLayers for mid - \(mid) with activeLayers \(activeLayers), inactiveLayers \(inactiveLayers)")
         delegate?.onLayers(mid, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
     }

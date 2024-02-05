@@ -324,10 +324,10 @@ extension StreamOrchestrator: SubscriptionManagerDelegate {
         }
     }
 
-    nonisolated func onLayers(_ mid_: String, activeLayers: [MCLayerData], inactiveLayers: [MCLayerData]) {
+    nonisolated func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [String]) {
         Task { @StreamOrchestrator [weak self] in
             guard let self = self else { return }
-            self.stateMachine.onLayers(mid_, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
+            self.stateMachine.onLayers(mid, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
         }
     }
 
