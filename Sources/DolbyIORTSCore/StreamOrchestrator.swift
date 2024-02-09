@@ -29,6 +29,8 @@ public final actor StreamOrchestrator {
         .eraseToAnyPublisher()
     private var activeStreamDetail: StreamDetail?
     private let logHandler: MillicastLoggerHandler = .init()
+    
+    private var subscriptionConfiguration: SubscriptionConfiguration = .init()
 
     private init() {
         self.init(
@@ -57,6 +59,7 @@ public final actor StreamOrchestrator {
     public func connect(streamName: String, accountID: String, configuration: SubscriptionConfiguration = .init()) async -> Bool {
         Self.logger.debug("👮‍♂️ Start subscribe")
         logHandler.setLogFilePath(filePath: configuration.sdkLogPath)
+        self.subscriptionConfiguration = configuration
         
         async let startConnectionStateUpdate: Void = stateMachine.startConnection(
             streamName: streamName,
@@ -220,7 +223,7 @@ private extension StreamOrchestrator {
 
     func startSubscribe() async -> Bool {
         stateMachine.startSubscribe()
-        return await subscriptionManager.startSubscribe()
+        return await subscriptionManager.startSubscribe(configuration: subscriptionConfiguration)
     }
     
     func stopAudio(for sourceId: String?) {
@@ -236,6 +239,7 @@ private extension StreamOrchestrator {
     func reset() {
         activeStreamDetail = nil
         logHandler.setLogFilePath(filePath: nil)
+        subscriptionConfiguration = .init()
     }
 }
 
@@ -324,10 +328,10 @@ extension StreamOrchestrator: SubscriptionManagerDelegate {
         }
     }
 
-    nonisolated func onLayers(_ mid_: String, activeLayers: [MCLayerData], inactiveLayers: [MCLayerData]) {
+    nonisolated func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [String]) {
         Task { @StreamOrchestrator [weak self] in
             guard let self = self else { return }
-            self.stateMachine.onLayers(mid_, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
+            self.stateMachine.onLayers(mid, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
         }
     }
 

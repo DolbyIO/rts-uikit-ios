@@ -14,6 +14,7 @@ final class VideoRendererViewModel: ObservableObject {
     private let streamOrchestrator: StreamOrchestrator
     let isSelectedVideoSource: Bool
     let isSelectedAudioSource: Bool
+    let isPiPView: Bool
     let streamSource: StreamSource
     let showSourceLabel: Bool
     let showAudioIndicator: Bool
@@ -23,6 +24,7 @@ final class VideoRendererViewModel: ObservableObject {
         streamSource: StreamSource,
         isSelectedVideoSource: Bool,
         isSelectedAudioSource: Bool,
+        isPiPView: Bool,
         showSourceLabel: Bool,
         showAudioIndicator: Bool,
         videoQuality: VideoQuality,
@@ -31,6 +33,7 @@ final class VideoRendererViewModel: ObservableObject {
         self.streamSource = streamSource
         self.isSelectedVideoSource = isSelectedVideoSource
         self.isSelectedAudioSource = isSelectedAudioSource
+        self.isPiPView = isPiPView
         self.showSourceLabel = showSourceLabel
         self.showAudioIndicator = showAudioIndicator
         self.videoQuality = videoQuality
