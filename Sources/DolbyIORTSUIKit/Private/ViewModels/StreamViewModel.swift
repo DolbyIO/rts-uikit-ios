@@ -290,22 +290,22 @@ final class StreamViewModel: ObservableObject {
     }
     // swiftlint:enable function_body_length
 
-    func endStream() async {
-        _ = await streamOrchestrator.stopConnection()
+    func endStream() async throws {
+        _ = try await streamOrchestrator.stopConnection()
         subscriptions.removeAll()
     }
 
     func playAudio(for source: StreamSource) {
         Task { @StreamOrchestrator [weak self] in
             guard let self = self else { return }
-            await self.streamOrchestrator.playAudio(for: source)
+            try await self.streamOrchestrator.playAudio(for: source)
         }
     }
 
     func stopAudio(for source: StreamSource) {
         Task { @StreamOrchestrator [weak self] in
             guard let self = self else { return }
-            await self.streamOrchestrator.stopAudio(for: source)
+            try await self.streamOrchestrator.stopAudio(for: source)
         }
     }
 
@@ -320,7 +320,7 @@ final class StreamViewModel: ObservableObject {
                     switch state {
                     case let .subscribed(sources: sources, numberOfStreamViewers: _):
                         self.updateState(from: sources, settings: settings)
-                    case .connecting, .subscribing, .connected:
+                    case .connected:
                         self.internalState = .loading
                     case let .error(streamError):
                         self.internalState = .error(ErrorViewModel(error: streamError))

@@ -17,9 +17,7 @@ struct AudioTrackAndMid {
 
 enum State: CustomStringConvertible {
     case disconnected
-    case connecting
     case connected
-    case subscribing
     case subscribed(SubscribedState)
     case stopped
     case error(ErrorState)
@@ -28,12 +26,8 @@ enum State: CustomStringConvertible {
         switch self {
         case .disconnected:
             return "disconnected"
-        case .connecting:
-            return "connecting"
         case .connected:
             return "connected"
-        case .subscribing:
-            return "subscribing"
         case .subscribed:
             return "subscribed"
         case .stopped:
@@ -49,27 +43,21 @@ struct SubscribedState {
     private(set) var streamSourceBuilders: [StreamSourceBuilder]
     private(set) var numberOfStreamViewers: Int
     private(set) var streamingStats: AllStreamStatistics?
-    private(set) var cachedSourceZeroVideoTrackAndMid: VideoTrackAndMid?
-    private(set) var cachedSourceZeroAudioTrackAndMid: AudioTrackAndMid?
     private(set) var configuration: SubscriptionConfiguration
 
-    init(cachedVideoTrackDetail: VideoTrackAndMid?, cachedAudioTrackDetail: AudioTrackAndMid?, configuration: SubscriptionConfiguration) {
-        cachedSourceZeroVideoTrackAndMid = cachedVideoTrackDetail
-        cachedSourceZeroAudioTrackAndMid = cachedAudioTrackDetail
+    init(configuration: SubscriptionConfiguration) {
         self.configuration = configuration
         streamSourceBuilders = []
         numberOfStreamViewers = 0
     }
 
-    mutating func add(streamId: String, sourceId: String?, tracks: [String]) {
+    mutating func add(streamId: String, sourceId: String?, tracks: [String], cachedVideoTrackDetail: VideoTrackAndMid? = nil, cachedAudioTrackDetail: AudioTrackAndMid? = nil) {
         let streamSourceBuilder = StreamSourceBuilder(streamId: streamId, sourceId: sourceId, tracks: tracks)
-        if let videoTrackAndMid = cachedSourceZeroVideoTrackAndMid {
+        if let videoTrackAndMid = cachedVideoTrackDetail {
             streamSourceBuilder.addVideoTrack(videoTrackAndMid.videoTrack, mid: videoTrackAndMid.mid)
-            cachedSourceZeroVideoTrackAndMid = nil
         }
-        if let audioTrackAndMid = cachedSourceZeroAudioTrackAndMid {
+        if let audioTrackAndMid = cachedAudioTrackDetail {
             streamSourceBuilder.addAudioTrack(audioTrackAndMid.audioTrack, mid: audioTrackAndMid.mid)
-            cachedSourceZeroAudioTrackAndMid = nil
         }
         streamSourceBuilders.append(streamSourceBuilder)
     }
