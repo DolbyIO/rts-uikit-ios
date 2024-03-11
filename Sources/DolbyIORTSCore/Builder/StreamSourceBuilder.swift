@@ -18,19 +18,12 @@ final class StreamSourceBuilder {
         let trackID: String
         let mediaType: StreamSource.MediaType
 
-        /// Initialises the Track Item, if possible from the passed-in String
-        /// - Parameter track: A string value passed in by the SDK and is expected to be of format `{mediaType}/{trackID}`
         init?(track: String) {
-            let trackInfoList = track.split(separator: "/")
-
-            guard
-                trackInfoList.count == 2,
-                let mediaType = StreamSource.MediaType(rawValue: String(trackInfoList[0].lowercased()))
-            else {
+            guard let mediaType = StreamSource.MediaType(rawValue: track) else {
                 return nil
             }
             self.mediaType = mediaType
-            self.trackID = String(trackInfoList[1])
+            self.trackID = track
         }
     }
 

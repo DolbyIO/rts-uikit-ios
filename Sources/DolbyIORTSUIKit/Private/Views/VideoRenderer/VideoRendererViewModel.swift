@@ -40,9 +40,9 @@ final class VideoRendererViewModel: ObservableObject {
         self.streamOrchestrator = streamOrchestrator
     }
     
-    func playVideo(on viewRenderer: StreamSourceViewRenderer, quality: VideoQuality? = nil) {
+    func playVideo(on viewRenderer: StreamSourceViewRenderer, quality: VideoQuality? = nil)  {
         Task { @StreamOrchestrator in
-            await self.streamOrchestrator.playVideo(
+            try await self.streamOrchestrator.playVideo(
                 for: streamSource,
                 on: viewRenderer,
                 with: quality ?? videoQuality
@@ -52,7 +52,7 @@ final class VideoRendererViewModel: ObservableObject {
 
     func stopVideo(on viewRenderer: StreamSourceViewRenderer) {
         Task { @StreamOrchestrator in
-            await self.streamOrchestrator.stopVideo(
+            try await self.streamOrchestrator.stopVideo(
                 for: streamSource,
                 on: viewRenderer
             )

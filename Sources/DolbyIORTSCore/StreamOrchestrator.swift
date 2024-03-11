@@ -19,8 +19,6 @@ public final actor StreamOrchestrator {
     public static let shared: StreamOrchestrator = StreamOrchestrator()
 
     private let stateMachine: StateMachine = StateMachine(initialState: .disconnected)
-    private let subscriptionManager: SubscriptionManagerProtocol
-    private let rendererRegistry: RendererRegistryProtocol
 
     private var subscriptions: Set<AnyCancellable> = []
     private lazy var stateSubject: CurrentValueSubject<StreamState, Never> = CurrentValueSubject(.disconnected)
@@ -30,24 +28,18 @@ public final actor StreamOrchestrator {
     private var activeStreamDetail: StreamDetail?
     private let logHandler: MillicastLoggerHandler = .init()
     
-    private var subscriptionConfiguration: SubscriptionConfiguration = .init()
-
-    private init() {
-        self.init(
-            subscriptionManager: SubscriptionManager(),
-            rendererRegistry: RendererRegistry()
-        )
-    }
+    private var rendererRegistry: RendererRegistryProtocol?
+    private var subscriptionManager: SubscriptionManagerProtocol?
+    private var subscriptionConfiguration: SubscriptionConfiguration?
     
-    init(
-        subscriptionManager: SubscriptionManagerProtocol,
-        rendererRegistry: RendererRegistryProtocol
-    ) {
-        self.subscriptionManager = subscriptionManager
-        self.rendererRegistry = rendererRegistry
+    private var stateObservationTask: Task<Void, Error>?
+    private var statsObservationTask: Task<Void, Error>?
+    private var activityObservationTask: Task<Void, Error>?
+    private var tracksObservationTask: Task<Void, Error>?
+    private var layersObservationTask: Task<Void, Error>?
+    private var viewerObservationTask: Task<Void, Error>?
 
-        self.subscriptionManager.delegate = self
-
+    init() {
         Utils.configureAudioSession()
 
         Task { [weak self] in
@@ -56,40 +48,55 @@ public final actor StreamOrchestrator {
         }
     }
 
-    public func connect(streamName: String, accountID: String, configuration: SubscriptionConfiguration = .init()) async -> Bool {
+    public func connect(streamName: String, accountID: String, configuration: SubscriptionConfiguration = .init()) async throws -> Bool {
         Self.logger.debug("👮‍♂️ Start subscribe")
         logHandler.setLogFilePath(filePath: configuration.sdkLogPath)
+        let subscriptionManager = SubscriptionManager(configuration: configuration)
+
+        self.observeSubscriptionManagerEvents()
+        self.subscriptionManager = subscriptionManager
         self.subscriptionConfiguration = configuration
-        
+        self.rendererRegistry = RendererRegistry()
+
         async let startConnectionStateUpdate: Void = stateMachine.startConnection(
             streamName: streamName,
             accountID: accountID,
             configuration: configuration
         )
-        async let startConnection = subscriptionManager.connect(streamName: streamName, accountID: accountID, configuration: configuration)
+        async let startConnection = subscriptionManager.connect(streamName: streamName, accountID: accountID)
         
-        let (_, connectionResult) = await (startConnectionStateUpdate, startConnection)
+        let (_, connectionResult) = try await (startConnectionStateUpdate, startConnection)
         if connectionResult {
             activeStreamDetail = StreamDetail(streamName: streamName, accountID: accountID)
         } else {
             activeStreamDetail = nil
         }
-        return connectionResult
+        
+        stateMachine.onConnected()
+
+        let subscribeResult = try await subscriptionManager.subscribe()
+        
+        stateMachine.onSubscribed()
+
+        return subscribeResult
     }
 
-    public func stopConnection() async -> Bool {
+    public func stopConnection() async throws -> Bool {
         Self.logger.debug("👮‍♂️ Stop subscribe")
-        reset()
         
         async let stopSubscribeOnStateMachine: Void = stateMachine.stopSubscribe()
-        async let resetRegistry: Void = rendererRegistry.reset()
-        async let stopSubscription: Bool = await subscriptionManager.stopSubscribe()
-        let (_, _, stopSubscribeResult) = await (stopSubscribeOnStateMachine, resetRegistry, stopSubscription)
-        return stopSubscribeResult
+        async let resetRegistry: Void? = rendererRegistry?.reset()
+        async let stopSubscription: Bool? = await subscriptionManager?.unubscribeAndDisconnect()
+        let (_, _, stopSubscribeResult) = try await (stopSubscribeOnStateMachine, resetRegistry, stopSubscription)
+        
+        reset()
+        return stopSubscribeResult ?? false
     }
 
-    public func playAudio(for source: StreamSource) async {
+    public func playAudio(for source: StreamSource) async throws {
         Self.logger.debug("👮‍♂️ Play Audio for source - \(String(describing: source.sourceId.value))")
+        guard let subscriptionManager else { return }
+
         switch stateMachine.currentState {
         case let .subscribed(subscribedState):
             guard
@@ -98,24 +105,33 @@ public final actor StreamOrchestrator {
             else {
                 return
             }
-            for source in subscribedState.sources {
-                guard source.isPlayingAudio else {
-                    continue
+            
+            await withThrowingTaskGroup(of: Void.self) { [self] group in
+                for source in subscribedState.sources {
+                    guard source.isPlayingAudio else {
+                        continue
+                    }
+                    
+                    group.addTask {
+                        self.stateMachine.setPlayingAudio(false, for: source)
+                        try await subscriptionManager.unprojectAudio(for: source)
+                    }
                 }
                 
-                stateMachine.setPlayingAudio(false, for: source)
-                subscriptionManager.unprojectAudio(for: source)
+                group.addTask {
+                    try await subscriptionManager.projectAudio(for: source)
+                    self.stateMachine.setPlayingAudio(true, for: source)
+                }
             }
             
-            subscriptionManager.projectAudio(for: source)
-            stateMachine.setPlayingAudio(true, for: source)
         default:
             return
         }
     }
 
-    public func stopAudio(for source: StreamSource) async {
+    public func stopAudio(for source: StreamSource) async throws  {
         Self.logger.debug("👮‍♂️ Stop Audio for source - \(String(describing: source.sourceId.value))")
+        guard let subscriptionManager else { return }
 
         switch stateMachine.currentState {
         case let .subscribed(subscribedState):
@@ -125,7 +141,7 @@ public final actor StreamOrchestrator {
             else {
                 return
             }
-            subscriptionManager.unprojectAudio(for: matchingSource)
+            try await subscriptionManager.unprojectAudio(for: matchingSource)
             stateMachine.setPlayingAudio(false, for: matchingSource)
 
         default:
@@ -133,8 +149,9 @@ public final actor StreamOrchestrator {
         }
     }
 
-    public func playVideo(for source: StreamSource, on renderer: StreamSourceViewRenderer, with quality: VideoQuality) async {
+    public func playVideo(for source: StreamSource, on renderer: StreamSourceViewRenderer, with quality: VideoQuality) async throws {
         Self.logger.debug("👮‍♂️ Play Video for source - \(String(describing: source.sourceId.value)) on renderer - \(renderer.id) with quality - \(quality.description)")
+        guard let subscriptionManager, let rendererRegistry else { return }
 
         switch stateMachine.currentState {
         case let .subscribed(subscribedState):
@@ -146,11 +163,10 @@ public final actor StreamOrchestrator {
             let videoTrack = matchingSource.videoTrack.track
             rendererRegistry.registerRenderer(renderer, with: quality)
             let requestedVideoQuality = rendererRegistry.requestedVideoQuality(for: videoTrack)
-            let videoQualityToRender = matchingSource.videoQualityList.contains(requestedVideoQuality) ?
-                requestedVideoQuality : .auto
+            let videoQualityToRender = matchingSource.videoQualityList.contains(requestedVideoQuality) ? requestedVideoQuality : .auto
             
             if !matchingSource.isPlayingVideo || matchingSource.selectedVideoQuality != videoQualityToRender {
-                subscriptionManager.projectVideo(for: matchingSource, withQuality: videoQualityToRender)
+                try await subscriptionManager.projectVideo(for: matchingSource, withQuality: videoQualityToRender)
                 stateMachine.setPlayingVideo(true, for: matchingSource)
                 stateMachine.selectVideoQuality(videoQualityToRender, for: matchingSource)
             }
@@ -160,8 +176,9 @@ public final actor StreamOrchestrator {
         }
     }
 
-    public func stopVideo(for source: StreamSource, on renderer: StreamSourceViewRenderer) async {
+    public func stopVideo(for source: StreamSource, on renderer: StreamSourceViewRenderer) async throws {
         Self.logger.debug("👮‍♂️ Stop Video for source - \(String(describing: source.sourceId.value)) on renderer - \(renderer.id)")
+        guard let subscriptionManager, let rendererRegistry else { return }
 
         switch stateMachine.currentState {
         case let .subscribed(subscribedState):
@@ -176,7 +193,7 @@ public final actor StreamOrchestrator {
 
             let hasActiveRenderer = rendererRegistry.hasActiveRenderer(for: videoTrack)
             if !hasActiveRenderer {
-                subscriptionManager.unprojectVideo(for: source)
+                try await subscriptionManager.unprojectVideo(for: source)
                 stateMachine.setPlayingVideo(false, for: matchingSource)
                 stateMachine.onLayers(
                     matchingSource.videoTrack.trackInfo.mid,
@@ -185,11 +202,10 @@ public final actor StreamOrchestrator {
                 )
             } else {
                 let requestedVideoQuality = rendererRegistry.requestedVideoQuality(for: videoTrack)
-                let videoQualityToRender = matchingSource.videoQualityList.contains(requestedVideoQuality) ?
-                    requestedVideoQuality : .auto
+                let videoQualityToRender = matchingSource.videoQualityList.contains(requestedVideoQuality) ? requestedVideoQuality : .auto
                 
                 if matchingSource.selectedVideoQuality != videoQualityToRender {
-                    subscriptionManager.projectVideo(for: matchingSource, withQuality: videoQualityToRender)
+                    try await subscriptionManager.projectVideo(for: matchingSource, withQuality: videoQualityToRender)
                     stateMachine.setPlayingVideo(true, for: matchingSource)
                     stateMachine.selectVideoQuality(videoQualityToRender, for: matchingSource)
                 }
@@ -210,27 +226,24 @@ private extension StreamOrchestrator {
                 Task { [weak self] in
                     guard let self = self else { return }
                     // Populate updates public facing states
-                    await self.stateSubject.send(StreamState(state: state))
+                    let streamState = StreamState(state: state)
+                    await self.stateSubject.send(streamState)
                 }
             }
             .store(in: &subscriptions)
     }
     
-    func reconnectToStream(streamDetail: StreamDetail) async {
+    func reconnectToStream(streamDetail: StreamDetail) async throws {
         Self.logger.debug("👮‍♂️ Attempting a reconnect")
-        _ = await connect(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
-    }
-
-    func startSubscribe() async -> Bool {
-        stateMachine.startSubscribe()
-        return await subscriptionManager.startSubscribe(configuration: subscriptionConfiguration)
+        _ = try await connect(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
     }
     
-    func stopAudio(for sourceId: String?) {
+    func stopAudio(for sourceId: String?) async throws {
+        guard let subscriptionManager else { return }
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
             if let source = sources.first (where: { $0.sourceId == StreamSource.SourceId(id: sourceId) }), source.isPlayingAudio {
-                subscriptionManager.unprojectAudio(for: source)
+                try await subscriptionManager.unprojectAudio(for: source)
             }
         default: break
         }
@@ -239,128 +252,119 @@ private extension StreamOrchestrator {
     func reset() {
         activeStreamDetail = nil
         logHandler.setLogFilePath(filePath: nil)
-        subscriptionConfiguration = .init()
+        subscriptionConfiguration = nil
+        subscriptionManager = nil
+        rendererRegistry = nil
+        
+        stateObservationTask?.cancel()
+        stateObservationTask = nil
+        
+        statsObservationTask?.cancel()
+        statsObservationTask = nil
     }
 }
 
 // MARK: SubscriptionManagerDelegate implementation
 
-extension StreamOrchestrator: SubscriptionManagerDelegate {
+extension StreamOrchestrator {
     
-    nonisolated func onDisconnected() {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onDisconnected()
-        }
-    }
-    
-    nonisolated func onSubscribedError(_ reason: String) {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onSubscribedError(reason)
-        }
-    }
+    func observeSubscriptionManagerEvents() {
+        Task {
+            self.stateObservationTask = Task { @StreamOrchestrator [weak self] in
+                guard let self, let subscriptionManager = await self.subscriptionManager else { return }
+                for await state in subscriptionManager.state {
+                    switch state {
+                    case .connected:
+                        self.stateMachine.onConnected()
 
-    nonisolated func onSignalingError(_ message: String) {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onSignalingError(message)
-        }
-    }
+                    case .disconnected:
+                        self.stateMachine.onDisconnected()
 
-    nonisolated func onConnectionError(_ status: Int32, withReason reason: String) {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onConnectionError(status, withReason: reason)
-        }
-    }
-
-    nonisolated func onStopped() {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onStopped()
-        }
-    }
-
-    nonisolated func onConnected() {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onConnected()
-            _ = await self.startSubscribe()
-        }
-    }
-
-    nonisolated func onSubscribed() {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onSubscribed()
-        }
-    }
-
-    nonisolated func onVideoTrack(_ track: MCVideoTrack, withMid mid: String) {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onVideoTrack(track, withMid: mid)
-        }
-    }
-
-    nonisolated func onAudioTrack(_ track: MCAudioTrack, withMid mid: String) {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onAudioTrack(track, withMid: mid)
-        }
-    }
-
-    nonisolated public func onStatsReport(_ report: MCStatsReport) {
-        guard let streamingStats = AllStreamStatistics(report) else {
-            return
-        }
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onStatsReport(streamingStats)
-        }
-    }
-
-    nonisolated func onViewerCount(_ count: Int32) {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.updateNumberOfStreamViewers(count)
-        }
-    }
-
-    nonisolated func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [String]) {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onLayers(mid, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
-        }
-    }
-
-    nonisolated func onActive(_ streamId: String, tracks: [String], sourceId: String?) {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            self.stateMachine.onActive(streamId, tracks: tracks, sourceId: sourceId)
-            let stateMachineState = self.stateMachine.currentState
-            switch stateMachineState {
-            case let .subscribed(state):
-                guard let sourceBuilder = state.streamSourceBuilders.first(where: { $0.sourceId == StreamSource.SourceId(id: sourceId) }) else {
-                    return
+                    case let .connectionError(status: status, reason: reason):
+                        self.stateMachine.onConnectionError(status, withReason: reason)
+                        
+                    case .subscribed:
+                        self.stateMachine.onSubscribed()
+                        
+                    case let .signalingError(reason: reason):
+                        self.stateMachine.onSignalingError(reason)
+                    }
+                                        
                 }
-                self.subscriptionManager.addRemoteTrack(sourceBuilder)
-
-            default:
-                return
             }
-        }
-    }
-
-    nonisolated func onInactive(_ streamId: String, sourceId: String?) {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
             
-            // Unproject audio whose source is inactive
-            await self.stopAudio(for: sourceId)
+            self.viewerObservationTask = Task { @StreamOrchestrator [weak self] in
+                guard let self, let subscriptionManager = await self.subscriptionManager else { return }
+                for await viewerCount in subscriptionManager.viewerCount {
+                    self.stateMachine.updateNumberOfStreamViewers(viewerCount)
+                }
+            }
+            
+            self.activityObservationTask = Task { @StreamOrchestrator [weak self] in
+                guard let self, let subscriptionManager = await self.subscriptionManager else { return }
+                for await activity in subscriptionManager.activityStream {
+                    switch activity {
+                    case let .active(streamId: streamId, tracks: tracks, sourceId: sourceId):
+                        self.stateMachine.onActive(streamId, tracks: tracks, sourceId: sourceId)
+                        let stateMachineState = self.stateMachine.currentState
+                        switch stateMachineState {
+                        case let .subscribed(state):
+                            guard  let sourceBuilder = state.streamSourceBuilders.first(where: { $0.sourceId == StreamSource.SourceId(id: sourceId) }) else {
+                                return
+                            }
+                            await subscriptionManager.addRemoteTrack(sourceBuilder)
 
-            self.stateMachine.onInactive(streamId, sourceId: sourceId)
+                        default:
+                            return
+                        }
+
+                    case let .inactive(streamId: streamId, sourceId: sourceId):
+                        // Unproject audio whose source is inactive
+                        try await self.stopAudio(for: sourceId)
+
+                        self.stateMachine.onInactive(streamId, sourceId: sourceId)
+                    }
+                }
+            }
+            
+            self.tracksObservationTask = Task { @StreamOrchestrator [weak self] in
+                guard let self, let subscriptionManager = await self.subscriptionManager else { return }
+                
+                for await trackEvent in subscriptionManager.tracks {
+                    switch trackEvent {
+                    case let .audio(track: track, mid: mid):
+                        self.stateMachine.onAudioTrack(track, withMid: mid)
+
+                    case let .video(track: track, mid: mid):
+                        self.stateMachine.onVideoTrack(track, withMid: mid)
+                    }
+                }
+            }
+            
+            self.layersObservationTask = Task { @StreamOrchestrator [weak self] in
+                guard let self, let subscriptionManager = await self.subscriptionManager else { return }
+                
+                for await layerEvent in subscriptionManager.layers {
+                    self.stateMachine.onLayers(layerEvent.mid, activeLayers: layerEvent.activeLayers, inactiveLayers: layerEvent.inactiveLayers)
+                }
+            }
+            
+            self.statsObservationTask = Task { @StreamOrchestrator [weak self] in
+                guard let self, let subscriptionManager = await self.subscriptionManager else { return }
+                for await stats in subscriptionManager.statsReport {
+                    guard let streamingStats = AllStreamStatistics(stats) else { return }
+                    self.stateMachine.onStatsReport(streamingStats)
+                }
+            }
+            
+            _ = try await [
+                self.stateObservationTask?.value,
+                self.tracksObservationTask?.value,
+                self.activityObservationTask?.value,
+                self.layersObservationTask?.value,
+                self.statsObservationTask?.value,
+                self.viewerObservationTask?.value
+            ]
         }
     }
 }

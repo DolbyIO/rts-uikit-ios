@@ -226,7 +226,7 @@ extension StreamingScreen {
     func endStream() {
         onClose()
         Task {
-            await viewModel.endStream()
+            try await viewModel.endStream()
         }
     }
 }
