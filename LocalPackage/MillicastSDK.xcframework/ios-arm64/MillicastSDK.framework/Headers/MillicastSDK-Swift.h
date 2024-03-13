@@ -320,6 +320,8 @@ SWIFT_CLASS("_TtC12MillicastSDK24MCAcceleratedVideoUIView")
 
 
 
+
+
 /// @brief a view that uses AVSampleBufferDisplayLayer as a backend for rendering.
 SWIFT_CLASS("_TtC12MillicastSDK25MCSampleBufferVideoUIView")
 @interface MCSampleBufferVideoUIView : UIView
@@ -338,6 +340,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) Class _Nonnull layer
 - (BOOL)canHandleMoreFrames SWIFT_WARN_UNUSED_RESULT;
 - (void)didReceiveSampleBuffer:(CMSampleBufferRef _Null_unspecified)buffer;
 @end
+
+
 
 
 
