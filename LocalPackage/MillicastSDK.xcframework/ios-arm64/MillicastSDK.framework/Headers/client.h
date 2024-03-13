@@ -310,7 +310,7 @@ MILLICAST_API @protocol MCClient
  * @param completionHandler handler invoked when the result is ready.
  */
 - (void)enableStats:(BOOL)enable 
-  completionHandler:(nonnull void (^)(NSError * _Nullable)) completionHandler;
+  completionHandler:(nonnull void (^)(void)) completionHandler;
 
 /**
  * @brief Add frame transformer so you can add metadata to video  frames. Disabled by default.
@@ -318,7 +318,7 @@ MILLICAST_API @protocol MCClient
  * @param completionHandler handler invoked when the result is ready.
  */
 - (void)enableFrameTransformer:(BOOL)enable
-             completionHandler:(nonnull void (^)(NSError * _Nullable)) completionHandler;
+             completionHandler:(nonnull void (^)(void)) completionHandler;
 
 /**
  * @brief Get the transceiver mid associated to a track.

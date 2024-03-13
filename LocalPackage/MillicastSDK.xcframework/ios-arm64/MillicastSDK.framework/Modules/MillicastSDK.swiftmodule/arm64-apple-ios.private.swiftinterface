@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-compiler-version: Apple Swift version 5.9.2 (swiftlang-5.9.2.2.56 clang-1500.1.0.2.5)
 // swift-module-flags: -target arm64-apple-ios14.5 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name MillicastSDK
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import AVFoundation
@@ -12,19 +12,10 @@ import SwiftUI
 import UIKit
 import _Concurrency
 import _StringProcessing
+import _SwiftConcurrencyShims
 extension MillicastSDK.MCPublisher {
-  public enum StateEvent : Swift.Equatable {
-    case connected
-    case publishing
-    case disconnected
-    case active
-    case inactive
-    case viewerCount(Swift.Int32)
-    case connectionError(status: Swift.Int32, reason: Swift.String)
-    case signalingError(message: Swift.String)
-    public static func == (a: MillicastSDK.MCPublisher.StateEvent, b: MillicastSDK.MCPublisher.StateEvent) -> Swift.Bool
-  }
-  public typealias StateAsyncStream = _Concurrency.AsyncStream<MillicastSDK.MCPublisher.StateEvent>
+  public typealias State = MillicastSDK.MCPublisherState
+  public typealias StateAsyncStream = _Concurrency.AsyncStream<MillicastSDK.MCPublisher.State>
   public var state: MillicastSDK.MCPublisher.StateAsyncStream {
     get
   }
@@ -48,24 +39,89 @@ extension MillicastSDK.MCPublisher {
   }
   #endif
 }
-extension MillicastSDK.MCSubscriber {
-  public enum StateEvent : Swift.Equatable {
-    case connected
-    case subscribed
-    case active(streamId: Swift.String, tracks: [Swift.String], sourceId: Swift.String)
-    case inactive(streamId: Swift.String, sourceId: Swift.String)
-    case videoTrack(_: MillicastSDK.MCVideoTrack, mid: Swift.String)
-    case audioTrack(_: MillicastSDK.MCAudioTrack, mid: Swift.String)
-    case layers(mid: Swift.String, activeLayers: [MillicastSDK.MCLayerData], inactiveLayers: [Swift.String])
-    case vad(mid: Swift.String, sourceId: Swift.String)
-    case disconnected
-    case viewerCount(Swift.Int32)
-    case connectionError(status: Swift.Int32, reason: Swift.String)
-    case signalingError(message: Swift.String)
-    public static func == (a: MillicastSDK.MCSubscriber.StateEvent, b: MillicastSDK.MCSubscriber.StateEvent) -> Swift.Bool
+public enum ConnectionState : Swift.Equatable {
+  case disconnected
+  case connected
+  case error(status: Swift.Int32, reason: Swift.String)
+  public static func == (a: MillicastSDK.ConnectionState, b: MillicastSDK.ConnectionState) -> Swift.Bool
+}
+public enum PublishingState : Swift.Equatable {
+  case stopped
+  case started
+  case error(reason: Swift.String)
+  public static func == (a: MillicastSDK.PublishingState, b: MillicastSDK.PublishingState) -> Swift.Bool
+}
+public enum SubscribingState : Swift.Equatable {
+  case stopped
+  case started
+  case error(reason: Swift.String)
+  public static func == (a: MillicastSDK.SubscribingState, b: MillicastSDK.SubscribingState) -> Swift.Bool
+}
+public enum ActivityEvent : Swift.Equatable {
+  case active(streamId: Swift.String, tracks: [Swift.String], sourceId: Swift.String)
+  case inactive(streamId: Swift.String, sourceId: Swift.String)
+  public static func == (a: MillicastSDK.ActivityEvent, b: MillicastSDK.ActivityEvent) -> Swift.Bool
+}
+public enum TrackEvent {
+  case audio(track: MillicastSDK.MCAudioTrack, mid: Swift.String)
+  case video(track: MillicastSDK.MCVideoTrack, mid: Swift.String)
+}
+public struct VadEvent {
+  public let mid: Swift.String
+  public let sourceId: Swift.String
+}
+public struct LayersEvent {
+  public let mid: Swift.String
+  public let activeLayers: [MillicastSDK.MCLayerData]
+  public let inactiveLayers: [Swift.String]
+}
+public struct MCSubscriberState {
+  public var connectionState: MillicastSDK.ConnectionState {
+    get
   }
-  public typealias StateAsyncStream = _Concurrency.AsyncStream<MillicastSDK.MCSubscriber.StateEvent>
+  public var subscribingState: MillicastSDK.SubscribingState {
+    get
+  }
+  public var viewerCount: Swift.Int32 {
+    get
+  }
+  public static func == (lhs: MillicastSDK.MCSubscriberState, rhs: MillicastSDK.MCSubscriberState) -> Swift.Bool
+}
+public struct MCPublisherState {
+  public var connectionState: MillicastSDK.ConnectionState {
+    get
+  }
+  public var publishingState: MillicastSDK.PublishingState {
+    get
+  }
+  public var active: Swift.Bool {
+    get
+  }
+  public var viewerCount: Swift.Int32 {
+    get
+  }
+  public static func == (lhs: MillicastSDK.MCPublisherState, rhs: MillicastSDK.MCPublisherState) -> Swift.Bool
+}
+extension MillicastSDK.MCSubscriber {
+  public typealias State = MillicastSDK.MCSubscriberState
+  public typealias StateAsyncStream = _Concurrency.AsyncStream<MillicastSDK.MCSubscriber.State>
   public var state: MillicastSDK.MCSubscriber.StateAsyncStream {
+    get
+  }
+  public typealias ActivityAsyncStream = _Concurrency.AsyncStream<MillicastSDK.ActivityEvent>
+  public var activity: MillicastSDK.MCSubscriber.ActivityAsyncStream {
+    get
+  }
+  public typealias TracksAsyncStream = _Concurrency.AsyncStream<MillicastSDK.TrackEvent>
+  public var tracks: MillicastSDK.MCSubscriber.TracksAsyncStream {
+    get
+  }
+  public typealias LayersAsyncStream = _Concurrency.AsyncStream<MillicastSDK.LayersEvent>
+  public var layers: MillicastSDK.MCSubscriber.LayersAsyncStream {
+    get
+  }
+  public typealias VadAsyncStream = _Concurrency.AsyncStream<MillicastSDK.VadEvent>
+  public var vad: MillicastSDK.MCSubscriber.VadAsyncStream {
     get
   }
   public typealias StatsReportStream = _Concurrency.AsyncStream<MillicastSDK.MCStatsReport>
