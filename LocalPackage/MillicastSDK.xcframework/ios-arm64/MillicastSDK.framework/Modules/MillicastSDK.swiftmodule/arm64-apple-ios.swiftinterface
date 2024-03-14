@@ -15,7 +15,8 @@ import _Concurrency
 import _StringProcessing
 import _SwiftConcurrencyShims
 extension MillicastSDK.MCPublisher {
-  public typealias State = MillicastSDK.MCPublisherState
+  public typealias State = MillicastSDK.PublishingState
+  public typealias ActivityEvent = MillicastSDK.PublisherActivityEvent
   #if compiler(>=5.3) && $EffectfulProp
   public var isConnected: Swift.Bool {
     get async
@@ -33,12 +34,10 @@ extension MillicastSDK.MCPublisher {
   #endif
 }
 extension MillicastSDK.MCPublisher {
-  #if compiler(>=5.3) && $AsyncAwait
-  public func state() async -> _Concurrency.AsyncStream<MillicastSDK.MCPublisher.State>
-  #endif
-  #if compiler(>=5.3) && $AsyncAwait
-  public func statsReport() async -> _Concurrency.AsyncStream<MillicastSDK.MCStatsReport>
-  #endif
+  public func state() -> _Concurrency.AsyncStream<MillicastSDK.MCPublisher.State>
+  public func statsReport() -> _Concurrency.AsyncStream<MillicastSDK.MCStatsReport>
+  public func viewerCount() -> _Concurrency.AsyncStream<Swift.Int32>
+  public func activity() -> _Concurrency.AsyncStream<MillicastSDK.MCPublisher.ActivityEvent>
 }
 extension MillicastSDK.MCPublisher {
   public var statePublisher: Combine.AnyPublisher<MillicastSDK.MCPublisher.State, Swift.Never> {
@@ -47,29 +46,42 @@ extension MillicastSDK.MCPublisher {
   public var statsReportPublisher: Combine.AnyPublisher<MillicastSDK.MCStatsReport, Swift.Never> {
     get
   }
-}
-@frozen public enum ConnectionState : Swift.Equatable {
-  case disconnected
-  case connected
-  case error(status: Swift.Int32, reason: Swift.String)
-  public static func == (a: MillicastSDK.ConnectionState, b: MillicastSDK.ConnectionState) -> Swift.Bool
+  public var viewerCountPublisher: Combine.AnyPublisher<Swift.Int32, Swift.Never> {
+    get
+  }
+  public var activityPublisher: Combine.AnyPublisher<MillicastSDK.MCPublisher.ActivityEvent, Swift.Never> {
+    get
+  }
 }
 @frozen public enum PublishingState : Swift.Equatable {
-  case stopped
-  case started
-  case error(reason: Swift.String)
+  case disconnected
+  case connected
+  case publishing
+  case connectionError(status: Swift.Int32, reason: Swift.String)
+  case signalingError(reason: Swift.String)
   public static func == (a: MillicastSDK.PublishingState, b: MillicastSDK.PublishingState) -> Swift.Bool
 }
 @frozen public enum SubscribingState : Swift.Equatable {
-  case stopped
-  case started
-  case error(reason: Swift.String)
+  case disconnected
+  case connected
+  case subscribed
+  case connectionError(status: Swift.Int32, reason: Swift.String)
+  case signalingError(reason: Swift.String)
   public static func == (a: MillicastSDK.SubscribingState, b: MillicastSDK.SubscribingState) -> Swift.Bool
 }
-@frozen public enum ActivityEvent : Swift.Equatable {
+@frozen public enum SubscriberActivityEvent : Swift.Equatable {
   case active(streamId: Swift.String, tracks: [Swift.String], sourceId: Swift.String)
   case inactive(streamId: Swift.String, sourceId: Swift.String)
-  public static func == (a: MillicastSDK.ActivityEvent, b: MillicastSDK.ActivityEvent) -> Swift.Bool
+  public static func == (a: MillicastSDK.SubscriberActivityEvent, b: MillicastSDK.SubscriberActivityEvent) -> Swift.Bool
+}
+@frozen public enum PublisherActivityEvent : Swift.Equatable {
+  case active
+  case inactive
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: MillicastSDK.PublisherActivityEvent, b: MillicastSDK.PublisherActivityEvent) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
 }
 @frozen public enum TrackEvent : Swift.Equatable {
   case audio(track: MillicastSDK.MCAudioTrack, mid: Swift.String)
@@ -87,35 +99,9 @@ public struct LayersEvent : Swift.Equatable {
   public let inactiveLayers: [Swift.String]
   public static func == (a: MillicastSDK.LayersEvent, b: MillicastSDK.LayersEvent) -> Swift.Bool
 }
-public struct MCSubscriberState : Swift.Equatable {
-  public var connectionState: MillicastSDK.ConnectionState {
-    get
-  }
-  public var subscribingState: MillicastSDK.SubscribingState {
-    get
-  }
-  public var viewerCount: Swift.Int32 {
-    get
-  }
-  public static func == (lhs: MillicastSDK.MCSubscriberState, rhs: MillicastSDK.MCSubscriberState) -> Swift.Bool
-}
-public struct MCPublisherState : Swift.Equatable {
-  public var connectionState: MillicastSDK.ConnectionState {
-    get
-  }
-  public var publishingState: MillicastSDK.PublishingState {
-    get
-  }
-  public var active: Swift.Bool {
-    get
-  }
-  public var viewerCount: Swift.Int32 {
-    get
-  }
-  public static func == (lhs: MillicastSDK.MCPublisherState, rhs: MillicastSDK.MCPublisherState) -> Swift.Bool
-}
 extension MillicastSDK.MCSubscriber {
-  public typealias State = MillicastSDK.MCSubscriberState
+  public typealias State = MillicastSDK.SubscribingState
+  public typealias ActivityEvent = MillicastSDK.SubscriberActivityEvent
   #if compiler(>=5.3) && $EffectfulProp
   public var isConnected: Swift.Bool {
     get async
@@ -134,30 +120,19 @@ extension MillicastSDK.MCSubscriber {
 }
 extension MillicastSDK.MCSubscriber {
   public typealias StateAsyncStream = _Concurrency.AsyncStream<MillicastSDK.MCSubscriber.State>
-  #if compiler(>=5.3) && $AsyncAwait
-  public func state() async -> _Concurrency.AsyncStream<MillicastSDK.MCSubscriber.State>
-  #endif
-  #if compiler(>=5.3) && $AsyncAwait
-  public func activity() async -> _Concurrency.AsyncStream<MillicastSDK.ActivityEvent>
-  #endif
-  #if compiler(>=5.3) && $AsyncAwait
-  public func tracks() async -> _Concurrency.AsyncStream<MillicastSDK.TrackEvent>
-  #endif
-  #if compiler(>=5.3) && $AsyncAwait
-  public func layers() async -> _Concurrency.AsyncStream<MillicastSDK.LayersEvent>
-  #endif
-  #if compiler(>=5.3) && $AsyncAwait
-  public func vad() async -> _Concurrency.AsyncStream<MillicastSDK.VadEvent>
-  #endif
-  #if compiler(>=5.3) && $AsyncAwait
-  public func statsReport() async -> _Concurrency.AsyncStream<MillicastSDK.MCStatsReport>
-  #endif
+  public func state() -> _Concurrency.AsyncStream<MillicastSDK.MCSubscriber.State>
+  public func activity() -> _Concurrency.AsyncStream<MillicastSDK.MCSubscriber.ActivityEvent>
+  public func tracks() -> _Concurrency.AsyncStream<MillicastSDK.TrackEvent>
+  public func layers() -> _Concurrency.AsyncStream<MillicastSDK.LayersEvent>
+  public func vad() -> _Concurrency.AsyncStream<MillicastSDK.VadEvent>
+  public func statsReport() -> _Concurrency.AsyncStream<MillicastSDK.MCStatsReport>
+  public func viewerCount() -> _Concurrency.AsyncStream<Swift.Int32>
 }
 extension MillicastSDK.MCSubscriber {
   public var statePublisher: Combine.AnyPublisher<MillicastSDK.MCSubscriber.State, Swift.Never> {
     get
   }
-  public var activityPublisher: Combine.AnyPublisher<MillicastSDK.ActivityEvent, Swift.Never> {
+  public var activityPublisher: Combine.AnyPublisher<MillicastSDK.MCSubscriber.ActivityEvent, Swift.Never> {
     get
   }
   public var tracksPublisher: Combine.AnyPublisher<MillicastSDK.TrackEvent, Swift.Never> {
@@ -170,6 +145,9 @@ extension MillicastSDK.MCSubscriber {
     get
   }
   public var statsReportPublisher: Combine.AnyPublisher<MillicastSDK.MCStatsReport, Swift.Never> {
+    get
+  }
+  public var viewerCountPublisher: Combine.AnyPublisher<Swift.Int32, Swift.Never> {
     get
   }
 }
@@ -255,10 +233,11 @@ extension MillicastSDK.MCAcceleratedVideoUIView : MillicastSDK.MCIosVideoRendere
 extension UIKit.UIImage {
   public func convertToBuffer() -> CoreVideo.CVPixelBuffer?
 }
-extension MillicastSDK.ConnectionState : Swift.Sendable {}
 extension MillicastSDK.PublishingState : Swift.Sendable {}
 extension MillicastSDK.SubscribingState : Swift.Sendable {}
-extension MillicastSDK.ActivityEvent : Swift.Sendable {}
+extension MillicastSDK.SubscriberActivityEvent : Swift.Sendable {}
+extension MillicastSDK.PublisherActivityEvent : Swift.Hashable {}
+extension MillicastSDK.PublisherActivityEvent : Swift.Sendable {}
 extension MillicastSDK.MCVideoSwiftUIView.RendererType : Swift.Equatable {}
 extension MillicastSDK.MCVideoSwiftUIView.RendererType : Swift.Hashable {}
 extension MillicastSDK.MCVideoViewScalingMode : Swift.Equatable {}

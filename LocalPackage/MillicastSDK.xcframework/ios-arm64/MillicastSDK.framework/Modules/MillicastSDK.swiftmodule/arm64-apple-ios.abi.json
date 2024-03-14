@@ -48,8 +48,8 @@
       },
       {
         "kind": "TypeDecl",
-        "name": "ConnectionState",
-        "printedName": "ConnectionState",
+        "name": "PublishingState",
+        "printedName": "PublishingState",
         "children": [
           {
             "kind": "Var",
@@ -59,24 +59,24 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(MillicastSDK.ConnectionState.Type) -> MillicastSDK.ConnectionState",
+                "printedName": "(MillicastSDK.PublishingState.Type) -> MillicastSDK.PublishingState",
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "ConnectionState",
-                    "printedName": "MillicastSDK.ConnectionState",
-                    "usr": "s:12MillicastSDK15ConnectionStateO"
+                    "name": "PublishingState",
+                    "printedName": "MillicastSDK.PublishingState",
+                    "usr": "s:12MillicastSDK15PublishingStateO"
                   },
                   {
                     "kind": "TypeNominal",
                     "name": "Metatype",
-                    "printedName": "MillicastSDK.ConnectionState.Type",
+                    "printedName": "MillicastSDK.PublishingState.Type",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "ConnectionState",
-                        "printedName": "MillicastSDK.ConnectionState",
-                        "usr": "s:12MillicastSDK15ConnectionStateO"
+                        "name": "PublishingState",
+                        "printedName": "MillicastSDK.PublishingState",
+                        "usr": "s:12MillicastSDK15PublishingStateO"
                       }
                     ]
                   }
@@ -84,9 +84,12 @@
               }
             ],
             "declKind": "EnumElement",
-            "usr": "s:12MillicastSDK15ConnectionStateO12disconnectedyA2CmF",
-            "mangledName": "$s12MillicastSDK15ConnectionStateO12disconnectedyA2CmF",
+            "usr": "s:12MillicastSDK15PublishingStateO12disconnectedyA2CmF",
+            "mangledName": "$s12MillicastSDK15PublishingStateO12disconnectedyA2CmF",
             "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
             "fixedbinaryorder": 0
           },
           {
@@ -97,24 +100,24 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(MillicastSDK.ConnectionState.Type) -> MillicastSDK.ConnectionState",
+                "printedName": "(MillicastSDK.PublishingState.Type) -> MillicastSDK.PublishingState",
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "ConnectionState",
-                    "printedName": "MillicastSDK.ConnectionState",
-                    "usr": "s:12MillicastSDK15ConnectionStateO"
+                    "name": "PublishingState",
+                    "printedName": "MillicastSDK.PublishingState",
+                    "usr": "s:12MillicastSDK15PublishingStateO"
                   },
                   {
                     "kind": "TypeNominal",
                     "name": "Metatype",
-                    "printedName": "MillicastSDK.ConnectionState.Type",
+                    "printedName": "MillicastSDK.PublishingState.Type",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "ConnectionState",
-                        "printedName": "MillicastSDK.ConnectionState",
-                        "usr": "s:12MillicastSDK15ConnectionStateO"
+                        "name": "PublishingState",
+                        "printedName": "MillicastSDK.PublishingState",
+                        "usr": "s:12MillicastSDK15PublishingStateO"
                       }
                     ]
                   }
@@ -122,31 +125,75 @@
               }
             ],
             "declKind": "EnumElement",
-            "usr": "s:12MillicastSDK15ConnectionStateO9connectedyA2CmF",
-            "mangledName": "$s12MillicastSDK15ConnectionStateO9connectedyA2CmF",
+            "usr": "s:12MillicastSDK15PublishingStateO9connectedyA2CmF",
+            "mangledName": "$s12MillicastSDK15PublishingStateO9connectedyA2CmF",
             "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
             "fixedbinaryorder": 1
           },
           {
             "kind": "Var",
-            "name": "error",
-            "printedName": "error",
+            "name": "publishing",
+            "printedName": "publishing",
             "children": [
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(MillicastSDK.ConnectionState.Type) -> (Swift.Int32, Swift.String) -> MillicastSDK.ConnectionState",
+                "printedName": "(MillicastSDK.PublishingState.Type) -> MillicastSDK.PublishingState",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "PublishingState",
+                    "printedName": "MillicastSDK.PublishingState",
+                    "usr": "s:12MillicastSDK15PublishingStateO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "MillicastSDK.PublishingState.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "PublishingState",
+                        "printedName": "MillicastSDK.PublishingState",
+                        "usr": "s:12MillicastSDK15PublishingStateO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:12MillicastSDK15PublishingStateO10publishingyA2CmF",
+            "mangledName": "$s12MillicastSDK15PublishingStateO10publishingyA2CmF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "fixedbinaryorder": 2
+          },
+          {
+            "kind": "Var",
+            "name": "connectionError",
+            "printedName": "connectionError",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(MillicastSDK.PublishingState.Type) -> (Swift.Int32, Swift.String) -> MillicastSDK.PublishingState",
                 "children": [
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Swift.Int32, Swift.String) -> MillicastSDK.ConnectionState",
+                    "printedName": "(Swift.Int32, Swift.String) -> MillicastSDK.PublishingState",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "ConnectionState",
-                        "printedName": "MillicastSDK.ConnectionState",
-                        "usr": "s:12MillicastSDK15ConnectionStateO"
+                        "name": "PublishingState",
+                        "printedName": "MillicastSDK.PublishingState",
+                        "usr": "s:12MillicastSDK15PublishingStateO"
                       },
                       {
                         "kind": "TypeNominal",
@@ -172,108 +219,6 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Metatype",
-                    "printedName": "MillicastSDK.ConnectionState.Type",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "ConnectionState",
-                        "printedName": "MillicastSDK.ConnectionState",
-                        "usr": "s:12MillicastSDK15ConnectionStateO"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "declKind": "EnumElement",
-            "usr": "s:12MillicastSDK15ConnectionStateO5erroryACs5Int32V_SStcACmF",
-            "mangledName": "$s12MillicastSDK15ConnectionStateO5erroryACs5Int32V_SStcACmF",
-            "moduleName": "MillicastSDK",
-            "fixedbinaryorder": 2
-          },
-          {
-            "kind": "Function",
-            "name": "==",
-            "printedName": "==(_:_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "ConnectionState",
-                "printedName": "MillicastSDK.ConnectionState",
-                "usr": "s:12MillicastSDK15ConnectionStateO"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "ConnectionState",
-                "printedName": "MillicastSDK.ConnectionState",
-                "usr": "s:12MillicastSDK15ConnectionStateO"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:12MillicastSDK15ConnectionStateO2eeoiySbAC_ACtFZ",
-            "mangledName": "$s12MillicastSDK15ConnectionStateO2eeoiySbAC_ACtFZ",
-            "moduleName": "MillicastSDK",
-            "static": true,
-            "implicit": true,
-            "funcSelfKind": "NonMutating"
-          }
-        ],
-        "declKind": "Enum",
-        "usr": "s:12MillicastSDK15ConnectionStateO",
-        "mangledName": "$s12MillicastSDK15ConnectionStateO",
-        "moduleName": "MillicastSDK",
-        "declAttributes": [
-          "AccessControl",
-          "Frozen"
-        ],
-        "isEnumExhaustive": true,
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Equatable",
-            "printedName": "Equatable",
-            "usr": "s:SQ",
-            "mangledName": "$sSQ"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Sendable",
-            "printedName": "Sendable",
-            "usr": "s:s8SendableP",
-            "mangledName": "$ss8SendableP"
-          }
-        ]
-      },
-      {
-        "kind": "TypeDecl",
-        "name": "PublishingState",
-        "printedName": "PublishingState",
-        "children": [
-          {
-            "kind": "Var",
-            "name": "stopped",
-            "printedName": "stopped",
-            "children": [
-              {
-                "kind": "TypeFunc",
-                "name": "Function",
-                "printedName": "(MillicastSDK.PublishingState.Type) -> MillicastSDK.PublishingState",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "PublishingState",
-                    "printedName": "MillicastSDK.PublishingState",
-                    "usr": "s:12MillicastSDK15PublishingStateO"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Metatype",
                     "printedName": "MillicastSDK.PublishingState.Type",
                     "children": [
                       {
@@ -288,53 +233,18 @@
               }
             ],
             "declKind": "EnumElement",
-            "usr": "s:12MillicastSDK15PublishingStateO7stoppedyA2CmF",
-            "mangledName": "$s12MillicastSDK15PublishingStateO7stoppedyA2CmF",
+            "usr": "s:12MillicastSDK15PublishingStateO15connectionErroryACs5Int32V_SStcACmF",
+            "mangledName": "$s12MillicastSDK15PublishingStateO15connectionErroryACs5Int32V_SStcACmF",
             "moduleName": "MillicastSDK",
-            "fixedbinaryorder": 0
-          },
-          {
-            "kind": "Var",
-            "name": "started",
-            "printedName": "started",
-            "children": [
-              {
-                "kind": "TypeFunc",
-                "name": "Function",
-                "printedName": "(MillicastSDK.PublishingState.Type) -> MillicastSDK.PublishingState",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "PublishingState",
-                    "printedName": "MillicastSDK.PublishingState",
-                    "usr": "s:12MillicastSDK15PublishingStateO"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Metatype",
-                    "printedName": "MillicastSDK.PublishingState.Type",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "PublishingState",
-                        "printedName": "MillicastSDK.PublishingState",
-                        "usr": "s:12MillicastSDK15PublishingStateO"
-                      }
-                    ]
-                  }
-                ]
-              }
+            "declAttributes": [
+              "RawDocComment"
             ],
-            "declKind": "EnumElement",
-            "usr": "s:12MillicastSDK15PublishingStateO7startedyA2CmF",
-            "mangledName": "$s12MillicastSDK15PublishingStateO7startedyA2CmF",
-            "moduleName": "MillicastSDK",
-            "fixedbinaryorder": 1
+            "fixedbinaryorder": 3
           },
           {
             "kind": "Var",
-            "name": "error",
-            "printedName": "error",
+            "name": "signalingError",
+            "printedName": "signalingError",
             "children": [
               {
                 "kind": "TypeFunc",
@@ -384,10 +294,13 @@
               }
             ],
             "declKind": "EnumElement",
-            "usr": "s:12MillicastSDK15PublishingStateO5erroryACSS_tcACmF",
-            "mangledName": "$s12MillicastSDK15PublishingStateO5erroryACSS_tcACmF",
+            "usr": "s:12MillicastSDK15PublishingStateO14signalingErroryACSS_tcACmF",
+            "mangledName": "$s12MillicastSDK15PublishingStateO14signalingErroryACSS_tcACmF",
             "moduleName": "MillicastSDK",
-            "fixedbinaryorder": 2
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "fixedbinaryorder": 4
           },
           {
             "kind": "Function",
@@ -455,8 +368,8 @@
         "children": [
           {
             "kind": "Var",
-            "name": "stopped",
-            "printedName": "stopped",
+            "name": "disconnected",
+            "printedName": "disconnected",
             "children": [
               {
                 "kind": "TypeFunc",
@@ -486,15 +399,18 @@
               }
             ],
             "declKind": "EnumElement",
-            "usr": "s:12MillicastSDK16SubscribingStateO7stoppedyA2CmF",
-            "mangledName": "$s12MillicastSDK16SubscribingStateO7stoppedyA2CmF",
+            "usr": "s:12MillicastSDK16SubscribingStateO12disconnectedyA2CmF",
+            "mangledName": "$s12MillicastSDK16SubscribingStateO12disconnectedyA2CmF",
             "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
             "fixedbinaryorder": 0
           },
           {
             "kind": "Var",
-            "name": "started",
-            "printedName": "started",
+            "name": "connected",
+            "printedName": "connected",
             "children": [
               {
                 "kind": "TypeFunc",
@@ -524,15 +440,126 @@
               }
             ],
             "declKind": "EnumElement",
-            "usr": "s:12MillicastSDK16SubscribingStateO7startedyA2CmF",
-            "mangledName": "$s12MillicastSDK16SubscribingStateO7startedyA2CmF",
+            "usr": "s:12MillicastSDK16SubscribingStateO9connectedyA2CmF",
+            "mangledName": "$s12MillicastSDK16SubscribingStateO9connectedyA2CmF",
             "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
             "fixedbinaryorder": 1
           },
           {
             "kind": "Var",
-            "name": "error",
-            "printedName": "error",
+            "name": "subscribed",
+            "printedName": "subscribed",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(MillicastSDK.SubscribingState.Type) -> MillicastSDK.SubscribingState",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "SubscribingState",
+                    "printedName": "MillicastSDK.SubscribingState",
+                    "usr": "s:12MillicastSDK16SubscribingStateO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "MillicastSDK.SubscribingState.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "SubscribingState",
+                        "printedName": "MillicastSDK.SubscribingState",
+                        "usr": "s:12MillicastSDK16SubscribingStateO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:12MillicastSDK16SubscribingStateO10subscribedyA2CmF",
+            "mangledName": "$s12MillicastSDK16SubscribingStateO10subscribedyA2CmF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "fixedbinaryorder": 2
+          },
+          {
+            "kind": "Var",
+            "name": "connectionError",
+            "printedName": "connectionError",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(MillicastSDK.SubscribingState.Type) -> (Swift.Int32, Swift.String) -> MillicastSDK.SubscribingState",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(Swift.Int32, Swift.String) -> MillicastSDK.SubscribingState",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "SubscribingState",
+                        "printedName": "MillicastSDK.SubscribingState",
+                        "usr": "s:12MillicastSDK16SubscribingStateO"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Tuple",
+                        "printedName": "(status: Swift.Int32, reason: Swift.String)",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Int32",
+                            "printedName": "Swift.Int32",
+                            "usr": "s:s5Int32V"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "String",
+                            "printedName": "Swift.String",
+                            "usr": "s:SS"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "MillicastSDK.SubscribingState.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "SubscribingState",
+                        "printedName": "MillicastSDK.SubscribingState",
+                        "usr": "s:12MillicastSDK16SubscribingStateO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:12MillicastSDK16SubscribingStateO15connectionErroryACs5Int32V_SStcACmF",
+            "mangledName": "$s12MillicastSDK16SubscribingStateO15connectionErroryACs5Int32V_SStcACmF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "fixedbinaryorder": 3
+          },
+          {
+            "kind": "Var",
+            "name": "signalingError",
+            "printedName": "signalingError",
             "children": [
               {
                 "kind": "TypeFunc",
@@ -582,10 +609,13 @@
               }
             ],
             "declKind": "EnumElement",
-            "usr": "s:12MillicastSDK16SubscribingStateO5erroryACSS_tcACmF",
-            "mangledName": "$s12MillicastSDK16SubscribingStateO5erroryACSS_tcACmF",
+            "usr": "s:12MillicastSDK16SubscribingStateO14signalingErroryACSS_tcACmF",
+            "mangledName": "$s12MillicastSDK16SubscribingStateO14signalingErroryACSS_tcACmF",
             "moduleName": "MillicastSDK",
-            "fixedbinaryorder": 2
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "fixedbinaryorder": 4
           },
           {
             "kind": "Function",
@@ -626,7 +656,8 @@
         "moduleName": "MillicastSDK",
         "declAttributes": [
           "AccessControl",
-          "Frozen"
+          "Frozen",
+          "RawDocComment"
         ],
         "isEnumExhaustive": true,
         "conformances": [
@@ -648,8 +679,8 @@
       },
       {
         "kind": "TypeDecl",
-        "name": "ActivityEvent",
-        "printedName": "ActivityEvent",
+        "name": "SubscriberActivityEvent",
+        "printedName": "SubscriberActivityEvent",
         "children": [
           {
             "kind": "Var",
@@ -659,18 +690,18 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(MillicastSDK.ActivityEvent.Type) -> (Swift.String, [Swift.String], Swift.String) -> MillicastSDK.ActivityEvent",
+                "printedName": "(MillicastSDK.SubscriberActivityEvent.Type) -> (Swift.String, [Swift.String], Swift.String) -> MillicastSDK.SubscriberActivityEvent",
                 "children": [
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Swift.String, [Swift.String], Swift.String) -> MillicastSDK.ActivityEvent",
+                    "printedName": "(Swift.String, [Swift.String], Swift.String) -> MillicastSDK.SubscriberActivityEvent",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "ActivityEvent",
-                        "printedName": "MillicastSDK.ActivityEvent",
-                        "usr": "s:12MillicastSDK13ActivityEventO"
+                        "name": "SubscriberActivityEvent",
+                        "printedName": "MillicastSDK.SubscriberActivityEvent",
+                        "usr": "s:12MillicastSDK23SubscriberActivityEventO"
                       },
                       {
                         "kind": "TypeNominal",
@@ -710,13 +741,13 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Metatype",
-                    "printedName": "MillicastSDK.ActivityEvent.Type",
+                    "printedName": "MillicastSDK.SubscriberActivityEvent.Type",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "ActivityEvent",
-                        "printedName": "MillicastSDK.ActivityEvent",
-                        "usr": "s:12MillicastSDK13ActivityEventO"
+                        "name": "SubscriberActivityEvent",
+                        "printedName": "MillicastSDK.SubscriberActivityEvent",
+                        "usr": "s:12MillicastSDK23SubscriberActivityEventO"
                       }
                     ]
                   }
@@ -724,9 +755,12 @@
               }
             ],
             "declKind": "EnumElement",
-            "usr": "s:12MillicastSDK13ActivityEventO6activeyACSS_SaySSGSStcACmF",
-            "mangledName": "$s12MillicastSDK13ActivityEventO6activeyACSS_SaySSGSStcACmF",
+            "usr": "s:12MillicastSDK23SubscriberActivityEventO6activeyACSS_SaySSGSStcACmF",
+            "mangledName": "$s12MillicastSDK23SubscriberActivityEventO6activeyACSS_SaySSGSStcACmF",
             "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
             "fixedbinaryorder": 0
           },
           {
@@ -737,18 +771,18 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(MillicastSDK.ActivityEvent.Type) -> (Swift.String, Swift.String) -> MillicastSDK.ActivityEvent",
+                "printedName": "(MillicastSDK.SubscriberActivityEvent.Type) -> (Swift.String, Swift.String) -> MillicastSDK.SubscriberActivityEvent",
                 "children": [
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Swift.String, Swift.String) -> MillicastSDK.ActivityEvent",
+                    "printedName": "(Swift.String, Swift.String) -> MillicastSDK.SubscriberActivityEvent",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "ActivityEvent",
-                        "printedName": "MillicastSDK.ActivityEvent",
-                        "usr": "s:12MillicastSDK13ActivityEventO"
+                        "name": "SubscriberActivityEvent",
+                        "printedName": "MillicastSDK.SubscriberActivityEvent",
+                        "usr": "s:12MillicastSDK23SubscriberActivityEventO"
                       },
                       {
                         "kind": "TypeNominal",
@@ -774,13 +808,13 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Metatype",
-                    "printedName": "MillicastSDK.ActivityEvent.Type",
+                    "printedName": "MillicastSDK.SubscriberActivityEvent.Type",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "ActivityEvent",
-                        "printedName": "MillicastSDK.ActivityEvent",
-                        "usr": "s:12MillicastSDK13ActivityEventO"
+                        "name": "SubscriberActivityEvent",
+                        "printedName": "MillicastSDK.SubscriberActivityEvent",
+                        "usr": "s:12MillicastSDK23SubscriberActivityEventO"
                       }
                     ]
                   }
@@ -788,9 +822,12 @@
               }
             ],
             "declKind": "EnumElement",
-            "usr": "s:12MillicastSDK13ActivityEventO8inactiveyACSS_SStcACmF",
-            "mangledName": "$s12MillicastSDK13ActivityEventO8inactiveyACSS_SStcACmF",
+            "usr": "s:12MillicastSDK23SubscriberActivityEventO8inactiveyACSS_SStcACmF",
+            "mangledName": "$s12MillicastSDK23SubscriberActivityEventO8inactiveyACSS_SStcACmF",
             "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
             "fixedbinaryorder": 1
           },
           {
@@ -806,20 +843,20 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "ActivityEvent",
-                "printedName": "MillicastSDK.ActivityEvent",
-                "usr": "s:12MillicastSDK13ActivityEventO"
+                "name": "SubscriberActivityEvent",
+                "printedName": "MillicastSDK.SubscriberActivityEvent",
+                "usr": "s:12MillicastSDK23SubscriberActivityEventO"
               },
               {
                 "kind": "TypeNominal",
-                "name": "ActivityEvent",
-                "printedName": "MillicastSDK.ActivityEvent",
-                "usr": "s:12MillicastSDK13ActivityEventO"
+                "name": "SubscriberActivityEvent",
+                "printedName": "MillicastSDK.SubscriberActivityEvent",
+                "usr": "s:12MillicastSDK23SubscriberActivityEventO"
               }
             ],
             "declKind": "Func",
-            "usr": "s:12MillicastSDK13ActivityEventO2eeoiySbAC_ACtFZ",
-            "mangledName": "$s12MillicastSDK13ActivityEventO2eeoiySbAC_ACtFZ",
+            "usr": "s:12MillicastSDK23SubscriberActivityEventO2eeoiySbAC_ACtFZ",
+            "mangledName": "$s12MillicastSDK23SubscriberActivityEventO2eeoiySbAC_ACtFZ",
             "moduleName": "MillicastSDK",
             "static": true,
             "implicit": true,
@@ -827,15 +864,234 @@
           }
         ],
         "declKind": "Enum",
-        "usr": "s:12MillicastSDK13ActivityEventO",
-        "mangledName": "$s12MillicastSDK13ActivityEventO",
+        "usr": "s:12MillicastSDK23SubscriberActivityEventO",
+        "mangledName": "$s12MillicastSDK23SubscriberActivityEventO",
         "moduleName": "MillicastSDK",
         "declAttributes": [
           "AccessControl",
-          "Frozen"
+          "Frozen",
+          "RawDocComment"
         ],
         "isEnumExhaustive": true,
         "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "PublisherActivityEvent",
+        "printedName": "PublisherActivityEvent",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "active",
+            "printedName": "active",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(MillicastSDK.PublisherActivityEvent.Type) -> MillicastSDK.PublisherActivityEvent",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "PublisherActivityEvent",
+                    "printedName": "MillicastSDK.PublisherActivityEvent",
+                    "usr": "s:12MillicastSDK22PublisherActivityEventO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "MillicastSDK.PublisherActivityEvent.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "PublisherActivityEvent",
+                        "printedName": "MillicastSDK.PublisherActivityEvent",
+                        "usr": "s:12MillicastSDK22PublisherActivityEventO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:12MillicastSDK22PublisherActivityEventO6activeyA2CmF",
+            "mangledName": "$s12MillicastSDK22PublisherActivityEventO6activeyA2CmF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "fixedbinaryorder": 0
+          },
+          {
+            "kind": "Var",
+            "name": "inactive",
+            "printedName": "inactive",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(MillicastSDK.PublisherActivityEvent.Type) -> MillicastSDK.PublisherActivityEvent",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "PublisherActivityEvent",
+                    "printedName": "MillicastSDK.PublisherActivityEvent",
+                    "usr": "s:12MillicastSDK22PublisherActivityEventO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "MillicastSDK.PublisherActivityEvent.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "PublisherActivityEvent",
+                        "printedName": "MillicastSDK.PublisherActivityEvent",
+                        "usr": "s:12MillicastSDK22PublisherActivityEventO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:12MillicastSDK22PublisherActivityEventO8inactiveyA2CmF",
+            "mangledName": "$s12MillicastSDK22PublisherActivityEventO8inactiveyA2CmF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "fixedbinaryorder": 1
+          },
+          {
+            "kind": "Var",
+            "name": "hashValue",
+            "printedName": "hashValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:12MillicastSDK22PublisherActivityEventO9hashValueSivp",
+            "mangledName": "$s12MillicastSDK22PublisherActivityEventO9hashValueSivp",
+            "moduleName": "MillicastSDK",
+            "implicit": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:12MillicastSDK22PublisherActivityEventO9hashValueSivg",
+                "mangledName": "$s12MillicastSDK22PublisherActivityEventO9hashValueSivg",
+                "moduleName": "MillicastSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Function",
+            "name": "hash",
+            "printedName": "hash(into:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Hasher",
+                "printedName": "Swift.Hasher",
+                "paramValueOwnership": "InOut",
+                "usr": "s:s6HasherV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:12MillicastSDK22PublisherActivityEventO4hash4intoys6HasherVz_tF",
+            "mangledName": "$s12MillicastSDK22PublisherActivityEventO4hash4intoys6HasherVz_tF",
+            "moduleName": "MillicastSDK",
+            "implicit": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "==",
+            "printedName": "==(_:_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "PublisherActivityEvent",
+                "printedName": "MillicastSDK.PublisherActivityEvent",
+                "usr": "s:12MillicastSDK22PublisherActivityEventO"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "PublisherActivityEvent",
+                "printedName": "MillicastSDK.PublisherActivityEvent",
+                "usr": "s:12MillicastSDK22PublisherActivityEventO"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:12MillicastSDK22PublisherActivityEventO2eeoiySbAC_ACtFZ",
+            "mangledName": "$s12MillicastSDK22PublisherActivityEventO2eeoiySbAC_ACtFZ",
+            "moduleName": "MillicastSDK",
+            "static": true,
+            "implicit": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Enum",
+        "usr": "s:12MillicastSDK22PublisherActivityEventO",
+        "mangledName": "$s12MillicastSDK22PublisherActivityEventO",
+        "moduleName": "MillicastSDK",
+        "declAttributes": [
+          "AccessControl",
+          "Frozen",
+          "RawDocComment"
+        ],
+        "isEnumExhaustive": true,
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
           {
             "kind": "Conformance",
             "name": "Equatable",
@@ -919,6 +1175,9 @@
             "usr": "s:12MillicastSDK10TrackEventO5audioyACSo07MCAudioC0C_SStcACmF",
             "mangledName": "$s12MillicastSDK10TrackEventO5audioyACSo07MCAudioC0C_SStcACmF",
             "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
             "fixedbinaryorder": 0
           },
           {
@@ -983,6 +1242,9 @@
             "usr": "s:12MillicastSDK10TrackEventO5videoyACSo07MCVideoC0C_SStcACmF",
             "mangledName": "$s12MillicastSDK10TrackEventO5videoyACSo07MCVideoC0C_SStcACmF",
             "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
             "fixedbinaryorder": 1
           },
           {
@@ -1024,7 +1286,8 @@
         "moduleName": "MillicastSDK",
         "declAttributes": [
           "AccessControl",
-          "Frozen"
+          "Frozen",
+          "RawDocComment"
         ],
         "isEnumExhaustive": true,
         "conformances": [
@@ -1203,7 +1466,8 @@
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "HasStorage",
-              "AccessControl"
+              "AccessControl",
+              "RawDocComment"
             ],
             "isLet": true,
             "hasStorage": true,
@@ -1255,7 +1519,8 @@
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "HasStorage",
-              "AccessControl"
+              "AccessControl",
+              "RawDocComment"
             ],
             "isLet": true,
             "hasStorage": true,
@@ -1315,7 +1580,8 @@
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "HasStorage",
-              "AccessControl"
+              "AccessControl",
+              "RawDocComment"
             ],
             "isLet": true,
             "hasStorage": true,
@@ -1387,436 +1653,8 @@
         "mangledName": "$s12MillicastSDK11LayersEventV",
         "moduleName": "MillicastSDK",
         "declAttributes": [
-          "AccessControl"
-        ],
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Equatable",
-            "printedName": "Equatable",
-            "usr": "s:SQ",
-            "mangledName": "$sSQ"
-          }
-        ]
-      },
-      {
-        "kind": "TypeDecl",
-        "name": "MCSubscriberState",
-        "printedName": "MCSubscriberState",
-        "children": [
-          {
-            "kind": "Var",
-            "name": "connectionState",
-            "printedName": "connectionState",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "ConnectionState",
-                "printedName": "MillicastSDK.ConnectionState",
-                "usr": "s:12MillicastSDK15ConnectionStateO"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:12MillicastSDK17MCSubscriberStateV010connectionD0AA010ConnectionD0Ovp",
-            "mangledName": "$s12MillicastSDK17MCSubscriberStateV010connectionD0AA010ConnectionD0Ovp",
-            "moduleName": "MillicastSDK",
-            "declAttributes": [
-              "HasInitialValue",
-              "HasStorage",
-              "SetterAccess",
-              "AccessControl"
-            ],
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "ConnectionState",
-                    "printedName": "MillicastSDK.ConnectionState",
-                    "usr": "s:12MillicastSDK15ConnectionStateO"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MillicastSDK17MCSubscriberStateV010connectionD0AA010ConnectionD0Ovg",
-                "mangledName": "$s12MillicastSDK17MCSubscriberStateV010connectionD0AA010ConnectionD0Ovg",
-                "moduleName": "MillicastSDK",
-                "implicit": true,
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Var",
-            "name": "subscribingState",
-            "printedName": "subscribingState",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "SubscribingState",
-                "printedName": "MillicastSDK.SubscribingState",
-                "usr": "s:12MillicastSDK16SubscribingStateO"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:12MillicastSDK17MCSubscriberStateV011subscribingD0AA011SubscribingD0Ovp",
-            "mangledName": "$s12MillicastSDK17MCSubscriberStateV011subscribingD0AA011SubscribingD0Ovp",
-            "moduleName": "MillicastSDK",
-            "declAttributes": [
-              "HasInitialValue",
-              "HasStorage",
-              "SetterAccess",
-              "AccessControl"
-            ],
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "SubscribingState",
-                    "printedName": "MillicastSDK.SubscribingState",
-                    "usr": "s:12MillicastSDK16SubscribingStateO"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MillicastSDK17MCSubscriberStateV011subscribingD0AA011SubscribingD0Ovg",
-                "mangledName": "$s12MillicastSDK17MCSubscriberStateV011subscribingD0AA011SubscribingD0Ovg",
-                "moduleName": "MillicastSDK",
-                "implicit": true,
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Var",
-            "name": "viewerCount",
-            "printedName": "viewerCount",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Int32",
-                "printedName": "Swift.Int32",
-                "usr": "s:s5Int32V"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:12MillicastSDK17MCSubscriberStateV11viewerCounts5Int32Vvp",
-            "mangledName": "$s12MillicastSDK17MCSubscriberStateV11viewerCounts5Int32Vvp",
-            "moduleName": "MillicastSDK",
-            "declAttributes": [
-              "HasInitialValue",
-              "HasStorage",
-              "SetterAccess",
-              "AccessControl"
-            ],
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Int32",
-                    "printedName": "Swift.Int32",
-                    "usr": "s:s5Int32V"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MillicastSDK17MCSubscriberStateV11viewerCounts5Int32Vvg",
-                "mangledName": "$s12MillicastSDK17MCSubscriberStateV11viewerCounts5Int32Vvg",
-                "moduleName": "MillicastSDK",
-                "implicit": true,
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Function",
-            "name": "==",
-            "printedName": "==(_:_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "MCSubscriberState",
-                "printedName": "MillicastSDK.MCSubscriberState",
-                "usr": "s:12MillicastSDK17MCSubscriberStateV"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "MCSubscriberState",
-                "printedName": "MillicastSDK.MCSubscriberState",
-                "usr": "s:12MillicastSDK17MCSubscriberStateV"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:12MillicastSDK17MCSubscriberStateV2eeoiySbAC_ACtFZ",
-            "mangledName": "$s12MillicastSDK17MCSubscriberStateV2eeoiySbAC_ACtFZ",
-            "moduleName": "MillicastSDK",
-            "static": true,
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          }
-        ],
-        "declKind": "Struct",
-        "usr": "s:12MillicastSDK17MCSubscriberStateV",
-        "mangledName": "$s12MillicastSDK17MCSubscriberStateV",
-        "moduleName": "MillicastSDK",
-        "declAttributes": [
-          "AccessControl"
-        ],
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Equatable",
-            "printedName": "Equatable",
-            "usr": "s:SQ",
-            "mangledName": "$sSQ"
-          }
-        ]
-      },
-      {
-        "kind": "TypeDecl",
-        "name": "MCPublisherState",
-        "printedName": "MCPublisherState",
-        "children": [
-          {
-            "kind": "Var",
-            "name": "connectionState",
-            "printedName": "connectionState",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "ConnectionState",
-                "printedName": "MillicastSDK.ConnectionState",
-                "usr": "s:12MillicastSDK15ConnectionStateO"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:12MillicastSDK16MCPublisherStateV010connectionD0AA010ConnectionD0Ovp",
-            "mangledName": "$s12MillicastSDK16MCPublisherStateV010connectionD0AA010ConnectionD0Ovp",
-            "moduleName": "MillicastSDK",
-            "declAttributes": [
-              "HasInitialValue",
-              "HasStorage",
-              "SetterAccess",
-              "AccessControl"
-            ],
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "ConnectionState",
-                    "printedName": "MillicastSDK.ConnectionState",
-                    "usr": "s:12MillicastSDK15ConnectionStateO"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MillicastSDK16MCPublisherStateV010connectionD0AA010ConnectionD0Ovg",
-                "mangledName": "$s12MillicastSDK16MCPublisherStateV010connectionD0AA010ConnectionD0Ovg",
-                "moduleName": "MillicastSDK",
-                "implicit": true,
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Var",
-            "name": "publishingState",
-            "printedName": "publishingState",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "PublishingState",
-                "printedName": "MillicastSDK.PublishingState",
-                "usr": "s:12MillicastSDK15PublishingStateO"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:12MillicastSDK16MCPublisherStateV010publishingD0AA010PublishingD0Ovp",
-            "mangledName": "$s12MillicastSDK16MCPublisherStateV010publishingD0AA010PublishingD0Ovp",
-            "moduleName": "MillicastSDK",
-            "declAttributes": [
-              "HasInitialValue",
-              "HasStorage",
-              "SetterAccess",
-              "AccessControl"
-            ],
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "PublishingState",
-                    "printedName": "MillicastSDK.PublishingState",
-                    "usr": "s:12MillicastSDK15PublishingStateO"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MillicastSDK16MCPublisherStateV010publishingD0AA010PublishingD0Ovg",
-                "mangledName": "$s12MillicastSDK16MCPublisherStateV010publishingD0AA010PublishingD0Ovg",
-                "moduleName": "MillicastSDK",
-                "implicit": true,
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Var",
-            "name": "active",
-            "printedName": "active",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:12MillicastSDK16MCPublisherStateV6activeSbvp",
-            "mangledName": "$s12MillicastSDK16MCPublisherStateV6activeSbvp",
-            "moduleName": "MillicastSDK",
-            "declAttributes": [
-              "HasInitialValue",
-              "HasStorage",
-              "SetterAccess",
-              "AccessControl"
-            ],
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Bool",
-                    "printedName": "Swift.Bool",
-                    "usr": "s:Sb"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MillicastSDK16MCPublisherStateV6activeSbvg",
-                "mangledName": "$s12MillicastSDK16MCPublisherStateV6activeSbvg",
-                "moduleName": "MillicastSDK",
-                "implicit": true,
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Var",
-            "name": "viewerCount",
-            "printedName": "viewerCount",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Int32",
-                "printedName": "Swift.Int32",
-                "usr": "s:s5Int32V"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:12MillicastSDK16MCPublisherStateV11viewerCounts5Int32Vvp",
-            "mangledName": "$s12MillicastSDK16MCPublisherStateV11viewerCounts5Int32Vvp",
-            "moduleName": "MillicastSDK",
-            "declAttributes": [
-              "HasInitialValue",
-              "HasStorage",
-              "SetterAccess",
-              "AccessControl"
-            ],
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Int32",
-                    "printedName": "Swift.Int32",
-                    "usr": "s:s5Int32V"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MillicastSDK16MCPublisherStateV11viewerCounts5Int32Vvg",
-                "mangledName": "$s12MillicastSDK16MCPublisherStateV11viewerCounts5Int32Vvg",
-                "moduleName": "MillicastSDK",
-                "implicit": true,
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Function",
-            "name": "==",
-            "printedName": "==(_:_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "MCPublisherState",
-                "printedName": "MillicastSDK.MCPublisherState",
-                "usr": "s:12MillicastSDK16MCPublisherStateV"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "MCPublisherState",
-                "printedName": "MillicastSDK.MCPublisherState",
-                "usr": "s:12MillicastSDK16MCPublisherStateV"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:12MillicastSDK16MCPublisherStateV2eeoiySbAC_ACtFZ",
-            "mangledName": "$s12MillicastSDK16MCPublisherStateV2eeoiySbAC_ACtFZ",
-            "moduleName": "MillicastSDK",
-            "static": true,
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          }
-        ],
-        "declKind": "Struct",
-        "usr": "s:12MillicastSDK16MCPublisherStateV",
-        "mangledName": "$s12MillicastSDK16MCPublisherStateV",
-        "moduleName": "MillicastSDK",
-        "declAttributes": [
-          "AccessControl"
+          "AccessControl",
+          "RawDocComment"
         ],
         "conformances": [
           {
@@ -3873,21 +3711,21 @@
               {
                 "kind": "TypeNominal",
                 "name": "AsyncStream",
-                "printedName": "_Concurrency.AsyncStream<MillicastSDK.MCPublisherState>",
+                "printedName": "_Concurrency.AsyncStream<MillicastSDK.PublishingState>",
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "MCPublisherState",
-                    "printedName": "MillicastSDK.MCPublisherState",
-                    "usr": "s:12MillicastSDK16MCPublisherStateV"
+                    "name": "PublishingState",
+                    "printedName": "MillicastSDK.PublishingState",
+                    "usr": "s:12MillicastSDK15PublishingStateO"
                   }
                 ],
                 "usr": "s:ScS"
               }
             ],
             "declKind": "Func",
-            "usr": "s:So11MCPublisherC12MillicastSDKE5stateScSyAC0A5StateVGyYaF",
-            "mangledName": "$sSo11MCPublisherC12MillicastSDKE5stateScSyAC0A5StateVGyYaF",
+            "usr": "s:So11MCPublisherC12MillicastSDKE5stateScSyAC15PublishingStateOGyF",
+            "mangledName": "$sSo11MCPublisherC12MillicastSDKE5stateScSyAC15PublishingStateOGyF",
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "RawDocComment"
@@ -3916,8 +3754,68 @@
               }
             ],
             "declKind": "Func",
-            "usr": "s:So11MCPublisherC12MillicastSDKE11statsReportScSySo07MCStatsE0CGyYaF",
-            "mangledName": "$sSo11MCPublisherC12MillicastSDKE11statsReportScSySo07MCStatsE0CGyYaF",
+            "usr": "s:So11MCPublisherC12MillicastSDKE11statsReportScSySo07MCStatsE0CGyF",
+            "mangledName": "$sSo11MCPublisherC12MillicastSDKE11statsReportScSySo07MCStatsE0CGyF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "viewerCount",
+            "printedName": "viewerCount()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AsyncStream",
+                "printedName": "_Concurrency.AsyncStream<Swift.Int32>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int32",
+                    "printedName": "Swift.Int32",
+                    "usr": "s:s5Int32V"
+                  }
+                ],
+                "usr": "s:ScS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:So11MCPublisherC12MillicastSDKE11viewerCountScSys5Int32VGyF",
+            "mangledName": "$sSo11MCPublisherC12MillicastSDKE11viewerCountScSys5Int32VGyF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "activity",
+            "printedName": "activity()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AsyncStream",
+                "printedName": "_Concurrency.AsyncStream<MillicastSDK.PublisherActivityEvent>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "PublisherActivityEvent",
+                    "printedName": "MillicastSDK.PublisherActivityEvent",
+                    "usr": "s:12MillicastSDK22PublisherActivityEventO"
+                  }
+                ],
+                "usr": "s:ScS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:So11MCPublisherC12MillicastSDKE8activityScSyAC22PublisherActivityEventOGyF",
+            "mangledName": "$sSo11MCPublisherC12MillicastSDKE8activityScSyAC22PublisherActivityEventOGyF",
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "RawDocComment"
@@ -3933,13 +3831,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "AnyPublisher",
-                "printedName": "Combine.AnyPublisher<MillicastSDK.MCPublisherState, Swift.Never>",
+                "printedName": "Combine.AnyPublisher<MillicastSDK.PublishingState, Swift.Never>",
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "MCPublisherState",
-                    "printedName": "MillicastSDK.MCPublisherState",
-                    "usr": "s:12MillicastSDK16MCPublisherStateV"
+                    "name": "PublishingState",
+                    "printedName": "MillicastSDK.PublishingState",
+                    "usr": "s:12MillicastSDK15PublishingStateO"
                   },
                   {
                     "kind": "TypeNominal",
@@ -3952,8 +3850,8 @@
               }
             ],
             "declKind": "Var",
-            "usr": "s:So11MCPublisherC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC0A5StateVs5NeverOGvp",
-            "mangledName": "$sSo11MCPublisherC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC0A5StateVs5NeverOGvp",
+            "usr": "s:So11MCPublisherC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC15PublishingStateOs5NeverOGvp",
+            "mangledName": "$sSo11MCPublisherC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC15PublishingStateOs5NeverOGvp",
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "RawDocComment"
@@ -3968,13 +3866,13 @@
                   {
                     "kind": "TypeNominal",
                     "name": "AnyPublisher",
-                    "printedName": "Combine.AnyPublisher<MillicastSDK.MCPublisherState, Swift.Never>",
+                    "printedName": "Combine.AnyPublisher<MillicastSDK.PublishingState, Swift.Never>",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "MCPublisherState",
-                        "printedName": "MillicastSDK.MCPublisherState",
-                        "usr": "s:12MillicastSDK16MCPublisherStateV"
+                        "name": "PublishingState",
+                        "printedName": "MillicastSDK.PublishingState",
+                        "usr": "s:12MillicastSDK15PublishingStateO"
                       },
                       {
                         "kind": "TypeNominal",
@@ -3987,8 +3885,8 @@
                   }
                 ],
                 "declKind": "Accessor",
-                "usr": "s:So11MCPublisherC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC0A5StateVs5NeverOGvg",
-                "mangledName": "$sSo11MCPublisherC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC0A5StateVs5NeverOGvg",
+                "usr": "s:So11MCPublisherC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC15PublishingStateOs5NeverOGvg",
+                "mangledName": "$sSo11MCPublisherC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC15PublishingStateOs5NeverOGvg",
                 "moduleName": "MillicastSDK",
                 "isFromExtension": true,
                 "accessorKind": "get"
@@ -4059,6 +3957,146 @@
                 "declKind": "Accessor",
                 "usr": "s:So11MCPublisherC12MillicastSDKE20statsReportPublisher7Combine03AnyF0VySo07MCStatsE0Cs5NeverOGvg",
                 "mangledName": "$sSo11MCPublisherC12MillicastSDKE20statsReportPublisher7Combine03AnyF0VySo07MCStatsE0Cs5NeverOGvg",
+                "moduleName": "MillicastSDK",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "viewerCountPublisher",
+            "printedName": "viewerCountPublisher",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AnyPublisher",
+                "printedName": "Combine.AnyPublisher<Swift.Int32, Swift.Never>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int32",
+                    "printedName": "Swift.Int32",
+                    "usr": "s:s5Int32V"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Never",
+                    "printedName": "Swift.Never",
+                    "usr": "s:s5NeverO"
+                  }
+                ],
+                "usr": "s:7Combine12AnyPublisherV"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:So11MCPublisherC12MillicastSDKE20viewerCountPublisher7Combine03AnyF0Vys5Int32Vs5NeverOGvp",
+            "mangledName": "$sSo11MCPublisherC12MillicastSDKE20viewerCountPublisher7Combine03AnyF0Vys5Int32Vs5NeverOGvp",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "AnyPublisher",
+                    "printedName": "Combine.AnyPublisher<Swift.Int32, Swift.Never>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Int32",
+                        "printedName": "Swift.Int32",
+                        "usr": "s:s5Int32V"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Never",
+                        "printedName": "Swift.Never",
+                        "usr": "s:s5NeverO"
+                      }
+                    ],
+                    "usr": "s:7Combine12AnyPublisherV"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:So11MCPublisherC12MillicastSDKE20viewerCountPublisher7Combine03AnyF0Vys5Int32Vs5NeverOGvg",
+                "mangledName": "$sSo11MCPublisherC12MillicastSDKE20viewerCountPublisher7Combine03AnyF0Vys5Int32Vs5NeverOGvg",
+                "moduleName": "MillicastSDK",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "activityPublisher",
+            "printedName": "activityPublisher",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AnyPublisher",
+                "printedName": "Combine.AnyPublisher<MillicastSDK.PublisherActivityEvent, Swift.Never>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "PublisherActivityEvent",
+                    "printedName": "MillicastSDK.PublisherActivityEvent",
+                    "usr": "s:12MillicastSDK22PublisherActivityEventO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Never",
+                    "printedName": "Swift.Never",
+                    "usr": "s:s5NeverO"
+                  }
+                ],
+                "usr": "s:7Combine12AnyPublisherV"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:So11MCPublisherC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC0E13ActivityEventOs5NeverOGvp",
+            "mangledName": "$sSo11MCPublisherC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC0E13ActivityEventOs5NeverOGvp",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "AnyPublisher",
+                    "printedName": "Combine.AnyPublisher<MillicastSDK.PublisherActivityEvent, Swift.Never>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "PublisherActivityEvent",
+                        "printedName": "MillicastSDK.PublisherActivityEvent",
+                        "usr": "s:12MillicastSDK22PublisherActivityEventO"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Never",
+                        "printedName": "Swift.Never",
+                        "usr": "s:s5NeverO"
+                      }
+                    ],
+                    "usr": "s:7Combine12AnyPublisherV"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:So11MCPublisherC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC0E13ActivityEventOs5NeverOGvg",
+                "mangledName": "$sSo11MCPublisherC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC0E13ActivityEventOs5NeverOGvg",
                 "moduleName": "MillicastSDK",
                 "isFromExtension": true,
                 "accessorKind": "get"
@@ -4263,21 +4301,21 @@
               {
                 "kind": "TypeNominal",
                 "name": "AsyncStream",
-                "printedName": "_Concurrency.AsyncStream<MillicastSDK.MCSubscriberState>",
+                "printedName": "_Concurrency.AsyncStream<MillicastSDK.SubscribingState>",
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "MCSubscriberState",
-                    "printedName": "MillicastSDK.MCSubscriberState",
-                    "usr": "s:12MillicastSDK17MCSubscriberStateV"
+                    "name": "SubscribingState",
+                    "printedName": "MillicastSDK.SubscribingState",
+                    "usr": "s:12MillicastSDK16SubscribingStateO"
                   }
                 ],
                 "usr": "s:ScS"
               }
             ],
             "declKind": "Func",
-            "usr": "s:So12MCSubscriberC12MillicastSDKE5stateScSyAC0A5StateVGyYaF",
-            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE5stateScSyAC0A5StateVGyYaF",
+            "usr": "s:So12MCSubscriberC12MillicastSDKE5stateScSyAC16SubscribingStateOGyF",
+            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE5stateScSyAC16SubscribingStateOGyF",
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "RawDocComment"
@@ -4293,21 +4331,21 @@
               {
                 "kind": "TypeNominal",
                 "name": "AsyncStream",
-                "printedName": "_Concurrency.AsyncStream<MillicastSDK.ActivityEvent>",
+                "printedName": "_Concurrency.AsyncStream<MillicastSDK.SubscriberActivityEvent>",
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "ActivityEvent",
-                    "printedName": "MillicastSDK.ActivityEvent",
-                    "usr": "s:12MillicastSDK13ActivityEventO"
+                    "name": "SubscriberActivityEvent",
+                    "printedName": "MillicastSDK.SubscriberActivityEvent",
+                    "usr": "s:12MillicastSDK23SubscriberActivityEventO"
                   }
                 ],
                 "usr": "s:ScS"
               }
             ],
             "declKind": "Func",
-            "usr": "s:So12MCSubscriberC12MillicastSDKE8activityScSyAC13ActivityEventOGyYaF",
-            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE8activityScSyAC13ActivityEventOGyYaF",
+            "usr": "s:So12MCSubscriberC12MillicastSDKE8activityScSyAC23SubscriberActivityEventOGyF",
+            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE8activityScSyAC23SubscriberActivityEventOGyF",
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "RawDocComment"
@@ -4336,8 +4374,8 @@
               }
             ],
             "declKind": "Func",
-            "usr": "s:So12MCSubscriberC12MillicastSDKE6tracksScSyAC10TrackEventOGyYaF",
-            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE6tracksScSyAC10TrackEventOGyYaF",
+            "usr": "s:So12MCSubscriberC12MillicastSDKE6tracksScSyAC10TrackEventOGyF",
+            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE6tracksScSyAC10TrackEventOGyF",
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "RawDocComment"
@@ -4366,8 +4404,8 @@
               }
             ],
             "declKind": "Func",
-            "usr": "s:So12MCSubscriberC12MillicastSDKE6layersScSyAC11LayersEventVGyYaF",
-            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE6layersScSyAC11LayersEventVGyYaF",
+            "usr": "s:So12MCSubscriberC12MillicastSDKE6layersScSyAC11LayersEventVGyF",
+            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE6layersScSyAC11LayersEventVGyF",
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "RawDocComment"
@@ -4396,8 +4434,8 @@
               }
             ],
             "declKind": "Func",
-            "usr": "s:So12MCSubscriberC12MillicastSDKE3vadScSyAC8VadEventVGyYaF",
-            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE3vadScSyAC8VadEventVGyYaF",
+            "usr": "s:So12MCSubscriberC12MillicastSDKE3vadScSyAC8VadEventVGyF",
+            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE3vadScSyAC8VadEventVGyF",
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "RawDocComment"
@@ -4426,8 +4464,38 @@
               }
             ],
             "declKind": "Func",
-            "usr": "s:So12MCSubscriberC12MillicastSDKE11statsReportScSySo07MCStatsE0CGyYaF",
-            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE11statsReportScSySo07MCStatsE0CGyYaF",
+            "usr": "s:So12MCSubscriberC12MillicastSDKE11statsReportScSySo07MCStatsE0CGyF",
+            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE11statsReportScSySo07MCStatsE0CGyF",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "viewerCount",
+            "printedName": "viewerCount()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AsyncStream",
+                "printedName": "_Concurrency.AsyncStream<Swift.Int32>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int32",
+                    "printedName": "Swift.Int32",
+                    "usr": "s:s5Int32V"
+                  }
+                ],
+                "usr": "s:ScS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:So12MCSubscriberC12MillicastSDKE11viewerCountScSys5Int32VGyF",
+            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE11viewerCountScSys5Int32VGyF",
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "RawDocComment"
@@ -4443,13 +4511,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "AnyPublisher",
-                "printedName": "Combine.AnyPublisher<MillicastSDK.MCSubscriberState, Swift.Never>",
+                "printedName": "Combine.AnyPublisher<MillicastSDK.SubscribingState, Swift.Never>",
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "MCSubscriberState",
-                    "printedName": "MillicastSDK.MCSubscriberState",
-                    "usr": "s:12MillicastSDK17MCSubscriberStateV"
+                    "name": "SubscribingState",
+                    "printedName": "MillicastSDK.SubscribingState",
+                    "usr": "s:12MillicastSDK16SubscribingStateO"
                   },
                   {
                     "kind": "TypeNominal",
@@ -4462,8 +4530,8 @@
               }
             ],
             "declKind": "Var",
-            "usr": "s:So12MCSubscriberC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC0A5StateVs5NeverOGvp",
-            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC0A5StateVs5NeverOGvp",
+            "usr": "s:So12MCSubscriberC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC16SubscribingStateOs5NeverOGvp",
+            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC16SubscribingStateOs5NeverOGvp",
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "RawDocComment"
@@ -4478,13 +4546,13 @@
                   {
                     "kind": "TypeNominal",
                     "name": "AnyPublisher",
-                    "printedName": "Combine.AnyPublisher<MillicastSDK.MCSubscriberState, Swift.Never>",
+                    "printedName": "Combine.AnyPublisher<MillicastSDK.SubscribingState, Swift.Never>",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "MCSubscriberState",
-                        "printedName": "MillicastSDK.MCSubscriberState",
-                        "usr": "s:12MillicastSDK17MCSubscriberStateV"
+                        "name": "SubscribingState",
+                        "printedName": "MillicastSDK.SubscribingState",
+                        "usr": "s:12MillicastSDK16SubscribingStateO"
                       },
                       {
                         "kind": "TypeNominal",
@@ -4497,8 +4565,8 @@
                   }
                 ],
                 "declKind": "Accessor",
-                "usr": "s:So12MCSubscriberC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC0A5StateVs5NeverOGvg",
-                "mangledName": "$sSo12MCSubscriberC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC0A5StateVs5NeverOGvg",
+                "usr": "s:So12MCSubscriberC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC16SubscribingStateOs5NeverOGvg",
+                "mangledName": "$sSo12MCSubscriberC12MillicastSDKE14statePublisher7Combine03AnyE0VyAC16SubscribingStateOs5NeverOGvg",
                 "moduleName": "MillicastSDK",
                 "isFromExtension": true,
                 "accessorKind": "get"
@@ -4513,13 +4581,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "AnyPublisher",
-                "printedName": "Combine.AnyPublisher<MillicastSDK.ActivityEvent, Swift.Never>",
+                "printedName": "Combine.AnyPublisher<MillicastSDK.SubscriberActivityEvent, Swift.Never>",
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "ActivityEvent",
-                    "printedName": "MillicastSDK.ActivityEvent",
-                    "usr": "s:12MillicastSDK13ActivityEventO"
+                    "name": "SubscriberActivityEvent",
+                    "printedName": "MillicastSDK.SubscriberActivityEvent",
+                    "usr": "s:12MillicastSDK23SubscriberActivityEventO"
                   },
                   {
                     "kind": "TypeNominal",
@@ -4532,8 +4600,8 @@
               }
             ],
             "declKind": "Var",
-            "usr": "s:So12MCSubscriberC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC13ActivityEventOs5NeverOGvp",
-            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC13ActivityEventOs5NeverOGvp",
+            "usr": "s:So12MCSubscriberC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC23SubscriberActivityEventOs5NeverOGvp",
+            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC23SubscriberActivityEventOs5NeverOGvp",
             "moduleName": "MillicastSDK",
             "declAttributes": [
               "RawDocComment"
@@ -4548,13 +4616,13 @@
                   {
                     "kind": "TypeNominal",
                     "name": "AnyPublisher",
-                    "printedName": "Combine.AnyPublisher<MillicastSDK.ActivityEvent, Swift.Never>",
+                    "printedName": "Combine.AnyPublisher<MillicastSDK.SubscriberActivityEvent, Swift.Never>",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "ActivityEvent",
-                        "printedName": "MillicastSDK.ActivityEvent",
-                        "usr": "s:12MillicastSDK13ActivityEventO"
+                        "name": "SubscriberActivityEvent",
+                        "printedName": "MillicastSDK.SubscriberActivityEvent",
+                        "usr": "s:12MillicastSDK23SubscriberActivityEventO"
                       },
                       {
                         "kind": "TypeNominal",
@@ -4567,8 +4635,8 @@
                   }
                 ],
                 "declKind": "Accessor",
-                "usr": "s:So12MCSubscriberC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC13ActivityEventOs5NeverOGvg",
-                "mangledName": "$sSo12MCSubscriberC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC13ActivityEventOs5NeverOGvg",
+                "usr": "s:So12MCSubscriberC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC23SubscriberActivityEventOs5NeverOGvg",
+                "mangledName": "$sSo12MCSubscriberC12MillicastSDKE17activityPublisher7Combine03AnyE0VyAC23SubscriberActivityEventOs5NeverOGvg",
                 "moduleName": "MillicastSDK",
                 "isFromExtension": true,
                 "accessorKind": "get"
@@ -4854,6 +4922,76 @@
                 "accessorKind": "get"
               }
             ]
+          },
+          {
+            "kind": "Var",
+            "name": "viewerCountPublisher",
+            "printedName": "viewerCountPublisher",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AnyPublisher",
+                "printedName": "Combine.AnyPublisher<Swift.Int32, Swift.Never>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int32",
+                    "printedName": "Swift.Int32",
+                    "usr": "s:s5Int32V"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Never",
+                    "printedName": "Swift.Never",
+                    "usr": "s:s5NeverO"
+                  }
+                ],
+                "usr": "s:7Combine12AnyPublisherV"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:So12MCSubscriberC12MillicastSDKE20viewerCountPublisher7Combine03AnyF0Vys5Int32Vs5NeverOGvp",
+            "mangledName": "$sSo12MCSubscriberC12MillicastSDKE20viewerCountPublisher7Combine03AnyF0Vys5Int32Vs5NeverOGvp",
+            "moduleName": "MillicastSDK",
+            "declAttributes": [
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "AnyPublisher",
+                    "printedName": "Combine.AnyPublisher<Swift.Int32, Swift.Never>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Int32",
+                        "printedName": "Swift.Int32",
+                        "usr": "s:s5Int32V"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Never",
+                        "printedName": "Swift.Never",
+                        "usr": "s:s5NeverO"
+                      }
+                    ],
+                    "usr": "s:7Combine12AnyPublisherV"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:So12MCSubscriberC12MillicastSDKE20viewerCountPublisher7Combine03AnyF0Vys5Int32Vs5NeverOGvg",
+                "mangledName": "$sSo12MCSubscriberC12MillicastSDKE20viewerCountPublisher7Combine03AnyF0Vys5Int32Vs5NeverOGvg",
+                "moduleName": "MillicastSDK",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
           }
         ],
         "declKind": "Class",
@@ -5047,93 +5185,30 @@
   },
   "ConstValues": [
     {
-      "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/AsyncStreamPublisherAdapter.swift",
-      "kind": "IntegerLiteral",
-      "offset": 603,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/AsyncStreamPublisherAdapter.swift",
-      "kind": "BooleanLiteral",
-      "offset": 631,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/AsyncStreamPublisherAdapter.swift",
-      "kind": "BooleanLiteral",
-      "offset": 1173,
-      "length": 4,
-      "value": "true"
-    },
-    {
-      "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/AsyncStreamPublisherAdapter.swift",
-      "kind": "BooleanLiteral",
-      "offset": 1391,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/AsyncStreamSubscriberAdapter.swift",
-      "kind": "Array",
-      "offset": 548,
-      "length": 2,
-      "value": "[]"
-    },
-    {
-      "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/AsyncStreamSubscriberAdapter.swift",
-      "kind": "IntegerLiteral",
-      "offset": 1989,
-      "length": 1,
-      "value": "0"
-    },
-    {
       "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/MCPublisherExtension.swift",
       "kind": "StringLiteral",
-      "offset": 1624,
+      "offset": 2454,
       "length": 20,
       "value": "\"asyncStreamAdapter\""
     },
     {
       "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/MCPublisherExtension.swift",
       "kind": "StringLiteral",
-      "offset": 1704,
+      "offset": 2534,
       "length": 64,
       "value": "\"MCPublisher does not implement the asyncStreamAdapter selector\""
     },
     {
-      "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/MCState.swift",
-      "kind": "IntegerLiteral",
-      "offset": 1149,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/MCState.swift",
-      "kind": "BooleanLiteral",
-      "offset": 1896,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/MCState.swift",
-      "kind": "IntegerLiteral",
-      "offset": 1950,
-      "length": 1,
-      "value": "0"
-    },
-    {
       "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/MCSubscriberExtension.swift",
       "kind": "StringLiteral",
-      "offset": 3228,
+      "offset": 3605,
       "length": 20,
       "value": "\"asyncStreamAdapter\""
     },
     {
       "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/MCSubscriberExtension.swift",
       "kind": "StringLiteral",
-      "offset": 3308,
+      "offset": 3685,
       "length": 65,
       "value": "\"MCSubscriber does not implement the asyncStreamAdapter selector\""
     },
@@ -5476,7 +5551,7 @@
     {
       "filePath": "\/Users\/ykhal\/Code\/git\/csmMillicastNativeSdk\/src\/swift\/Notifier.swift",
       "kind": "Array",
-      "offset": 212,
+      "offset": 213,
       "length": 2,
       "value": "[]"
     },
