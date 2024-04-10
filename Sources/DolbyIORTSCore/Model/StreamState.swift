@@ -6,9 +6,7 @@ import Foundation
 
 public enum StreamState: Equatable {
     case disconnected
-    case connecting
     case connected
-    case subscribing
     case subscribed(sources: [StreamSource], numberOfStreamViewers: Int)
     case stopped
     case error(StreamError)
@@ -17,9 +15,6 @@ public enum StreamState: Equatable {
         switch state {
         case .disconnected:
             self = .disconnected
-
-        case .connecting:
-            self = .connecting
 
         case .connected:
             self = .connected
@@ -40,9 +35,6 @@ public enum StreamState: Equatable {
 
         case let .error(state):
             self = .error(state.error)
-
-        case .subscribing:
-            self = .subscribing
         }
     }
 }

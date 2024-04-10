@@ -30,11 +30,6 @@ final class StateMachine {
 
     func startConnection(streamName: String, accountID: String, configuration: SubscriptionConfiguration) {
         self.configuration = configuration
-        currentState = .connecting
-    }
-
-    func startSubscribe() {
-        currentState = .subscribing
     }
 
     func stopSubscribe() {
@@ -62,7 +57,12 @@ final class StateMachine {
     }
 
     func onConnected() {
-        currentState = .connected
+        switch currentState {
+        case .connected, .subscribed:
+            break
+        default:
+            currentState = .connected
+        }
     }
 
     func onConnectionError(_ status: Int32, withReason reason: String) {
@@ -77,15 +77,7 @@ final class StateMachine {
         if case .subscribed = currentState {
             return
         }
-        currentState = .subscribed(
-            .init(
-                cachedVideoTrackDetail: cachedSourceZeroVideoTrackAndMid,
-                cachedAudioTrackDetail: cachedSourceZeroAudioTrackAndMid,
-                configuration: configuration
-            )
-        )
-        cachedSourceZeroAudioTrackAndMid = nil
-        cachedSourceZeroAudioTrackAndMid = nil
+        currentState = .subscribed(.init(configuration: configuration))
     }
 
     func onSubscribedError(_ reason: String) {
@@ -98,15 +90,27 @@ final class StateMachine {
 
     func onActive(_ streamId: String, tracks: [String], sourceId: String?) {
         // This is a workaround for an SDK behaviour where the some `onActive` callbacks arrive even before the `onSubscribed`
-        // In this case it's safe to assume a state change to `.subscribed` provided the current state is `.subscribing`
-        if case .subscribing = currentState {
+        // In this case it's safe to assume a state change to `.subscribed` provided the current state is `.connected`
+        if case .connected = currentState {
             // Mimic an `onSubscribed` callback
             onSubscribed()
         }
 
         switch currentState {
         case var .subscribed(state):
-            state.add(streamId: streamId, sourceId: sourceId, tracks: tracks)
+            if let sourceId = sourceId, !sourceId.isEmpty {
+                state.add(streamId: streamId, sourceId: sourceId, tracks: tracks)
+            } else {
+                state.add(
+                    streamId: streamId,
+                    sourceId: sourceId,
+                    tracks: tracks,
+                    cachedVideoTrackDetail: cachedSourceZeroVideoTrackAndMid, 
+                    cachedAudioTrackDetail: cachedSourceZeroAudioTrackAndMid
+                )
+                cachedSourceZeroAudioTrackAndMid = nil
+                cachedSourceZeroAudioTrackAndMid = nil
+            }
             self.currentState = .subscribed(state)
         default:
             Self.logger.error("🛑 Unexpected state on onActive - \(self.currentState.description)")
@@ -177,6 +181,7 @@ final class StateMachine {
                 }
             }
 
+            layersForSelection = Array(layersForSelection.prefix(3))
             switch layersForSelection.count {
             case 2:
                 streamTypes = [
